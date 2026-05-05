@@ -9,54 +9,48 @@ export const contactInfo = {
 };
 
 export const navItems = [
-  { label: "Diensten", href: "#diensten" },
-  { label: "Projecten", href: "#projecten" },
-  { label: "Over ons", href: "#over-ons" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "Over ons", href: "/over-ons/" },
+  { label: "Contact", href: "/contact/" },
 ];
 
 export const heroMetrics = [
   { value: "16+", label: "jaar ervaring" },
-  { value: "4", label: "stappen" },
+  { value: "2500+", label: "projecten" },
   { value: "24u", label: "offerte" },
 ];
 
 export const services = [
   {
     title: "Warmtepompen",
-    summary: "Hybride of all-electric, afgestemd op uw woning en isolatie.",
+    summary: "Hybride of all-electric, afgestemd op uw woning.",
     image: "/images/services/warmtepompen.webp",
     popular: true,
   },
   {
     title: "Zonnepanelen",
-    summary: "Hoogrendementspanelen met monitoring en eerlijke berekeningen.",
+    summary: "Hoogrendementspanelen met monitoring.",
     image: "/images/services/zonnepanelen.webp",
   },
   {
     title: "Airconditioning",
-    summary: "Stille, energiezuinige systemen voor koelen en verwarmen.",
+    summary: "Stille systemen voor koelen en verwarmen.",
     image: "/images/services/airco.jpg",
   },
   {
     title: "Batterijopslag",
-    summary: "Bewaar uw eigen stroom voor de avond en voor stroomuitval.",
+    summary: "Bewaar uw eigen stroom voor de avond.",
     image: "/images/services/batterijopslag.webp",
   },
   {
     title: "Vloerverwarming",
-    summary: "Op water of elektra, ingeregeld voor lage aanvoertemperatuur.",
+    summary: "Ingregeld voor lage aanvoertemperatuur.",
     image: "/images/services/vloerverwarming.webp",
   },
   {
-    title: "Meterkast",
-    summary: "Vervangen of uitbreiden, met ruimte voor laadpaal en batterij.",
+    title: "Meterkast & Liften",
+    summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.",
     image: "/images/services/meterkast.webp",
-  },
-  {
-    title: "Liften",
-    summary: "Huislift, platformlift of personenlift, inclusief keuring.",
-    image: "/images/services/lift.webp",
   },
 ];
 
@@ -64,46 +58,39 @@ export const processSteps = [
   {
     step: "01",
     title: "Bezoek en advies",
-    description:
-      "We komen langs, meten op en stellen uw situatie vast. U krijgt een eerlijk advies.",
+    description: "We komen langs, meten op en stellen uw situatie vast.",
   },
   {
     step: "02",
     title: "Offerte binnen 24 uur",
-    description:
-      "Een heldere prijsopbouw zonder verborgen posten. Inclusief planning en garantie.",
+    description: "Een heldere prijsopbouw zonder verborgen posten.",
   },
   {
     step: "03",
     title: "Installatie",
-    description:
-      "Onze monteurs werken volgens NEN 1010 en VCA. Netjes en professioneel.",
+    description: "Onze monteurs werken volgens NEN 1010 en VCA.",
   },
   {
     step: "04",
     title: "Oplevering en nazorg",
-    description:
-      "Alle documentatie en instructie. Daarna blijven wij bereikbaar voor service.",
+    description: "Alle documentatie. Daarna blijven wij bereikbaar.",
   },
 ];
 
 export const whyChooseUs = [
   {
-    title: "16+ jaar in dezelfde regio",
-    description:
-      "Sinds 2008 actief vanuit Oudewater. Geen overnameroulatie, geen onderaannemers.",
+    title: "16+ jaar ervaring",
+    description: "Sinds 2008 actief vanuit Oudewater. Dezelfde betrokkenheid, jaar na jaar.",
     image: "/images/branding/icon-experience.png",
   },
   {
     title: "Eigen vakmensen",
-    description:
-      "Een vast team van gecertificeerde monteurs. Kwaliteit en communicatie in eigen hand.",
+    description: "Een vast team van gecertificeerde monteurs. Kwaliteit in eigen hand.",
     image: "/images/branding/icon-team.png",
   },
   {
     title: "Service na oplevering",
-    description:
-      "Een installatie is een relatie van jaren. Wij staan paraat voor onderhoud en garantie.",
+    description: "Een installatie is een relatie van jaren. Wij staan paraat.",
     image: "/images/branding/icon-support.png",
   },
 ];
@@ -158,4 +145,11 @@ export const projectImages = [
 export const certifications = [
   { name: "NEN-3140", src: "/images/certifications/nen-3140.png" },
   { name: "VCA", src: "/images/certifications/vca.png" },
+];
+
+export const companyStats = [
+  { value: "16+", label: "Jaar ervaring" },
+  { value: "2500+", label: "Projecten opgeleverd" },
+  { value: "8", label: "Vakmensen in dienst" },
+  { value: "100%", label: "Eigen personeel" },
 ];

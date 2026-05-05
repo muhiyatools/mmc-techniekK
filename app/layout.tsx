@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#fafbfc",
+  themeColor: "#38BDF8",
 };
 
 export default function RootLayout({
@@ -62,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl-NL" className={inter.variable}>
-      <body className="min-h-full flex flex-col bg-base grain">
+      <body className="min-h-full flex flex-col bg-base">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

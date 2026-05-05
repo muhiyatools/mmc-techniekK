@@ -1,17 +1,23 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-base:        #fafbfc;
-  --color-surface:     #f3f4f6;
-  --color-elevated:    #ffffff;
-  --color-border:      #e8eaed;
-  --color-muted:       #6b7280;
-  --color-copy:        #1f2937;
-  --color-ink:         #0b0f19;
+  /* Logo-exact blue: #38BDF8 */
+  --color-brand:       #38BDF8;
+  --color-brand-hover: #0EA5E9;
+  --color-brand-deep:  #0284C7;
+  --color-brand-light: #E0F2FE;
+  --color-brand-glow:  #7DD3FC;
 
-  --color-brand:       #2563eb;
-  --color-brand-dark:  #1d4ed8;
+  /* Neutrals — tinted toward blue hue 240 */
+  --color-base:        #F8FAFC;
+  --color-surface:     #F1F5F9;
+  --color-elevated:    #FFFFFF;
+  --color-border:      #E2E8F0;
+  --color-muted:       #64748B;
+  --color-copy:        #334155;
+  --color-ink:         #0F172A;
 
+  /* Typography */
   --font-sans:    var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
@@ -34,6 +40,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   color: var(--color-ink);
+  letter-spacing: -0.02em;
 }
 
 p { text-wrap: pretty; }
@@ -54,12 +61,12 @@ p { text-wrap: pretty; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 
-/* ── Reveal animation classes ── */
+/* ── Reveal animations ── */
 .reveal {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal.revealed {
   opacity: 1;
@@ -68,9 +75,9 @@ p { text-wrap: pretty; }
 
 .reveal-scale {
   opacity: 0;
-  transform: scale(0.96);
-  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(0.95);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-scale.revealed {
   opacity: 1;
@@ -79,9 +86,9 @@ p { text-wrap: pretty; }
 
 .reveal-left {
   opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateX(-50px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-left.revealed {
   opacity: 1;
@@ -90,9 +97,9 @@ p { text-wrap: pretty; }
 
 .reveal-right {
   opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateX(50px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-right.revealed {
   opacity: 1;
@@ -107,33 +114,38 @@ p { text-wrap: pretty; }
 .delay-500 { transition-delay: 0.5s; }
 .delay-600 { transition-delay: 0.6s; }
 
-/* ── Image hover ── */
+/* ── Image hover zoom ── */
 .img-hover {
   overflow: hidden;
 }
 .img-hover img {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .img-hover:hover img {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
-/* ── Premium grain overlay ── */
-.grain::before {
+/* ── Premium link underline ── */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
   content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--color-brand);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after {
+  width: 100%;
 }
 
-/* ── Button press effect ── */
-.btn-press:active {
-  transform: scale(0.98);
+/* ── Smooth section transitions ── */
+section {
+  position: relative;
 }
 
 /* ── Reduced motion ── */
