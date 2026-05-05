@@ -1,73 +1,71 @@
 import FadeIn from "../components/FadeIn";
+import HairlineDivider from "../components/HairlineDivider";
+import InstrumentDot from "../components/InstrumentDot";
 import { processSteps } from "@/lib/data";
 
+/*
+ * Process — daylight surface (was bg-ink, converted per brief).
+ * Steps render in a horizontal row separated by hairline rules; on mobile
+ * they collapse to a vertical timeline.
+ */
 export default function ProcessSteps() {
   return (
-    <section
-      className="bg-ink"
-      aria-labelledby="process-heading"
-    >
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-20 lg:py-28">
+    <section className="bg-base" aria-labelledby="process-heading">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
 
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 lg:mb-20">
+        <div className="grid lg:grid-cols-[1fr_auto] items-end gap-6 mb-14 lg:mb-20">
           <FadeIn>
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand font-sans mb-4">
+            <p className="inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted font-sans mb-4">
+              <InstrumentDot size={4} />
               Werkwijze
             </p>
             <h2
               id="process-heading"
-              className="font-display font-bold uppercase leading-[0.9] tracking-tight text-base"
-              style={{ fontSize: "clamp(2rem, 4.5vw, 3.8rem)" }}
+              className="font-display font-bold uppercase leading-[0.92] tracking-[-0.012em] text-ink"
+              style={{ fontSize: "clamp(2.25rem, 4.5vw, 3.75rem)" }}
             >
-              Van advies tot
-              <br />
-              oplevering
+              Van advies tot<br />
+              <span className="text-brand">oplevering</span>
             </h2>
           </FadeIn>
           <FadeIn delay={60}>
-            <p className="text-[15px] leading-[1.75] text-base/50 font-sans max-w-[38ch] lg:text-right">
-              Een helder, eerlijk proces zonder verrassingen. Zo werkt MMC Techniek.
+            <p className="text-[0.9375rem] leading-[1.7] text-copy/75 font-sans max-w-[40ch]">
+              Een helder proces zonder verrassingen. Vier vaste stappen, een eerlijke offerte binnen 24 uur en eigen monteurs op de werkvloer.
             </p>
           </FadeIn>
         </div>
 
-        {/* Horizontal steps grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-0">
+        <FadeIn delay={100}>
+          <HairlineDivider variant="aurora" draw />
+        </FadeIn>
+
+        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-hairline">
           {processSteps.map((step, i) => (
-            <FadeIn key={step.step} delay={i * 70}>
-              <div
-                className={`relative p-7 lg:p-8 ${
-                  i < processSteps.length - 1
-                    ? "border-b sm:border-b-0 sm:border-r border-base/10"
-                    : ""
-                }`}
-              >
-                {/* Step number — structural */}
-                <div
-                  className="font-display font-extrabold uppercase leading-none text-base/[0.07] mb-6 select-none"
-                  style={{ fontSize: "clamp(4.5rem, 8vw, 6.5rem)" }}
-                  aria-hidden="true"
-                >
-                  {step.step}
+            <FadeIn key={step.step} delay={140 + i * 60}>
+              <li className="relative p-6 lg:p-8 lg:py-10 h-full flex flex-col">
+                {/* Step index — tabular figures, brand color */}
+                <div className="flex items-baseline gap-3 mb-6">
+                  <span className="tabular text-[2.5rem] lg:text-[3rem] font-display font-extrabold leading-none text-brand">
+                    {step.step}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="block w-8 h-px bg-hairline self-center"
+                  />
                 </div>
 
-                {/* Thin brand line separator */}
-                <div className="w-8 h-[1.5px] bg-brand mb-5" aria-hidden="true" />
-
-                {/* Title */}
-                <h3 className="text-[14px] font-bold uppercase tracking-[0.07em] text-base font-sans mb-3 leading-snug">
+                <h3 className="font-display font-bold uppercase tracking-[-0.005em] text-ink text-[1.125rem] leading-tight mb-3">
                   {step.title}
                 </h3>
-
-                {/* Description */}
-                <p className="text-[13px] leading-[1.72] text-base/50 font-sans">
+                <p className="text-[0.875rem] leading-[1.7] text-copy/75 font-sans">
                   {step.description}
                 </p>
-              </div>
+              </li>
             </FadeIn>
           ))}
-        </div>
+        </ol>
+
+        <HairlineDivider variant="hairline" />
       </div>
     </section>
   );

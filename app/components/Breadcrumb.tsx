@@ -6,6 +6,10 @@ interface BreadcrumbItem {
   href?: string;
 }
 
+/*
+ * Breadcrumb — sits inside PageHero on a daylight Mist surface,
+ * so the type is dark on light. Includes BreadcrumbList JSON-LD.
+ */
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   const schema = {
     "@context": "https://schema.org",
@@ -22,16 +26,28 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
     <>
       <JsonLd data={schema} />
       <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-2 text-[0.8125rem] text-white/50">
+        <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted font-sans">
           {items.map((item, index) => (
             <li key={item.label} className="flex items-center gap-2">
-              {index > 0 && <span className="text-white/30">/</span>}
+              {index > 0 && (
+                <span aria-hidden="true" className="text-hairline">
+                  /
+                </span>
+              )}
               {item.href && index < items.length - 1 ? (
-                <Link href={item.href} className="text-white/80 hover:text-white transition-colors">
+                <Link
+                  href={item.href}
+                  className="text-muted hover:text-ink transition-colors duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-sm"
+                >
                   {item.label}
                 </Link>
               ) : (
-                <span className={index === items.length - 1 ? "text-white/70" : ""}>{item.label}</span>
+                <span
+                  className={index === items.length - 1 ? "text-ink" : ""}
+                  aria-current={index === items.length - 1 ? "page" : undefined}
+                >
+                  {item.label}
+                </span>
               )}
             </li>
           ))}

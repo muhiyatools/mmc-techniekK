@@ -1,56 +1,85 @@
 import Image from "next/image";
 import FadeIn from "../components/FadeIn";
+import HairlineDivider from "../components/HairlineDivider";
 import { clientLogosExtended } from "@/lib/data";
 
+/*
+ * Trusted-by row on Pearl. Logos sit in their own subtle hairline cells
+ * so the row reads as a quiet ledger, not a cluttered logo soup.
+ */
 export default function Partners() {
   return (
     <section className="bg-concrete" aria-labelledby="partners-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-20">
 
-        {/* Label row */}
         <FadeIn>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-12 lg:mb-14">
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-10 lg:mb-12">
             <p
               id="partners-heading"
-              className="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-muted font-sans"
+              className="text-[0.6875rem] font-bold uppercase tracking-[0.22em] text-muted font-sans"
             >
               Vertrouwd door opdrachtgevers
             </p>
-            <span className="text-[0.6875rem] font-sans text-muted/60 tracking-wide">
-              Woningcorporaties &middot; Retailers &middot; Particulieren
+            <span className="text-[0.6875rem] font-sans text-muted/70 tracking-wide">
+              Woningcorporaties · retailers · particulieren
             </span>
           </div>
         </FadeIn>
 
-        {/* Static horizontal logo grid */}
         <FadeIn delay={60}>
-          <div
-            className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 lg:gap-x-12 lg:gap-y-8"
-            aria-label="Onze opdrachtgevers en partners"
-          >
-            {clientLogosExtended.map((logo, i) => {
-              const isLarge =
-                logo.src.includes("partner-4") || logo.src.includes("partner-6");
-              return (
-                <div
-                  key={`${logo.name}-${i}`}
-                  className="shrink-0 grayscale opacity-40 hover:grayscale-0 hover:opacity-90 transition-all duration-300"
-                  aria-label={logo.name}
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.name}
-                    width={130}
-                    height={52}
-                    className={`${isLarge ? "h-14 lg:h-16" : "h-10 lg:h-12"} w-auto object-contain`}
-                    loading="lazy"
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <HairlineDivider variant="hairline" />
         </FadeIn>
 
+        <FadeIn delay={120}>
+          <ul
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-hairline"
+            aria-label="Onze opdrachtgevers en partners"
+          >
+            {clientLogosExtended.slice(0, 6).map((logo) => (
+              <li
+                key={logo.src}
+                className="flex items-center justify-center h-20 lg:h-24 grayscale opacity-55 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                aria-label={logo.name}
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.name}
+                  width={130}
+                  height={52}
+                  className="h-9 lg:h-10 w-auto object-contain"
+                  loading="lazy"
+                />
+              </li>
+            ))}
+          </ul>
+        </FadeIn>
+
+        <HairlineDivider variant="hairline" />
+
+        <FadeIn delay={160}>
+          <ul
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-hairline"
+            aria-hidden="true"
+          >
+            {clientLogosExtended.slice(6).map((logo) => (
+              <li
+                key={logo.src}
+                className="flex items-center justify-center h-20 lg:h-24 grayscale opacity-55 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+              >
+                <Image
+                  src={logo.src}
+                  alt=""
+                  width={130}
+                  height={52}
+                  className="h-9 lg:h-10 w-auto object-contain"
+                  loading="lazy"
+                />
+              </li>
+            ))}
+          </ul>
+        </FadeIn>
+
+        <HairlineDivider variant="hairline" />
       </div>
     </section>
   );

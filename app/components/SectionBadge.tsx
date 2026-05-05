@@ -1,10 +1,15 @@
+import InstrumentDot from "./InstrumentDot";
+
+/*
+ * Lightweight overline badge. Kept as a thin compatibility wrapper so
+ * older imports keep working — new code should prefer composing an
+ * `InstrumentDot + uppercase label` directly.
+ */
 export default function SectionBadge({ text }: { text: string }) {
   return (
-    <div className="inline-flex items-center gap-[15px] text-ink text-[0.875rem] font-semibold uppercase tracking-[0.3em] mb-6 font-sans">
-      <svg className="w-[11px] h-[11px] text-brand" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
-        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"/>
-      </svg>
+    <p className="inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.22em] text-muted font-sans mb-4">
+      <InstrumentDot size={4} />
       {text}
-    </div>
+    </p>
   );
 }
