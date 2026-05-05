@@ -1,26 +1,172 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Palette — OKLCH, every neutral tinted toward hue 240 */
+  --color-base:        oklch(97% 0.006 240);
+  --color-concrete:    oklch(91% 0.012 240);
+  --color-muted:       oklch(55% 0.02  240);
+  --color-copy:        oklch(26% 0.02  240);
+  --color-ink:         oklch(14% 0.012 240);
+  --color-brand:       oklch(60% 0.18  250);
+  --color-brand-deep:  oklch(38% 0.18  250);
+
+  /* Fonts */
+  --font-sans:    var(--font-barlow);
+  --font-display: var(--font-barlow-condensed);
+
+  /* Semantic aliases */
+  --color-background: var(--color-base);
+  --color-foreground: var(--color-ink);
+
+  /* Type scale in rem — avoids px lock-in, respects user zoom */
+  --text-micro:   0.625rem;   /* 10px — decorative labels only */
+  --text-label:   0.6875rem;  /* 11px — all uppercase overlines  */
+  --text-caption: 0.75rem;    /* 12px — smallest functional text  */
+  --text-sm:      0.8125rem;  /* 13px — secondary body            */
+  --text-base:    1rem;       /* 16px — body default              */
+  --text-lg:      1.0625rem;  /* 17px — lead body                 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---- Keyframes ---- */
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes reveal-scale {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Hero-specific */
+@keyframes word-lift {
+  from { transform: translateY(115%); }
+  to   { transform: translateY(0%); }
+}
+
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes line-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ---- Animation utilities ---- */
+.animate-reveal       { animation: reveal        0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-reveal-scale { animation: reveal-scale  0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-right  { animation: slide-in-right 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-left   { animation: slide-in-left  0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-marquee      { animation: marquee 40s linear infinite; }
+
+/* ---- Base ---- */
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:              var(--color-base);
+  color:                   var(--color-copy);
+  font-family:             var(--font-barlow), system-ui, sans-serif;
+  font-size:               1rem;
+  line-height:             1.72;
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings:   "kern" 1, "liga" 1;
+  font-kerning:            normal;
+}
+
+/* Headings — balance text wrapping, prevent orphaned words */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  font-feature-settings: "kern" 1;
+}
+
+/* Body text — prettier line breaks */
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--color-brand);
+  color:      var(--color-base);
+}
+
+/* ---- Focus ---- */
+:focus-visible {
+  outline:        2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* ---- Skip to content ---- */
+.skip-to-content {
+  position:    absolute;
+  top:         -40px;
+  left:        0;
+  background:  var(--color-ink);
+  color:       var(--color-base);
+  padding:     0.5rem 1rem;
+  z-index:     100;
+  transition:  top 0.2s;
+  font-size:   0.875rem;
+  font-weight: 600;
+}
+.skip-to-content:focus { top: 0; }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: var(--color-concrete); }
+::-webkit-scrollbar-thumb { background: var(--color-brand); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-deep); }
+
+/* ---- Marquee (general) ---- */
+/* min-width: max-content prevents the track from wrapping */
+.animate-marquee { min-width: max-content; }
+
+/* ---- Utilities ---- */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+/* ---- Swiper ---- */
+.swiper-pagination-bullet {
+  background: var(--color-muted) !important;
+  opacity: 0.35 !important;
+  width: 7px !important;
+  height: 7px !important;
+  transition: all 0.2s ease;
+}
+.swiper-pagination-bullet-active {
+  background: var(--color-brand) !important;
+  opacity: 1 !important;
+  width: 22px !important;
+  border-radius: 3px !important;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:       0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:      0.01ms !important;
+    scroll-behavior:          auto !important;
+  }
 }
