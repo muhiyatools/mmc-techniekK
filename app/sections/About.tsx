@@ -13,7 +13,7 @@ export default function About() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-[0.95fr_1fr] gap-12 lg:gap-20 items-center">
           <FadeIn>
-            <div className="relative shelf overflow-hidden" style={{ aspectRatio: "4 / 5" }}>
+            <div className="relative shelf overflow-hidden rounded-2xl" style={{ aspectRatio: "4 / 5" }}>
               <span
                 aria-hidden="true"
                 className="absolute inset-x-0 top-0 h-px z-20 pointer-events-none"
@@ -59,12 +59,12 @@ export default function About() {
             </FadeIn>
 
             <FadeIn delay={240} direction="right">
-              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-hairline border border-hairline">
+              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-hairline border border-hairline rounded-xl overflow-hidden">
                 {[
                   { value: "16+", label: "jaar" },
                   { value: "1000+", label: "klanten" },
                   { value: "7", label: "specialismen" },
-                  { value: "A++", label: "label" },
+                  { value: "A++", label: "energielabel" },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-base p-5">
                     <dt className="tabular text-[1.5rem] font-extrabold text-ink leading-none font-display">

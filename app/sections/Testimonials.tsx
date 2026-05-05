@@ -48,9 +48,18 @@ export default function Testimonials() {
                 <span className="text-brand">onze klanten</span>
               </h2>
             </div>
-            <p className="text-[0.8125rem] font-semibold text-muted font-sans tabular shrink-0">
+            <a
+              href="https://g.co/kgs/3y8vZ8W"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 text-[0.8125rem] font-semibold text-muted font-sans tabular shrink-0 hover:text-ink transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+            >
               <span className="text-brand">★</span>&nbsp;4,9 / 5 op Google
-            </p>
+              <span
+                aria-hidden="true"
+                className="block w-[5px] h-[5px] rounded-full bg-brand opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              />
+            </a>
           </div>
         </FadeIn>
 

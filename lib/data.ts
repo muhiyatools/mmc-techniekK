@@ -38,7 +38,7 @@ export const services = [
     title: "Zonnepanelen",
     summary: "Hoogrendementspanelen met monitoring en eerlijke berekeningen.",
     description:
-      "We adviseren op basis van uw dakorientatie, schaduw en verbruik. Plaatsing inclusief omvormer, optimizers en een dashboard waarop u uw opbrengst dagelijks kunt volgen.",
+      "Plaatsing inclusief omvormer, optimizers en een dashboard waarop u uw opbrengst dagelijks kunt volgen. We adviseren op basis van uw dak\u00f6ri\u00ebntatie, schaduw en verbruik.",
     image: "/images/services/zonnepanelen.webp",
   },
   {

@@ -70,7 +70,7 @@ export default function PageHero({
             </p>
           </div>
 
-          <div className="hidden lg:block relative shelf overflow-hidden" style={{ aspectRatio: "16 / 11" }}>
+          <div className="hidden lg:block relative shelf overflow-hidden rounded-2xl" style={{ aspectRatio: "16 / 11" }}>
             <span
               aria-hidden="true"
               className="absolute inset-x-0 top-0 h-px z-10 pointer-events-none"

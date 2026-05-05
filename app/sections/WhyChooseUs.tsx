@@ -57,13 +57,7 @@ export default function WhyChooseUs() {
               {whyChooseUs.map((item, i) => (
                 <FadeIn key={item.title} delay={i * 80} direction="right">
                   <li className="py-7 lg:py-9">
-                    <div className="flex items-baseline gap-5 mb-3">
-                      <span
-                        className="text-[0.625rem] font-bold uppercase tracking-[0.22em] text-muted/80 font-sans tabular shrink-0"
-                        aria-hidden="true"
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
+                    <div className="mb-3">
                       <h3
                         className="font-display font-bold uppercase leading-[0.95] tracking-[-0.01em] text-ink"
                         style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)" }}

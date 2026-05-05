@@ -122,18 +122,30 @@ export default function Hero() {
           {/* Left — typographic column */}
           <div className="flex flex-col justify-center pt-12 lg:pt-0">
 
-            {/* Overline */}
-            <p
-              className="inline-flex items-center gap-3 font-sans text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-9"
+            {/* Overline + trust badge */}
+            <div
+              className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-9"
               style={{ animation: "hero-fade 0.5s ease-out 60ms both" }}
             >
-              <InstrumentDot size={6} pulse />
-              <span>Oudewater · Nederland · Est. 2008</span>
-            </p>
+              <p className="inline-flex items-center gap-3 font-sans text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted">
+                <InstrumentDot size={6} pulse />
+                <span>Oudewater · Nederland · Est. 2008</span>
+              </p>
+              <span
+                aria-hidden="true"
+                className="hidden sm:block w-px h-3 bg-hairline"
+              />
+              <p className="inline-flex items-center gap-1.5 text-[0.625rem] font-bold uppercase tracking-[0.18em] text-muted font-sans">
+                <svg className="w-3.5 h-3.5 text-brand" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                4,9 / 5 op Google
+              </p>
+            </div>
 
             {/* Headline — word-lift, three lines */}
             <h1
-              className="font-display font-extrabold uppercase leading-[0.86] tracking-[-0.012em] text-ink mb-8 overflow-clip"
+              className="font-display font-extrabold uppercase leading-[0.86] tracking-[-0.012em] text-ink mb-8"
               aria-label="Uw woning, energiezuinig en vakkundig geinstalleerd."
             >
               <HeroLine
@@ -156,10 +168,10 @@ export default function Hero() {
 
             {/* Lead */}
             <p
-              className="font-sans text-[1.0625rem] leading-[1.7] text-copy/85 mb-10 max-w-[44ch]"
+              className="font-sans text-[1.0625rem] leading-[1.65] text-copy/90 mb-10 max-w-[42ch]"
               style={{ animation: "hero-fade 0.6s cubic-bezier(0.22,1,0.36,1) 600ms both" }}
             >
-              Warmtepompen, zonnepanelen, airco, batterijopslag. Geinstalleerd door eigen monteurs uit Oudewater. Inclusief advies, monitoring en service na oplevering.
+              Warmtepompen, zonnepanelen, airco, batterijopslag. Eigen monteurs uit Oudewater. Advies, installatie en service.
             </p>
 
             {/* CTAs */}
@@ -224,7 +236,7 @@ export default function Hero() {
           <div className="hidden lg:block relative">
             <div
               ref={shelfRef}
-              className="relative shelf overflow-hidden will-change-transform"
+              className="relative shelf overflow-hidden rounded-2xl will-change-transform image-hover-tint"
               style={{
                 animation: "shelf-rise 0.9s cubic-bezier(0.22,1,0.36,1) 200ms both",
                 aspectRatio: "4 / 5",
@@ -306,7 +318,7 @@ export default function Hero() {
 
       {/* Mobile image strip — no parallax on mobile */}
       <div
-        className="lg:hidden relative h-72 overflow-hidden border-y border-hairline"
+        className="lg:hidden relative h-72 overflow-hidden border-y border-hairline rounded-2xl mx-4 image-hover-tint"
         style={{ animation: "hero-fade 0.7s ease-out 600ms both" }}
       >
         <Image

@@ -29,7 +29,7 @@ export default function ProjectGallery() {
   return (
     <>
       <div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-hairline border border-hairline"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-hairline border border-hairline overflow-hidden"
         style={{ gridAutoFlow: "dense", gridAutoRows: "200px" }}
       >
         {projectImages.map((project, i) => {
@@ -51,14 +51,18 @@ export default function ProjectGallery() {
                   alt={project.label}
                   fill
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  sizes={
+                    isWide
+                      ? "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 50vw"
+                      : "(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  }
                 />
                 {/* Bottom-left typographic label, fades in on hover */}
                 <div
                   className="absolute inset-x-0 bottom-0 p-4 transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0"
                   style={{
                     background:
-                      "linear-gradient(to top, color-mix(in oklch, var(--color-base) 96%, transparent) 0%, transparent 100%)",
+                      "linear-gradient(to top, color-mix(in oklch, var(--color-concrete) 92%, transparent) 0%, transparent 100%)",
                   }}
                 >
                   <span
@@ -90,7 +94,7 @@ export default function ProjectGallery() {
         >
           <button
             type="button"
-            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center text-base hover:text-brand transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-full"
+            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center text-base hover:text-brand transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             onClick={(e) => {
               e.stopPropagation();
               setLightbox(null);

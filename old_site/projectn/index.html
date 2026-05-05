@@ -771,4 +771,102 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 
 
 
-<script src="https://mmctechniek.nl/wp-content/plugins/elementor/assets/lib/dialog/dialog.min.js?ver=4.9.3"></script><script src="https://mmctechniek.nl/wp-content/plugins/elementor/assets/lib/share-link/share-link.min.js?ver=4.0.5"></script><link rel="stylesheet" href="https://mmctechniek.nl/wp-content/plugins/elementor/assets/css/conditionals/lightbox.min.css?ver=4.0.5"><svg style="display: none;" class="e-font-icon-svg-symbols"></svg></body></html>
+<script src="https://mmctechniek.nl/wp-content/plugins/elementor/assets/lib/dialog/dialog.min.js?ver=4.9.3"></script><script src="https://mmctechniek.nl/wp-content/plugins/elementor/assets/lib/share-link/share-link.min.js?ver=4.0.5"></script><link rel="stylesheet" href="https://mmctechniek.nl/wp-content/plugins/elementor/assets/css/conditionals/lightbox.min.css?ver=4.0.5"><svg style="display: none;" class="e-font-icon-svg-symbols"></svg><style>
+.custom-lightbox {
+  display: none;
+  position: fixed;
+  z-index: 999999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.95);
+  justify-content: center;
+  align-items: center;
+}
+.custom-lightbox.active {
+  display: flex;
+}
+.custom-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
+.custom-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.custom-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 20px;
+}
+.custom-lightbox-prev { left: 20px; }
+.custom-lightbox-next { right: 20px; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryItems = document.querySelectorAll('.e-gallery-item');
+  if(!galleryItems.length) return;
+  const images = [];
+  galleryItems.forEach(function(item) {
+    images.push({
+      src: item.getAttribute('href'),
+      title: item.getAttribute('data-elementor-lightbox-title') || ''
+    });
+  });
+  let currentIndex = 0;
+  const lightbox = document.createElement('div');
+  lightbox.className = 'custom-lightbox';
+  lightbox.innerHTML = '<button class="custom-lightbox-close">&times;</button>' +
+    '<button class="custom-lightbox-nav custom-lightbox-prev">&#10094;</button>' +
+    '<button class="custom-lightbox-nav custom-lightbox-next">&#10095;</button>' +
+    '<img src="" alt="">';
+  document.body.appendChild(lightbox);
+  const imgEl = lightbox.querySelector('img');
+  function showImage(index) {
+    currentIndex = index;
+    if(currentIndex < 0) currentIndex = images.length - 1;
+    if(currentIndex >= images.length) currentIndex = 0;
+    imgEl.src = images[currentIndex].src;
+    imgEl.alt = images[currentIndex].title;
+  }
+  galleryItems.forEach(function(item, index) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      showImage(index);
+      lightbox.classList.add('active');
+    });
+  });
+  lightbox.querySelector('.custom-lightbox-close').addEventListener('click', function() {
+    lightbox.classList.remove('active');
+  });
+  lightbox.querySelector('.custom-lightbox-prev').addEventListener('click', function() {
+    showImage(currentIndex - 1);
+  });
+  lightbox.querySelector('.custom-lightbox-next').addEventListener('click', function() {
+    showImage(currentIndex + 1);
+  });
+  lightbox.addEventListener('click', function(e) {
+    if(e.target === lightbox) lightbox.classList.remove('active');
+  });
+  document.addEventListener('keydown', function(e) {
+    if(!lightbox.classList.contains('active')) return;
+    if(e.key === 'Escape') lightbox.classList.remove('active');
+    if(e.key === 'ArrowLeft') showImage(currentIndex - 1);
+    if(e.key === 'ArrowRight') showImage(currentIndex + 1);
+  });
+});
+</script></body></html>

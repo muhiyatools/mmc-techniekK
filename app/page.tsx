@@ -1,34 +1,31 @@
 import Hero from "./sections/Hero";
+import TrustBand from "./components/TrustBand";
 import Services from "./sections/Services";
+import WhyChooseUs from "./sections/WhyChooseUs";
 import ProcessSteps from "./sections/ProcessSteps";
 import Projects from "./sections/Projects";
 import Testimonials from "./sections/Testimonials";
 import Partners from "./sections/Partners";
 
 /*
- * Home — section rhythm follows the approved shape brief:
- *   Hero (with metric row trust signals)
- *   ↓
- *   Services (typographic ledger, on Void)
- *   ↓
- *   Process (4 steps, on Void)
- *   ↓
- *   Projects (asymmetric editorial grid, on Pearl)
- *   ↓
- *   Testimonials (split layout, on Void)
- *   ↓
- *   Partners (logo ledger, on Pearl)
- *   ↓
- *   Footer (Brand-deep, footer CTA)
- *
- * Surface alternation Void / Pearl prevents flatness without resorting
- * to dark sections.
+ * Home — section rhythm:
+ *   Hero (word-lift, trust signals)
+ *   TrustBand (logo marquee)
+ *   Services (editorial ledger)
+ *   WhyChooseUs (sculptural 16+, asymmetric)
+ *   ProcessSteps (4-step horizontal timeline)
+ *   Projects (asymmetric gallery preview)
+ *   Testimonials (split layout)
+ *   Partners (logo ledger)
+ *   Footer (Brand-deep)
  */
 export default function Home() {
   return (
     <>
       <Hero />
+      <TrustBand />
       <Services />
+      <WhyChooseUs />
       <ProcessSteps />
       <Projects />
       <Testimonials />

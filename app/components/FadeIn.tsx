@@ -20,10 +20,21 @@ export default function FadeIn({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const el = ref.current;
     if (!el) return;
+
+    // Immediate visibility check for elements already in viewport
+    const rect = el.getBoundingClientRect();
+    const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inViewport) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -51,9 +62,9 @@ export default function FadeIn({
       ref={ref}
       className={className}
       style={{
-        opacity: isVisible ? undefined : 0,
+        opacity: mounted && !isVisible ? 0 : undefined,
         animation: isVisible
-          ? `${animName} 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms forwards`
+          ? `${animName} 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms both`
           : "none",
       }}
     >

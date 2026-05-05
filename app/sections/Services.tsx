@@ -59,30 +59,24 @@ export default function Services() {
           <HairlineDivider variant="aurora" draw />
         </FadeIn>
 
-        <ul role="list" className="divide-y divide-hairline">
+        <ul role="list" className="space-y-2">
           {services.map((service, i) => (
             <FadeIn key={service.title} delay={120 + i * 60}>
               <li>
                 <Link
                   href="/onze-diensten"
-                  className="group grid grid-cols-[80px_1fr_auto] sm:grid-cols-[120px_1fr_auto] items-center gap-5 lg:gap-8 py-6 lg:py-7 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+                  className="group grid grid-cols-[80px_1fr_auto] sm:grid-cols-[120px_1fr_auto] items-center gap-5 lg:gap-8 py-5 lg:py-6 px-4 -mx-4 rounded-xl hover:bg-mist/50 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-xl"
                   aria-label={`Lees meer over ${service.title}`}
                 >
                   {/* Left: index + image preview */}
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <span
-                      className="text-[0.625rem] font-bold uppercase tracking-[0.22em] text-muted font-sans tabular shrink-0"
-                      aria-hidden="true"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 overflow-hidden border border-hairline rounded-sm">
+                    <div className="relative w-14 h-14 sm:w-18 sm:h-18 overflow-hidden border border-hairline rounded-full image-hover-tint">
                       <Image
                         src={service.image}
                         alt=""
                         fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        sizes="64px"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                        sizes="72px"
                         aria-hidden="true"
                       />
                     </div>
@@ -90,9 +84,16 @@ export default function Services() {
 
                   {/* Middle: title + summary */}
                   <div className="min-w-0">
-                    <h3 className="font-display font-bold uppercase leading-tight tracking-[-0.005em] text-ink text-[1.5rem] sm:text-[1.875rem] mb-1 transition-colors duration-200 group-hover:text-brand">
-                      {service.title}
-                    </h3>
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="font-display font-bold uppercase leading-tight tracking-[-0.005em] text-ink text-[1.5rem] sm:text-[1.875rem] transition-colors duration-200 group-hover:text-brand">
+                        {service.title}
+                      </h3>
+                      {service.title === "Warmtepompen" && (
+                        <span className="inline-flex items-center px-2 py-0.5 bg-brand/10 text-brand text-[0.5625rem] font-bold uppercase tracking-[0.16em] font-sans rounded-full">
+                          Populair
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[0.875rem] sm:text-[0.9375rem] text-copy/75 font-sans leading-snug max-w-[60ch] line-clamp-1 sm:line-clamp-none">
                       {service.summary}
                     </p>

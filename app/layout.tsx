@@ -3,8 +3,10 @@ import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import FooterCTA from "./components/FooterCTA";
 import ScrollToTop from "./components/ScrollToTop";
 import ReadingProgress from "./components/ReadingProgress";
+import StickyMobileBar from "./components/StickyMobileBar";
 import JsonLd from "./components/JsonLd";
 import { localBusinessSchema, organizationSchema, websiteSchema } from "@/lib/data";
 
@@ -29,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | MMC Techniek B.V.",
   },
   description:
-    "MMC Techniek BV uit Oudewater: de specialist in warmtepompen, zonnepanelen, airco, vloerverwarming, liften en complete verduurzaming. Bel 06 3431 1225.",
+    "MMC Techniek B.V. uit Oudewater: de specialist in warmtepompen, zonnepanelen, airco, vloerverwarming, liften en complete verduurzaming. Bel 06 3431 1225.",
   keywords: [
     "warmtepomp",
     "zonnepanelen",
@@ -114,7 +116,9 @@ export default function RootLayout({
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
+        <FooterCTA />
         <Footer />
+        <StickyMobileBar />
         <ScrollToTop />
       </body>
     </html>

@@ -123,6 +123,27 @@
 .animate-shelf-rise   { animation: shelf-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   Image hover tint — adds brand overlay on hover, matching logo theme
+   ───────────────────────────────────────────────────────────────────── */
+.image-hover-tint {
+  position: relative;
+  isolation: isolate;
+}
+.image-hover-tint::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-brand);
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+.image-hover-tint:hover::after {
+  opacity: 0.15;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Aurora hairline — 1px iridescent rule. Use sparingly: top of a Shelf,
    bottom of a section, or under a focus ring. Never on text.
    ───────────────────────────────────────────────────────────────────── */
@@ -177,7 +198,7 @@
 .shelf {
   background: var(--color-mist);
   border: 1px solid var(--color-hairline);
-  border-radius: 0;
+  border-radius: 12px;
 }
 .shelf-soft {
   background: linear-gradient(
@@ -186,7 +207,7 @@
     color-mix(in oklch, var(--color-mist) 88%, var(--color-base)) 100%
   );
   border: 1px solid var(--color-hairline);
-  border-radius: 0;
+  border-radius: 12px;
 }
 
 /* Instrument dot — the 4px brand mark used in nav and overlines */
@@ -254,17 +275,33 @@ p { text-wrap: pretty; }
 .skip-to-content:focus { top: 0; }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Scrollbar (webkit) — narrow, brand thumb
-   ───────────────────────────────────────────────────────────────────── */
+    Scrollbar (webkit) — narrow, brand thumb
+    ───────────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-concrete); }
-::-webkit-scrollbar-thumb { background: var(--color-brand); border-radius: 0; }
+::-webkit-scrollbar-thumb { background: var(--color-brand); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-brand-deep); }
 
 /* ─────────────────────────────────────────────────────────────────────────
    Marquee track helper — prevents wrap on transformed content
    ───────────────────────────────────────────────────────────────────── */
 .animate-marquee { min-width: max-content; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Form states
+   ───────────────────────────────────────────────────────────────────── */
+.form-success {
+  background: var(--color-mist);
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+}
+.form-error {
+  color: oklch(50% 0.18 25);
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
 
 /* ─────────────────────────────────────────────────────────────────────────
    Misc utilities
