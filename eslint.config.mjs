@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Legacy WordPress export — not part of the Next.js app.
+    "old_site/**",
+    // Skill scripts are tooling, linted by their own toolchain.
+    ".agents/**",
   ]),
 ]);
 

@@ -1,4 +1,5 @@
 import FadeIn from "../components/FadeIn";
+import InstrumentDot from "../components/InstrumentDot";
 import { testimonials } from "@/lib/data";
 
 const StarRow = ({ count, size = "sm" }: { count: number; size?: "sm" | "lg" }) => (
@@ -31,37 +32,35 @@ export default function Testimonials() {
     >
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
 
-        {/* Header */}
         <FadeIn>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-16 lg:mb-20">
+          <div className="grid lg:grid-cols-[1fr_auto] items-end gap-6 mb-14 lg:mb-20">
             <div>
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.13em] text-muted font-sans mb-3">
+              <p className="inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted font-sans mb-4">
+                <InstrumentDot size={4} />
                 Wat klanten zeggen
               </p>
               <h2
                 id="testimonials-heading"
-                className="font-display font-bold uppercase leading-[0.9] tracking-tight text-ink"
-                style={{ fontSize: "clamp(2rem, 4.5vw, 3.8rem)" }}
+                className="font-display font-bold uppercase leading-[0.92] tracking-[-0.012em] text-ink"
+                style={{ fontSize: "clamp(2.25rem, 4.5vw, 3.75rem)" }}
               >
-                Vertrouwd door onze<br />
-                <span className="text-brand">klanten</span>
+                Vertrouwd door<br />
+                <span className="text-brand">onze klanten</span>
               </h2>
             </div>
-            <p className="text-[0.8125rem] font-semibold text-muted font-sans shrink-0">
-              <span className="text-brand">★</span> 4,9 / 5 op Google
+            <p className="text-[0.8125rem] font-semibold text-muted font-sans tabular shrink-0">
+              <span className="text-brand">★</span>&nbsp;4,9 / 5 op Google
             </p>
           </div>
         </FadeIn>
 
-        {/* Asymmetric layout: featured left, compact stack right */}
         <div className="grid lg:grid-cols-[1fr_1px_1fr] gap-0">
 
-          {/* Featured quote — left column */}
+          {/* Featured */}
           <FadeIn delay={0} direction="scale">
             <article className="lg:pr-16 pb-10 lg:pb-0">
               <StarRow count={featured.stars} size="lg" />
 
-              {/* Large decorative quotation mark */}
               <div
                 className="font-display font-bold text-brand leading-none select-none mb-4"
                 style={{ fontSize: "clamp(4rem, 8vw, 7rem)", lineHeight: 0.8 }}
@@ -72,13 +71,13 @@ export default function Testimonials() {
 
               <blockquote>
                 <p
-                  className="text-ink font-sans leading-[1.65] mb-8"
+                  className="text-ink font-sans leading-[1.65] mb-8 max-w-[44ch]"
                   style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.1875rem)" }}
                 >
                   {featured.text}
                 </p>
-                <footer className="border-t border-concrete pt-6">
-                  <p className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-ink font-display">
+                <footer className="border-t border-hairline pt-6">
+                  <p className="text-[0.75rem] font-bold uppercase tracking-[0.16em] text-ink font-display">
                     {featured.name}
                   </p>
                   <p className="text-[0.6875rem] text-muted font-sans mt-1">{featured.role}</p>
@@ -87,21 +86,19 @@ export default function Testimonials() {
             </article>
           </FadeIn>
 
-          {/* Vertical divider */}
-          <div className="hidden lg:block bg-concrete" aria-hidden="true" />
+          <div className="hidden lg:block bg-hairline" aria-hidden="true" />
 
-          {/* Compact stack — right column */}
-          <div className="lg:pl-16 flex flex-col divide-y divide-concrete border-t border-concrete lg:border-t-0">
+          <div className="lg:pl-16 flex flex-col divide-y divide-hairline border-t border-hairline lg:border-t-0">
             {rest.map((t, i) => (
               <FadeIn key={t.name} delay={(i + 1) * 80} direction="right">
                 <article className="py-8 first:pt-0 lg:first:pt-0">
                   <StarRow count={t.stars} size="sm" />
                   <blockquote>
-                    <p className="text-[0.9375rem] leading-[1.7] text-copy font-sans mb-4">
+                    <p className="text-[0.9375rem] leading-[1.7] text-copy font-sans mb-4 max-w-[60ch]">
                       &ldquo;{t.text}&rdquo;
                     </p>
                     <footer>
-                      <p className="text-[0.75rem] font-bold uppercase tracking-[0.08em] text-ink font-display">
+                      <p className="text-[0.75rem] font-bold uppercase tracking-[0.16em] text-ink font-display">
                         {t.name}
                       </p>
                       <p className="text-[0.6875rem] text-muted font-sans mt-0.5">{t.role}</p>

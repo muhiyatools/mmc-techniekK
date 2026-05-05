@@ -1,14 +1,39 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   MMC Techniek tokens — daylight visionOS for a Dutch installateur.
+   Every neutral tinted toward hue 240. No #000, no #fff. No dark mode.
+   ───────────────────────────────────────────────────────────────────── */
 @theme inline {
-  /* Palette — OKLCH, every neutral tinted toward hue 240 */
-  --color-base:        oklch(97% 0.006 240);
-  --color-concrete:    oklch(91% 0.012 240);
-  --color-muted:       oklch(55% 0.02  240);
-  --color-copy:        oklch(26% 0.02  240);
-  --color-ink:         oklch(14% 0.012 240);
-  --color-brand:       oklch(60% 0.18  250);
-  --color-brand-deep:  oklch(38% 0.18  250);
+  /*
+    Surface ladder, lightest → deepest. Names map to roles in DESIGN.md:
+      base      = Void      (page background, cool pearled off-white)
+      concrete  = Pearl     (section alternate, denser pearl)
+      mist      = Mist      (layered shelf surface, sits above Pearl)
+      hairline  = Hairline  (1px borders + dividers, tinted, never grey)
+      muted     = Muted     (secondary text, technical labels)
+      copy      = Copy      (body text)
+      ink       = Ink       (max contrast, primary buttons, never #000)
+  */
+  --color-base:        oklch(98% 0.004 240);
+  --color-concrete:    oklch(95% 0.010 240);
+  --color-mist:        oklch(90% 0.018 240);
+  --color-hairline:    oklch(82% 0.022 240);
+  --color-muted:       oklch(55% 0.025 240);
+  --color-copy:        oklch(26% 0.025 240);
+  --color-ink:         oklch(14% 0.014 240);
+
+  /* Brand: Committed logo blue, carries 30–50% of the surface */
+  --color-brand:       oklch(60% 0.18 250);
+  --color-brand-deep:  oklch(38% 0.18 250);
+
+  /*
+    Aurora — cool prism stops used ONLY as 1–2px hairline gradients
+    and small accent dots. Never as text fill, never as default surface.
+    Translates visionOS iridescence into the daylight palette.
+  */
+  --color-aurora-1:    oklch(78% 0.10 220);
+  --color-aurora-2:    oklch(80% 0.09 290);
 
   /* Fonts */
   --font-sans:    var(--font-barlow);
@@ -18,28 +43,35 @@
   --color-background: var(--color-base);
   --color-foreground: var(--color-ink);
 
-  /* Type scale in rem — avoids px lock-in, respects user zoom */
-  --text-micro:   0.625rem;   /* 10px — decorative labels only */
-  --text-label:   0.6875rem;  /* 11px — all uppercase overlines  */
-  --text-caption: 0.75rem;    /* 12px — smallest functional text  */
-  --text-sm:      0.8125rem;  /* 13px — secondary body            */
-  --text-base:    1rem;       /* 16px — body default              */
-  --text-lg:      1.0625rem;  /* 17px — lead body                 */
+  /* Type scale (rem). Display sizes use clamp() at the call site. */
+  --text-micro:   0.625rem;   /* 10px — decorative all-caps labels      */
+  --text-label:   0.6875rem;  /* 11px — primary all-caps overlines      */
+  --text-caption: 0.75rem;    /* 12px — smallest functional text        */
+  --text-sm:      0.8125rem;  /* 13px — secondary body                  */
+  --text-base:    1rem;       /* 16px — body default                    */
+  --text-lg:      1.0625rem;  /* 17px — lead body                       */
 }
 
-/* ---- Keyframes ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Keyframes
+   ───────────────────────────────────────────────────────────────────── */
 @keyframes reveal {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes reveal-scale {
-  from { opacity: 0; transform: scale(0.97); }
+  from { opacity: 0; transform: scale(0.985); }
   to   { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(24px); }
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-20px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
@@ -48,12 +80,7 @@
   to   { transform: translateX(-50%); }
 }
 
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-/* Hero-specific */
+/* Hero word-lift — clipped reveal of each word from below the baseline */
 @keyframes word-lift {
   from { transform: translateY(115%); }
   to   { transform: translateY(0%); }
@@ -64,19 +91,117 @@
   to   { opacity: 1; }
 }
 
+/* Hairline draw-in — used by HairlineDivider and section accent stripes */
 @keyframes line-grow {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
 
-/* ---- Animation utilities ---- */
-.animate-reveal       { animation: reveal        0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-reveal-scale { animation: reveal-scale  0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-slide-right  { animation: slide-in-right 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-slide-left   { animation: slide-in-left  0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-marquee      { animation: marquee 40s linear infinite; }
+/*
+  Aurora drift — slow conic shift on iridescent hairlines.
+  Subtle, slow, never feels like a screensaver.
+*/
+@keyframes aurora-drift {
+  0%   { background-position:   0% 50%; }
+  100% { background-position: 200% 50%; }
+}
 
-/* ---- Base ---- */
+/* Slow ambient lift on a hero shelf (depth without parallax) */
+@keyframes shelf-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Animation utilities
+   ───────────────────────────────────────────────────────────────────── */
+.animate-reveal       { animation: reveal        0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-reveal-scale { animation: reveal-scale  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-right  { animation: slide-in-right 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-left   { animation: slide-in-left  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-marquee      { animation: marquee 40s linear infinite; }
+.animate-shelf-rise   { animation: shelf-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Aurora hairline — 1px iridescent rule. Use sparingly: top of a Shelf,
+   bottom of a section, or under a focus ring. Never on text.
+   ───────────────────────────────────────────────────────────────────── */
+.aurora-hairline {
+  position: relative;
+  isolation: isolate;
+}
+.aurora-hairline::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-aurora-1) 28%,
+    var(--color-brand)    50%,
+    var(--color-aurora-2) 72%,
+    transparent           100%
+  );
+  background-size: 200% 100%;
+  animation: aurora-drift 18s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Inverse: aurora rule pinned to the bottom edge */
+.aurora-hairline-bottom::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-aurora-1) 28%,
+    var(--color-brand)    50%,
+    var(--color-aurora-2) 72%,
+    transparent           100%
+  );
+  background-size: 200% 100%;
+  animation: aurora-drift 18s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Shelf — the layered Mist surface. Replaces "card" in the rare places
+   where a discrete surface earns its keep (hero instrument panel,
+   contact form, cert plates). Hairline border, no shadow.
+   ───────────────────────────────────────────────────────────────────── */
+.shelf {
+  background: var(--color-mist);
+  border: 1px solid var(--color-hairline);
+  border-radius: 0;
+}
+.shelf-soft {
+  background: linear-gradient(
+    180deg,
+    var(--color-mist) 0%,
+    color-mix(in oklch, var(--color-mist) 88%, var(--color-base)) 100%
+  );
+  border: 1px solid var(--color-hairline);
+  border-radius: 0;
+}
+
+/* Instrument dot — the 4px brand mark used in nav and overlines */
+.instrument-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-brand);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-brand) 18%, transparent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Base typography
+   ───────────────────────────────────────────────────────────────────── */
 html { scroll-behavior: smooth; }
 
 body {
@@ -84,36 +209,36 @@ body {
   color:                   var(--color-copy);
   font-family:             var(--font-barlow), system-ui, sans-serif;
   font-size:               1rem;
-  line-height:             1.72;
+  line-height:             1.7;
   -webkit-font-smoothing:  antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings:   "kern" 1, "liga" 1;
+  font-feature-settings:   "kern" 1, "liga" 1, "tnum" 0;
   font-kerning:            normal;
 }
 
-/* Headings — balance text wrapping, prevent orphaned words */
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
   font-feature-settings: "kern" 1;
 }
 
-/* Body text — prettier line breaks */
-p {
-  text-wrap: pretty;
-}
+p { text-wrap: pretty; }
 
 ::selection {
   background: var(--color-brand);
   color:      var(--color-base);
 }
 
-/* ---- Focus ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Focus
+   ───────────────────────────────────────────────────────────────────── */
 :focus-visible {
   outline:        2px solid var(--color-brand);
   outline-offset: 3px;
 }
 
-/* ---- Skip to content ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Skip-to-content
+   ───────────────────────────────────────────────────────────────────── */
 .skip-to-content {
   position:    absolute;
   top:         -40px;
@@ -128,17 +253,22 @@ p {
 }
 .skip-to-content:focus { top: 0; }
 
-/* ---- Scrollbar ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Scrollbar (webkit) — narrow, brand thumb
+   ───────────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-concrete); }
 ::-webkit-scrollbar-thumb { background: var(--color-brand); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-brand-deep); }
 
-/* ---- Marquee (general) ---- */
-/* min-width: max-content prevents the track from wrapping */
+/* ─────────────────────────────────────────────────────────────────────────
+   Marquee track helper — prevents wrap on transformed content
+   ───────────────────────────────────────────────────────────────────── */
 .animate-marquee { min-width: max-content; }
 
-/* ---- Utilities ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Misc utilities
+   ───────────────────────────────────────────────────────────────────── */
 .line-clamp-1 {
   overflow: hidden;
   display: -webkit-box;
@@ -146,7 +276,11 @@ p {
   -webkit-line-clamp: 1;
 }
 
-/* ---- Swiper ---- */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Swiper overrides — brand pagination dots
+   ───────────────────────────────────────────────────────────────────── */
 .swiper-pagination-bullet {
   background: var(--color-muted) !important;
   opacity: 0.35 !important;
@@ -161,12 +295,14 @@ p {
   border-radius: 3px !important;
 }
 
-/* ---- Reduced motion ---- */
+/* ─────────────────────────────────────────────────────────────────────────
+   Reduced motion — kill all decorative motion, keep functional transitions
+   ───────────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration:       0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration:      0.01ms !important;
-    scroll-behavior:          auto !important;
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1     !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto  !important;
   }
 }

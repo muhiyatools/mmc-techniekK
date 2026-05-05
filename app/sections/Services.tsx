@@ -1,128 +1,132 @@
 import Image from "next/image";
 import Link from "next/link";
 import FadeIn from "../components/FadeIn";
+import HairlineDivider from "../components/HairlineDivider";
+import InstrumentDot from "../components/InstrumentDot";
 import { services } from "@/lib/data";
 
+/*
+ * Services on the home page — a typographic ledger.
+ *
+ * Each row is a hairline-bordered surface containing:
+ *   ▸ a small index / image preview on the left
+ *   ▸ title + summary in the middle
+ *   ▸ tags + arrow on the right
+ *
+ * Rows alternate slightly in height. No identical card grid — this is
+ * a read like an index, not a tile wall.
+ */
 export default function Services() {
   return (
-    <section className="bg-base pb-20 lg:pb-28" aria-labelledby="services-heading">
+    <section
+      className="relative bg-base py-24 lg:py-32"
+      aria-labelledby="services-heading"
+    >
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
 
-      {/* Section header */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 pt-20 lg:pt-28 pb-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        {/* Header */}
+        <div className="grid lg:grid-cols-[1fr_auto] items-end gap-6 mb-14 lg:mb-20">
           <FadeIn>
-            <p className="text-[0.6875rem] font-bold uppercase tracking-[0.13em] text-muted font-sans mb-3">
+            <p className="inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted font-sans mb-4">
+              <InstrumentDot size={4} />
               Onze diensten
             </p>
             <h2
               id="services-heading"
-              className="font-display font-bold uppercase leading-[0.9] tracking-tight text-ink"
-              style={{ fontSize: "clamp(2rem, 4.5vw, 3.8rem)" }}
+              className="font-display font-bold uppercase leading-[0.92] tracking-[-0.012em] text-ink"
+              style={{ fontSize: "clamp(2.25rem, 4.5vw, 3.75rem)" }}
             >
-              Alles voor een
-              <br />
+              Alles voor een<br />
               <span className="text-brand">energiezuinige woning</span>
             </h2>
           </FadeIn>
           <FadeIn delay={80}>
             <Link
               href="/onze-diensten"
-              className="inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted font-sans hover:text-ink transition-colors duration-200 shrink-0 focus:outline-none focus:ring-2 focus:ring-brand"
+              className="group inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-muted font-sans hover:text-ink transition-colors duration-200 shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
             >
               Bekijk alle diensten
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <span
                 aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
+                className="block w-[5px] h-[5px] rounded-full bg-brand transition-transform duration-200 group-hover:translate-x-0.5"
+              />
             </Link>
           </FadeIn>
         </div>
-      </div>
 
-      {/* Editorial image grid */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-          style={{ gridAutoRows: "260px" }}
-          role="list"
-          aria-label="Diensten overzicht"
-        >
-          {services.map((service, i) => {
-            const isWide = i === 0 || i === 6;
-            return (
-              <FadeIn
-                key={service.title}
-                delay={i * 40}
-                direction="scale"
-                className={isWide ? "lg:col-span-2" : ""}
-              >
+        {/* Service ledger */}
+        <FadeIn delay={120}>
+          <HairlineDivider variant="aurora" draw />
+        </FadeIn>
+
+        <ul role="list" className="divide-y divide-hairline">
+          {services.map((service, i) => (
+            <FadeIn key={service.title} delay={120 + i * 60}>
+              <li>
                 <Link
                   href="/onze-diensten"
-                  className="group relative block overflow-hidden w-full h-full focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-                  aria-label={service.title}
-                  role="listitem"
+                  className="group grid grid-cols-[80px_1fr_auto] sm:grid-cols-[120px_1fr_auto] items-center gap-5 lg:gap-8 py-6 lg:py-7 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+                  aria-label={`Lees meer over ${service.title}`}
                 >
-                  {/* Full-bleed background image */}
-                  <Image
-                    src={service.image}
-                    alt=""
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    aria-hidden="true"
-                  />
-
-                  {/* Persistent dark overlay */}
-                  <div className="absolute inset-0 bg-ink/50 group-hover:bg-ink/65 transition-colors duration-400" />
-
-                  {/* Content anchored to bottom */}
-                  <div className="absolute inset-x-0 bottom-0 p-6">
-                    {/* Index number */}
+                  {/* Left: index + image preview */}
+                  <div className="flex items-center gap-3 sm:gap-4">
                     <span
-                      className="block text-[0.5625rem] font-bold uppercase tracking-[0.16em] text-base/50 font-sans mb-1.5 tabular-nums"
+                      className="text-[0.625rem] font-bold uppercase tracking-[0.22em] text-muted font-sans tabular shrink-0"
                       aria-hidden="true"
                     >
-                      {String(i + 1).padStart(2, "0")}.
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    <h3
-                      className="font-display font-bold uppercase leading-none tracking-tight text-base"
-                      style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}
-                    >
+                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 overflow-hidden border border-hairline rounded-sm">
+                      <Image
+                        src={service.image}
+                        alt=""
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        sizes="64px"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Middle: title + summary */}
+                  <div className="min-w-0">
+                    <h3 className="font-display font-bold uppercase leading-tight tracking-[-0.005em] text-ink text-[1.5rem] sm:text-[1.875rem] mb-1 transition-colors duration-200 group-hover:text-brand">
                       {service.title}
                     </h3>
-                    {/* Description — slides in on hover */}
-                    <p className="text-[0.8125rem] leading-snug text-base/75 font-sans mt-2 max-h-0 overflow-hidden opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-300">
-                      {service.description}
+                    <p className="text-[0.875rem] sm:text-[0.9375rem] text-copy/75 font-sans leading-snug max-w-[60ch] line-clamp-1 sm:line-clamp-none">
+                      {service.summary}
                     </p>
                   </div>
 
-                  {/* Arrow in top-right corner */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {/* Right: arrow indicator */}
+                  <div
+                    aria-hidden="true"
+                    className="flex items-center gap-1 text-muted group-hover:text-brand transition-colors duration-200"
+                  >
+                    <span className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] hidden sm:inline">
+                      Lees meer
+                    </span>
                     <svg
-                      className="w-4 h-4 text-base translate-x-0 group-hover:translate-x-0.5 transition-transform duration-200"
+                      className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
-                      aria-hidden="true"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.75}
+                        d="M5 12h14m0 0l-5-5m5 5l-5 5"
+                      />
                     </svg>
                   </div>
                 </Link>
-              </FadeIn>
-            );
-          })}
-        </div>
+              </li>
+            </FadeIn>
+          ))}
+        </ul>
+
+        <HairlineDivider variant="hairline" />
       </div>
     </section>
   );

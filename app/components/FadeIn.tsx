@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/*
+ * Viewport entrance reveal. Plays once when the element crosses
+ * 8% in. Stagger between siblings stays 60ms — anything faster
+ * reads as a flash, anything slower reads as drag.
+ */
 export default function FadeIn({
   children,
   delay = 0,
@@ -26,7 +31,7 @@ export default function FadeIn({
           observer.unobserve(el);
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -36,10 +41,10 @@ export default function FadeIn({
     direction === "scale"
       ? "reveal-scale"
       : direction === "right"
-      ? "slide-in-right"
-      : direction === "left"
-      ? "slide-in-left"
-      : "reveal";
+        ? "slide-in-right"
+        : direction === "left"
+          ? "slide-in-left"
+          : "reveal";
 
   return (
     <div
