@@ -1,345 +1,151 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────────────────
-   MMC Techniek tokens — daylight visionOS for a Dutch installateur.
-   Every neutral tinted toward hue 240. No #000, no #fff. No dark mode.
-   ───────────────────────────────────────────────────────────────────── */
 @theme inline {
-  /*
-    Surface ladder, lightest → deepest. Names map to roles in DESIGN.md:
-      base      = Void      (page background, cool pearled off-white)
-      concrete  = Pearl     (section alternate, denser pearl)
-      mist      = Mist      (layered shelf surface, sits above Pearl)
-      hairline  = Hairline  (1px borders + dividers, tinted, never grey)
-      muted     = Muted     (secondary text, technical labels)
-      copy      = Copy      (body text)
-      ink       = Ink       (max contrast, primary buttons, never #000)
-  */
-  --color-base:        oklch(98% 0.004 240);
-  --color-concrete:    oklch(95% 0.010 240);
-  --color-mist:        oklch(90% 0.018 240);
-  --color-hairline:    oklch(82% 0.022 240);
-  --color-muted:       oklch(55% 0.025 240);
-  --color-copy:        oklch(26% 0.025 240);
-  --color-ink:         oklch(14% 0.014 240);
+  --color-base:        #fafbfc;
+  --color-surface:     #f3f4f6;
+  --color-elevated:    #ffffff;
+  --color-border:      #e8eaed;
+  --color-muted:       #6b7280;
+  --color-copy:        #1f2937;
+  --color-ink:         #0b0f19;
 
-  /* Brand: Committed logo blue, carries 30–50% of the surface */
-  --color-brand:       oklch(60% 0.18 250);
-  --color-brand-deep:  oklch(38% 0.18 250);
+  --color-brand:       #2563eb;
+  --color-brand-dark:  #1d4ed8;
 
-  /*
-    Aurora — cool prism stops used ONLY as 1–2px hairline gradients
-    and small accent dots. Never as text fill, never as default surface.
-    Translates visionOS iridescence into the daylight palette.
-  */
-  --color-aurora-1:    oklch(78% 0.10 220);
-  --color-aurora-2:    oklch(80% 0.09 290);
-
-  /* Fonts */
-  --font-sans:    var(--font-barlow);
-  --font-display: var(--font-barlow-condensed);
-
-  /* Semantic aliases */
-  --color-background: var(--color-base);
-  --color-foreground: var(--color-ink);
-
-  /* Type scale (rem). Display sizes use clamp() at the call site. */
-  --text-micro:   0.625rem;   /* 10px — decorative all-caps labels      */
-  --text-label:   0.6875rem;  /* 11px — primary all-caps overlines      */
-  --text-caption: 0.75rem;    /* 12px — smallest functional text        */
-  --text-sm:      0.8125rem;  /* 13px — secondary body                  */
-  --text-base:    1rem;       /* 16px — body default                    */
-  --text-lg:      1.0625rem;  /* 17px — lead body                       */
+  --font-sans:    var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Keyframes
-   ───────────────────────────────────────────────────────────────────── */
-@keyframes reveal {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+html {
+  scroll-behavior: smooth;
 }
-
-@keyframes reveal-scale {
-  from { opacity: 0; transform: scale(0.985); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* Hero word-lift — clipped reveal of each word from below the baseline */
-@keyframes word-lift {
-  from { transform: translateY(115%); }
-  to   { transform: translateY(0%); }
-}
-
-@keyframes hero-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* Hairline draw-in — used by HairlineDivider and section accent stripes */
-@keyframes line-grow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-/*
-  Aurora drift — slow conic shift on iridescent hairlines.
-  Subtle, slow, never feels like a screensaver.
-*/
-@keyframes aurora-drift {
-  0%   { background-position:   0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-
-/* Slow ambient lift on a hero shelf (depth without parallax) */
-@keyframes shelf-rise {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Animation utilities
-   ───────────────────────────────────────────────────────────────────── */
-.animate-reveal       { animation: reveal        0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-reveal-scale { animation: reveal-scale  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-slide-right  { animation: slide-in-right 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-slide-left   { animation: slide-in-left  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.animate-marquee      { animation: marquee 40s linear infinite; }
-.animate-shelf-rise   { animation: shelf-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Image hover tint — adds brand overlay on hover, matching logo theme
-   ───────────────────────────────────────────────────────────────────── */
-.image-hover-tint {
-  position: relative;
-  isolation: isolate;
-}
-.image-hover-tint::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--color-brand);
-  opacity: 0;
-  transition: opacity 0.4s ease-out;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-.image-hover-tint:hover::after {
-  opacity: 0.15;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Aurora hairline — 1px iridescent rule. Use sparingly: top of a Shelf,
-   bottom of a section, or under a focus ring. Never on text.
-   ───────────────────────────────────────────────────────────────────── */
-.aurora-hairline {
-  position: relative;
-  isolation: isolate;
-}
-.aurora-hairline::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--color-aurora-1) 28%,
-    var(--color-brand)    50%,
-    var(--color-aurora-2) 72%,
-    transparent           100%
-  );
-  background-size: 200% 100%;
-  animation: aurora-drift 18s linear infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Inverse: aurora rule pinned to the bottom edge */
-.aurora-hairline-bottom::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--color-aurora-1) 28%,
-    var(--color-brand)    50%,
-    var(--color-aurora-2) 72%,
-    transparent           100%
-  );
-  background-size: 200% 100%;
-  animation: aurora-drift 18s linear infinite;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Shelf — the layered Mist surface. Replaces "card" in the rare places
-   where a discrete surface earns its keep (hero instrument panel,
-   contact form, cert plates). Hairline border, no shadow.
-   ───────────────────────────────────────────────────────────────────── */
-.shelf {
-  background: var(--color-mist);
-  border: 1px solid var(--color-hairline);
-  border-radius: 12px;
-}
-.shelf-soft {
-  background: linear-gradient(
-    180deg,
-    var(--color-mist) 0%,
-    color-mix(in oklch, var(--color-mist) 88%, var(--color-base)) 100%
-  );
-  border: 1px solid var(--color-hairline);
-  border-radius: 12px;
-}
-
-/* Instrument dot — the 4px brand mark used in nav and overlines */
-.instrument-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--color-brand);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-brand) 18%, transparent);
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Base typography
-   ───────────────────────────────────────────────────────────────────── */
-html { scroll-behavior: smooth; }
 
 body {
-  background:              var(--color-base);
-  color:                   var(--color-copy);
-  font-family:             var(--font-barlow), system-ui, sans-serif;
-  font-size:               1rem;
-  line-height:             1.7;
-  -webkit-font-smoothing:  antialiased;
+  background: var(--color-base);
+  color: var(--color-copy);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings:   "kern" 1, "liga" 1, "tnum" 0;
-  font-kerning:            normal;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
-  font-feature-settings: "kern" 1;
+  color: var(--color-ink);
 }
 
 p { text-wrap: pretty; }
 
 ::selection {
   background: var(--color-brand);
-  color:      var(--color-base);
+  color: #ffffff;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Focus
-   ───────────────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline:        2px solid var(--color-brand);
+  outline: 2px solid var(--color-brand);
   outline-offset: 3px;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Skip-to-content
-   ───────────────────────────────────────────────────────────────────── */
-.skip-to-content {
-  position:    absolute;
-  top:         -40px;
-  left:        0;
-  background:  var(--color-ink);
-  color:       var(--color-base);
-  padding:     0.5rem 1rem;
-  z-index:     100;
-  transition:  top 0.2s;
-  font-size:   0.875rem;
-  font-weight: 600;
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+/* ── Reveal animation classes ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.skip-to-content:focus { top: 0; }
-
-/* ─────────────────────────────────────────────────────────────────────────
-    Scrollbar (webkit) — narrow, brand thumb
-    ───────────────────────────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 5px; }
-::-webkit-scrollbar-track { background: var(--color-concrete); }
-::-webkit-scrollbar-thumb { background: var(--color-brand); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-brand-deep); }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Marquee track helper — prevents wrap on transformed content
-   ───────────────────────────────────────────────────────────────────── */
-.animate-marquee { min-width: max-content; }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Form states
-   ───────────────────────────────────────────────────────────────────── */
-.form-success {
-  background: var(--color-mist);
-  border: 1px solid var(--color-hairline);
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-}
-.form-error {
-  color: oklch(50% 0.18 25);
-  font-size: 0.8125rem;
-  margin-top: 0.5rem;
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Misc utilities
-   ───────────────────────────────────────────────────────────────────── */
-.line-clamp-1 {
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger delays */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+.delay-600 { transition-delay: 0.6s; }
+
+/* ── Image hover ── */
+.img-hover {
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
+}
+.img-hover img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.img-hover:hover img {
+  transform: scale(1.04);
 }
 
-.tabular { font-variant-numeric: tabular-nums; }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   Swiper overrides — brand pagination dots
-   ───────────────────────────────────────────────────────────────────── */
-.swiper-pagination-bullet {
-  background: var(--color-muted) !important;
-  opacity: 0.35 !important;
-  width: 7px !important;
-  height: 7px !important;
-  transition: all 0.2s ease;
-}
-.swiper-pagination-bullet-active {
-  background: var(--color-brand) !important;
-  opacity: 1 !important;
-  width: 22px !important;
-  border-radius: 3px !important;
+/* ── Premium grain overlay ── */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Reduced motion — kill all decorative motion, keep functional transitions
-   ───────────────────────────────────────────────────────────────────── */
+/* ── Button press effect ── */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration:        0.01ms !important;
-    animation-iteration-count: 1     !important;
-    transition-duration:       0.01ms !important;
-    scroll-behavior:           auto  !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .reveal-scale, .reveal-left, .reveal-right {
+    opacity: 1;
+    transform: none;
   }
 }
