@@ -11,7 +11,7 @@ export default function FAQPage() {
   return (
     <>
       {/* Page header */}
-      <section className="relative pt-32 pb-16 lg:pb-20 bg-concrete">
+      <section className="relative pt-[70px] lg:pt-[114px] pb-16 lg:pb-20 bg-concrete">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hairline to-transparent" />
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
@@ -65,9 +65,9 @@ export default function FAQPage() {
                         </button>
                         <div
                           className="overflow-hidden transition-all duration-500 ease-out"
-                          style={{ maxHeight: isOpen ? "500px" : "0px", opacity: isOpen ? 1 : 0 }}
+                          style={{ maxHeight: isOpen ? "2000px" : "0px", opacity: isOpen ? 1 : 0 }}
                         >
-                          <p className="text-base leading-relaxed pb-7 px-6" style={{ color: "#334155" }}>
+                          <p className="text-base leading-relaxed pb-7 px-6 text-copy">
                             {item.answer}
                           </p>
                         </div>
@@ -93,11 +93,11 @@ export default function FAQPage() {
                         <div
                           className="overflow-hidden transition-all duration-500 ease-out"
                           style={{
-                            maxHeight: isOpen ? "500px" : "0px",
+                            maxHeight: isOpen ? "2000px" : "0px",
                             opacity: isOpen ? 1 : 0,
                           }}
                         >
-                          <p className="text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10" style={{ color: "#334155" }}>
+                           <p className="text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10 text-copy">
                             {item.answer}
                           </p>
                         </div>
@@ -110,7 +110,7 @@ export default function FAQPage() {
 
             {/* Contact CTA */}
             <Reveal delay={300}>
-              <div className="mt-14 lg:mt-16 p-8 lg:p-10 bg-mist border border-hairline relative">
+              <div className="mt-14 lg:mt-16 p-8 lg:p-10 bg-mist border border-hairline rounded-xl relative">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/50 to-aurora-2" />
                 <h3 className="text-xl font-bold text-ink mb-3">
                   Staat uw vraag er niet bij?

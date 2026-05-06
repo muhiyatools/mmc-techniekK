@@ -3,11 +3,13 @@
 import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { heroMetrics, contactInfo } from "@/lib/data";
+import { heroMetrics, contactInfo, clientLogos } from "@/lib/data";
 import Reveal from "./components/Reveal";
 import Services from "./sections/Services";
 import TrustStrip from "./sections/TrustStrip";
 import FAQSection from "./sections/FAQSection";
+
+const namedClients = clientLogos.filter((c) => c.name !== "Partner");
 
 export default function Home() {
   const imageRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,7 @@ export default function Home() {
   return (
     <>
       {/* Hero — Full-bleed image with floating light shelf */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <section className="relative min-h-screen flex items-center overflow-hidden pt-[70px] lg:pt-[114px]">
         {/* Background */}
         <div ref={imageRef} className="absolute inset-0">
           <Image
@@ -51,21 +53,21 @@ export default function Home() {
             priority
             quality={90}
           />
-          {/* Very subtle left-side scrim for shelf contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/20 via-transparent to-transparent" />
+          {/* Subtle left-side scrim for shelf contrast */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/25 via-transparent to-transparent" />
         </div>
 
         {/* Content */}
         <div className="relative max-w-[1280px] mx-auto px-6 lg:px-10 w-full py-16 lg:py-0">
           <div className="max-w-xl">
             {/* Shelf panel */}
-            <div className="relative bg-mist/90 backdrop-blur-md border border-hairline p-8 lg:p-10">
+            <div className="relative bg-mist/92 backdrop-blur-md border border-hairline p-8 lg:p-10">
               {/* Aurora top stripe */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/50 to-aurora-2" />
 
               <Reveal>
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0 animate-pulse" />
                   <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
                     Oudewater &middot; Sinds 2008
                   </span>
@@ -137,6 +139,50 @@ export default function Home() {
 
       {/* Trust / Why us */}
       <TrustStrip />
+
+      {/* Clients — static grid */}
+      <section className="py-16 lg:py-20 bg-concrete border-y border-hairline">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <Reveal>
+            <div className="flex items-end justify-between gap-4 flex-wrap mb-10">
+              <div>
+                <div className="flex items-center gap-2.5 mb-3">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
+                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                    Onze opdrachtgevers
+                  </span>
+                </div>
+                <h2 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-[1.05] tracking-tight text-ink">
+                  Zij vertrouwen op ons vakmanschap
+                </h2>
+              </div>
+              <p className="text-sm text-muted max-w-xs leading-relaxed">
+                Plus 2500+ tevreden particuliere klanten in Utrecht en omgeving.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Static logo grid — all named clients */}
+          <Reveal delay={100}>
+            <div className="grid grid-cols-3 lg:grid-cols-5 border border-hairline divide-x divide-y lg:divide-y-0 divide-hairline">
+              {namedClients.map((logo) => (
+                <div
+                  key={logo.name}
+                  className="flex items-center justify-center h-[88px] px-8 bg-base hover:bg-brand/4 transition-colors duration-300"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.name}
+                    width={130}
+                    height={52}
+                    className="max-h-10 w-auto object-contain opacity-50 hover:opacity-90 transition-opacity duration-300"
+                  />
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* FAQ preview */}
       <FAQSection />

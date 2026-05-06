@@ -40,7 +40,7 @@ export default function Hero() {
   }, [handleScroll]);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-[70px] lg:pt-[70px]">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-[70px] lg:pt-[114px]">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image

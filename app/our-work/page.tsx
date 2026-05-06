@@ -24,17 +24,17 @@ export default function OurProjectsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative pt-[88px] lg:pt-[118px]">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-24 lg:py-32">
+      <section className="relative pt-[70px] lg:pt-[114px]">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
-              <span className="inline-flex items-center gap-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-muted mb-6">
-                <span className="w-2.5 h-2.5 rounded-full bg-brand" />
+              <span className="inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                 Projecten
               </span>
             </Reveal>
             <Reveal delay={100}>
-              <h1 className="text-[2.75rem] sm:text-[3.5rem] lg:text-[4.5rem] font-bold leading-[1.02] tracking-tight text-ink mb-8">
+              <h1 className="font-display text-[2.75rem] sm:text-[3.5rem] lg:text-[4.5rem] font-extrabold leading-[1.02] tracking-tight text-ink mb-8">
                 Onze Projecten
               </h1>
             </Reveal>
@@ -49,8 +49,8 @@ export default function OurProjectsPage() {
 
       {/* Masonry Grid */}
       <section className="pb-28 lg:pb-36 bg-base">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-5 space-y-5">
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
             {projectImages.map((project, i) => (
               <Reveal key={project.src} delay={i * 60}>
                 <button
@@ -86,40 +86,42 @@ export default function OurProjectsPage() {
       {/* Lightbox */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-ink/95 cursor-zoom-out"
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-ink/95 cursor-zoom-out animate-[fadeIn_200ms_ease-out]"
           onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
         >
           <button
-            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
             onClick={(e) => {
               e.stopPropagation();
               setLightbox(null);
             }}
             aria-label="Sluiten"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <Image
-            src={lightbox.src}
-            alt={lightbox.label}
-            width={1400}
-            height={1000}
-            className="max-w-full max-h-[88vh] w-auto h-auto object-contain rounded-xl"
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div className="animate-[scaleIn_200ms_ease-out]">
+            <Image
+              src={lightbox.src}
+              alt={lightbox.label}
+              width={1400}
+              height={1000}
+              className="max-w-full max-h-[82vh] w-auto h-auto object-contain rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
           <div className="absolute bottom-6 inset-x-0 text-center">
             <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-2">
               {lightbox.category}
             </span>
-            <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">
-              {lightbox.location}
-            </p>
-            <p className="text-white/80 text-base font-semibold mt-1">
+            <p className="text-white font-semibold text-base mt-1">
               {lightbox.label}
+            </p>
+            <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mt-1">
+              {lightbox.location}
             </p>
           </div>
         </div>

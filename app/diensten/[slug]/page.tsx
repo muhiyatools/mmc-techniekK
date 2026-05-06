@@ -40,7 +40,7 @@ export default async function ServicePage({ params }: Props) {
   return (
     <>
       {/* Hero */}
-      <section className="relative pt-[120px] pb-16 lg:pt-[140px] lg:pb-20 overflow-hidden">
+      <section className="relative pt-[70px] pb-16 lg:pt-[114px] lg:pb-20 overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src={service.image}
@@ -52,7 +52,7 @@ export default async function ServicePage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/60 to-ink/40" />
         </div>
 
-        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="relative max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="max-w-2xl">
             <Reveal>
               <Link
@@ -72,7 +72,7 @@ export default async function ServicePage({ params }: Props) {
               </span>
             </Reveal>
             <Reveal delay={200}>
-              <h1 className="text-[2.5rem] sm:text-[3.5rem] lg:text-[4rem] font-bold text-white mb-6 leading-tight">
+              <h1 className="font-display text-[2.5rem] sm:text-[3.5rem] lg:text-[4rem] font-extrabold text-white mb-6 leading-[1.02] tracking-tight">
                 {service.title}
               </h1>
             </Reveal>
@@ -87,13 +87,13 @@ export default async function ServicePage({ params }: Props) {
                   href={`/contact/?service=${service.slug}`}
                   className="px-7 py-3.5 bg-brand text-white text-sm font-semibold rounded-full hover:bg-brand-deep transition-all duration-200"
                 >
-                  Offerte Aanvragen
+                  Offerte aanvragen
                 </Link>
                 <a
                   href={`tel:${contactInfo.phone}`}
                   className="px-7 py-3.5 border border-white/30 text-white text-sm font-semibold rounded-full hover:bg-white/10 transition-colors duration-200"
                 >
-                  Bel Ons
+                  Bel ons
                 </a>
               </div>
             </Reveal>
@@ -104,14 +104,14 @@ export default async function ServicePage({ params }: Props) {
       {/* Products Showcase */}
       {hasProducts && (
         <section className="py-16 lg:py-24 bg-surface">
-          <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <Reveal>
               <div className="mb-8 max-w-xl">
                 <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand" />
                   Producten & Merken
                 </span>
-                <h2 className="text-[2rem] sm:text-[2.5rem] font-bold text-ink mb-3">
+                <h2 className="font-display text-[2rem] sm:text-[2.5rem] font-extrabold text-ink mb-3">
                   Wat wij <span className="text-brand">leveren</span>
                 </h2>
                 <p className="text-muted leading-relaxed">
@@ -236,10 +236,10 @@ export default async function ServicePage({ params }: Props) {
 
       {/* Related Services */}
       <section className="py-14 lg:py-20 bg-base">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
             <div className="mb-10">
-              <h2 className="text-[1.75rem] sm:text-[2rem] font-bold text-ink">
+              <h2 className="font-display text-[1.75rem] sm:text-[2rem] font-extrabold text-ink">
                 Andere <span className="text-brand">diensten</span>
               </h2>
             </div>

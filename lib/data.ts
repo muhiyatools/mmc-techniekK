@@ -11,7 +11,9 @@ export const contactInfo = {
 export const navItems = [
   { label: "Home", href: "/" },
   { label: "Diensten", href: "/#diensten", isHash: true },
+  { label: "Producten", href: "/producten/" },
   { label: "Projecten", href: "/our-work/" },
+  { label: "Over ons", href: "/over-ons/" },
   { label: "FAQ", href: "/veelgestelde-vragen/" },
 ];
 
@@ -23,11 +25,19 @@ export const heroMetrics = [
 
 export type PriceTier = "economy" | "medium" | "premium";
 
+export interface ProductCategory {
+  id: string;
+  label: string;
+}
+
 export interface Product {
   name: string;
   brand: string;
   price: string | null;
+  priceMin: number | null;
+  priceMax: number | null;
   tier: PriceTier;
+  categoryId: string;
   description: string;
   techSpecs: string[];
   image: string;
@@ -55,6 +65,15 @@ export const priceTierColors: Record<PriceTier, string> = {
   medium: "bg-yellow-500",
   premium: "bg-red-500",
 };
+
+export const productCategories: ProductCategory[] = [
+  { id: "airconditioning", label: "Airconditioning" },
+  { id: "zonnepanelen", label: "Zonnepanelen" },
+  { id: "batterijopslag", label: "Batterijopslag" },
+  { id: "warmtepompen", label: "Warmtepompen" },
+  { id: "vloerverwarming", label: "Vloerverwarming" },
+  { id: "meterkast-liften", label: "Meterkast & Liften" },
+];
 
 export const brandImages: Record<string, string> = {
   "LG": "/images/brands/lg.png",
@@ -85,15 +104,18 @@ export const services: Service[] = [
         name: "LG Artcool Gallery",
         brand: "LG",
         price: "€2.800 - €5.000",
+        priceMin: 2800,
+        priceMax: 5000,
         tier: "premium",
-        description: "Design wandmodel met ionisator en WiFi. Ultra-stil met maar 19 dB."
-        , techSpecs: [
+        categoryId: "airconditioning",
+        description: "Design wandmodel met ionisator en WiFi. Ultra-stil met maar 19 dB.",
+        techSpecs: [
           "A+++ energielabel",
           "19 dB geluidsniveau",
           "Ionisator luchtzuivering",
           "WiFi bediening",
           "Dual Inverter Compressor",
-          "Tot 60% energiebesparing"
+          "Tot 60% energiebesparing",
         ],
         image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
       },
@@ -101,7 +123,10 @@ export const services: Service[] = [
         name: "LG Prestige",
         brand: "LG",
         price: "€2.200 - €3.800",
+        priceMin: 2200,
+        priceMax: 3800,
         tier: "medium",
+        categoryId: "airconditioning",
         description: "Slim wandmodel met Dual Inverter. Snel koelen en verwarmen.",
         techSpecs: [
           "A++ energielabel",
@@ -109,7 +134,7 @@ export const services: Service[] = [
           "Dual Inverter Compressor",
           "WiFi bediening",
           "Snelkoelfunctie",
-          "Slaapmodus"
+          "Slaapmodus",
         ],
         image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
       },
@@ -117,7 +142,10 @@ export const services: Service[] = [
         name: "Mitsubishi Electric MSZ-AP",
         brand: "Mitsubishi Electric",
         price: "€2.500 - €4.200",
+        priceMin: 2500,
+        priceMax: 4200,
         tier: "medium",
+        categoryId: "airconditioning",
         description: "Betrouwbaar en stil. Geschikt voor alle ruimtes.",
         techSpecs: [
           "A++ energielabel",
@@ -125,7 +153,7 @@ export const services: Service[] = [
           "3D i-See Sensor",
           "Jet Airflow",
           "Snelle installatie",
-          "5 jaar garantie"
+          "5 jaar garantie",
         ],
         image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
       },
@@ -133,7 +161,10 @@ export const services: Service[] = [
         name: "Mitsubishi Electric MSZ-LN",
         brand: "Mitsubishi Electric",
         price: "€3.200 - €5.500",
+        priceMin: 3200,
+        priceMax: 5500,
         tier: "premium",
+        categoryId: "airconditioning",
         description: "Premium design met plasma quad filter en 3D i-See Sensor.",
         techSpecs: [
           "A+++ energielabel",
@@ -141,7 +172,7 @@ export const services: Service[] = [
           "Plasma Quad Filter",
           "3D i-See Sensor",
           "Natural Colour finish",
-          "7 jaar garantie"
+          "7 jaar garantie",
         ],
         image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
       },
@@ -149,7 +180,10 @@ export const services: Service[] = [
         name: "Daikin Perfera",
         brand: "Daikin",
         price: "€2.800 - €4.500",
+        priceMin: 2800,
+        priceMax: 4500,
         tier: "medium",
+        categoryId: "airconditioning",
         description: "Stil en energiezuinig met Flash Streamer luchtzuivering.",
         techSpecs: [
           "A++ energielabel",
@@ -157,7 +191,7 @@ export const services: Service[] = [
           "Flash Streamer technologie",
           "3D luchtstroom",
           "Vochtigheidsregeling",
-          "Online controller"
+          "Online controller",
         ],
         image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
       },
@@ -165,7 +199,10 @@ export const services: Service[] = [
         name: "Daikin Stylish",
         brand: "Daikin",
         price: "€3.500 - €6.000",
+        priceMin: 3500,
+        priceMax: 6000,
         tier: "premium",
+        categoryId: "airconditioning",
         description: "Design wandmodel met Coanda airflow en zilver-ion filter.",
         techSpecs: [
           "A+++ energielabel",
@@ -173,7 +210,7 @@ export const services: Service[] = [
           "Coanda Airflow",
           "Zilver-ion filter",
           "3D luchtstroom",
-          "Online controller"
+          "Online controller",
         ],
         image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
       },
@@ -192,7 +229,10 @@ export const services: Service[] = [
         name: "Trina Solar Vertex",
         brand: "Trina Solar",
         price: "€4.500 - €7.500",
+        priceMin: 4500,
+        priceMax: 7500,
         tier: "economy",
+        categoryId: "zonnepanelen",
         description: "Betaalbare mono-crystalline panelen met 21% rendement.",
         techSpecs: [
           "21% rendement",
@@ -200,7 +240,7 @@ export const services: Service[] = [
           "25 jaar productgarantie",
           "Half-cut cell technologie",
           "PID-bestendig",
-          "Tot -0.35%/C temperatuurscoefficient"
+          "Tot -0.35%/C temperatuurscoefficient",
         ],
         image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
       },
@@ -208,7 +248,10 @@ export const services: Service[] = [
         name: "Trina Solar Duomax",
         brand: "Trina Solar",
         price: "€5.500 - €9.000",
+        priceMin: 5500,
+        priceMax: 9000,
         tier: "medium",
+        categoryId: "zonnepanelen",
         description: "Dubbelglas panelen met 30 jaar garantie en 22% rendement.",
         techSpecs: [
           "22% rendement",
@@ -216,7 +259,7 @@ export const services: Service[] = [
           "30 jaar productgarantie",
           "Dubbelglas technologie",
           "PID-bestendig",
-          "Hagelbestendig tot 35mm"
+          "Hagelbestendig tot 35mm",
         ],
         image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
       },
@@ -224,7 +267,10 @@ export const services: Service[] = [
         name: "Jinko Solar Tiger Neo",
         brand: "Jinko",
         price: "€5.000 - €8.000",
+        priceMin: 5000,
+        priceMax: 8000,
         tier: "economy",
+        categoryId: "zonnepanelen",
         description: "Betaalbare TOPCon panelen met 22.5% rendement.",
         techSpecs: [
           "22.5% rendement",
@@ -232,7 +278,7 @@ export const services: Service[] = [
           "25 jaar productgarantie",
           "TOPCon technologie",
           "Half-cut cell",
-          "Excellent low-light prestatie"
+          "Excellent low-light prestatie",
         ],
         image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
       },
@@ -240,7 +286,10 @@ export const services: Service[] = [
         name: "Jinko Solar N-Type",
         brand: "Jinko",
         price: "€6.500 - €10.000",
+        priceMin: 6500,
+        priceMax: 10000,
         tier: "medium",
+        categoryId: "zonnepanelen",
         description: "Premium N-type panelen met 23% rendement en 30 jaar garantie.",
         techSpecs: [
           "23% rendement",
@@ -248,7 +297,7 @@ export const services: Service[] = [
           "30 jaar productgarantie",
           "N-type TOPCon",
           "Dubbelglas",
-          "0.3%/C temperatuurscoefficient"
+          "0.3%/C temperatuurscoefficient",
         ],
         image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
       },
@@ -256,7 +305,10 @@ export const services: Service[] = [
         name: "Growatt MIC",
         brand: "Growatt",
         price: null,
+        priceMin: null,
+        priceMax: null,
         tier: "economy",
+        categoryId: "zonnepanelen",
         description: "Betrouwbare string omvormer met WiFi monitoring.",
         techSpecs: [
           "98.4% max efficiëntie",
@@ -264,7 +316,7 @@ export const services: Service[] = [
           "IP65 bescherming",
           "Dubbele MPPT",
           "5 jaar garantie",
-          "Natuurlijke koeling"
+          "Natuurlijke koeling",
         ],
         image: "https://images.unsplash.com/photo-1611365892117-00ac5ef43c90?auto=format&fit=crop&w=600&q=80",
       },
@@ -272,7 +324,10 @@ export const services: Service[] = [
         name: "Enphase IQ8",
         brand: "Enphase",
         price: null,
+        priceMin: null,
+        priceMax: null,
         tier: "premium",
+        categoryId: "zonnepanelen",
         description: "Premium micro-omvormer met per-paneel monitoring en back-up.",
         techSpecs: [
           "97.6% CEC efficiëntie",
@@ -280,7 +335,7 @@ export const services: Service[] = [
           "Sunlight back-up",
           "25 jaar garantie",
           "Stroomuitval bescherming",
-          "Module-level optimalisatie"
+          "Module-level optimalisatie",
         ],
         image: "https://images.unsplash.com/photo-1611365892117-00ac5ef43c90?auto=format&fit=crop&w=600&q=80",
       },
@@ -299,7 +354,10 @@ export const services: Service[] = [
         name: "AlphaESS Smile",
         brand: "AlphaESS",
         price: "€5.500 - €8.000",
+        priceMin: 5500,
+        priceMax: 8000,
         tier: "economy",
+        categoryId: "batterijopslag",
         description: "Betaalbare thuisbatterij met 5.7 kWh capaciteit en modulair uitbreidbaar.",
         techSpecs: [
           "5.7 kWh basiscapaciteit",
@@ -307,7 +365,7 @@ export const services: Service[] = [
           "LFP batterijtechnologie",
           "6000+ cycli",
           "10 jaar garantie",
-          "IP65 bescherming"
+          "IP65 bescherming",
         ],
         image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
       },
@@ -315,7 +373,10 @@ export const services: Service[] = [
         name: "AlphaESS Storion",
         brand: "AlphaESS",
         price: "€8.000 - €12.000",
+        priceMin: 8000,
+        priceMax: 12000,
         tier: "medium",
+        categoryId: "batterijopslag",
         description: "High-end thuisbatterij met 13.3 kWh en zonnepaneel integratie.",
         techSpecs: [
           "13.3 kWh capaciteit",
@@ -323,7 +384,7 @@ export const services: Service[] = [
           "8000+ cycli",
           "Hybride omvormer",
           "10 jaar garantie",
-          "Slimme energiemanagement"
+          "Slimme energiemanagement",
         ],
         image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
       },
@@ -331,7 +392,10 @@ export const services: Service[] = [
         name: "Sigenergy SigenStor",
         brand: "Sigenergy",
         price: "€7.000 - €10.000",
+        priceMin: 7000,
+        priceMax: 10000,
         tier: "premium",
+        categoryId: "batterijopslag",
         description: "Premium batterij met AI-optimalisatie en EV-laden integratie.",
         techSpecs: [
           "5-48 kWh configuratie",
@@ -339,7 +403,7 @@ export const services: Service[] = [
           "AI energieoptimalisatie",
           "EV-laden integratie",
           "15 jaar garantie",
-          "97% round-trip efficiëntie"
+          "97% round-trip efficiëntie",
         ],
         image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
       },
@@ -358,7 +422,10 @@ export const services: Service[] = [
         name: "Nefit Bosch Compress 7000i",
         brand: "Nefit Bosch",
         price: "€4.500 - €7.500",
+        priceMin: 4500,
+        priceMax: 7500,
         tier: "economy",
+        categoryId: "warmtepompen",
         description: "Hybride warmtepomp met hoog rendement voor woningen met bestaande cv.",
         techSpecs: [
           "A+ energielabel",
@@ -366,7 +433,7 @@ export const services: Service[] = [
           "Lucht/water technologie",
           "Ingebouwde boiler",
           "Modulerend vermogen",
-          "Stil: 48 dB"
+          "Stil: 48 dB",
         ],
         image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
       },
@@ -374,7 +441,10 @@ export const services: Service[] = [
         name: "Daikin Altherma 3",
         brand: "Daikin",
         price: "€8.000 - €12.000",
+        priceMin: 8000,
+        priceMax: 12000,
         tier: "premium",
+        categoryId: "warmtepompen",
         description: "Full-electric warmtepomp met geïntegreerde boiler en vloerverwarming.",
         techSpecs: [
           "A+++ energielabel",
@@ -382,7 +452,7 @@ export const services: Service[] = [
           "Lucht/water",
           "230L geïntegreerde boiler",
           "Smart grid ready",
-          "Stil: 42 dB"
+          "Stil: 42 dB",
         ],
         image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
       },
@@ -401,7 +471,10 @@ export const services: Service[] = [
         name: "Uponor Tacker",
         brand: "Uponor",
         price: null,
+        priceMin: null,
+        priceMax: null,
         tier: "medium",
+        categoryId: "vloerverwarming",
         description: "Professioneel vloerverwarmingssysteem met noppenplaat en PE-RT leiding.",
         techSpecs: [
           "PE-RT leidingen",
@@ -409,7 +482,7 @@ export const services: Service[] = [
           "Lage aanvoertemperatuur",
           "50 jaar levensduur",
           "Verdeelunit inbegrepen",
-          "Geschikt voor alle vloeren"
+          "Geschikt voor alle vloeren",
         ],
         image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
       },
@@ -428,7 +501,10 @@ export const services: Service[] = [
         name: "Hager groepenkast",
         brand: "Hager",
         price: "€1.500 - €3.000",
+        priceMin: 1500,
+        priceMax: 3000,
         tier: "medium",
+        categoryId: "meterkast-liften",
         description: "Complete groepenkast vervanging met ruimte voor laadpaal en zonnepanelen.",
         techSpecs: [
           "3-fase aansluiting",
@@ -436,7 +512,7 @@ export const services: Service[] = [
           "Aardlekautomaten",
           "Overspanningsbeveiliging",
           "Keuringscertificaat",
-          "5 jaar garantie"
+          "5 jaar garantie",
         ],
         image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
       },
@@ -560,7 +636,7 @@ export const certifications = [
 export const companyStats = [
   { value: "16+", label: "Jaar ervaring" },
   { value: "2500+", label: "Projecten opgeleverd" },
-  { value: "8", label: "Vakmensen in dienst" },
+  { value: "16+", label: "Vakmensen in dienst" },
   { value: "100%", label: "Eigen personeel" },
 ];
 
