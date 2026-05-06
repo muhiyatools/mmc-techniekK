@@ -7,32 +7,10 @@ import { usePathname } from "next/navigation";
 import { navItems, contactInfo, services } from "@/lib/data";
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [servicesInView, setServicesInView] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const el = document.getElementById("diensten");
-    if (!el) {
-      setServicesInView(false);
-      return;
-    }
-    const obs = new IntersectionObserver(
-      ([entry]) => setServicesInView(entry.isIntersecting),
-      { rootMargin: "-25% 0px -55% 0px", threshold: 0 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [pathname]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -40,26 +18,26 @@ export default function Header() {
     document.body.style.overflow = "";
   }, [pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/" && !servicesInView;
-    if (href === "/#diensten") return pathname === "/" && servicesInView;
+    if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(href);
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-          scrolled || menuOpen
-            ? "bg-white/95 backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.08)]"
-            : "bg-transparent"
+        className={`fixed top-0 inset-x-0 z-50 h-20 transition-all duration-300 border-b ${
+          scrolled ? "bg-base/90 backdrop-blur-md border-hairline" : "bg-base/80 backdrop-blur-sm border-transparent"
         }`}
       >
-        {/* Full-width background line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-brand via-brand to-brand" />
-
-        <div className="w-full px-6 lg:px-12 h-[88px] lg:h-[100px] flex items-center justify-between">
-          {/* Logo - Left */}
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-between">
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
@@ -67,14 +45,14 @@ export default function Header() {
             <Image
               src="/images/logo.png"
               alt="MMC Techniek B.V."
-              width={400}
-              height={120}
-              className="h-[52px] lg:h-[65px] w-auto object-contain"
+              width={300}
+              height={90}
+              className="h-11 lg:h-12 w-auto object-contain"
               priority
             />
           </Link>
 
-          {/* Desktop Nav - Centered */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => (
               <div key={item.href} className="relative">
@@ -82,31 +60,32 @@ export default function Header() {
                   <div className="relative">
                     <button
                       onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className={`relative text-base font-semibold transition-colors duration-300 py-2 flex items-center gap-1 ${
+                      onBlur={() => setTimeout(() => setDropdownOpen(false), 180)}
+                      className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 flex items-center gap-1.5 py-2 ${
                         isActive(item.href) ? "text-brand" : "text-ink hover:text-brand"
                       }`}
                     >
                       {item.label}
-                      <svg 
-                        className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
-                    
-                    {/* Dropdown Menu */}
+
+                    {/* Dropdown */}
                     {dropdownOpen && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-xl shadow-xl border border-border overflow-hidden">
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-60 bg-mist border border-hairline overflow-hidden">
                         <div className="py-2">
                           {services.map((service) => (
                             <Link
-                              key={service.title}
-                              href="/#diensten"
+                              key={service.slug}
+                              href={`/diensten/${service.slug}`}
                               onClick={() => setDropdownOpen(false)}
-                              className="block px-5 py-3 text-sm text-ink hover:bg-brand/5 hover:text-brand transition-colors duration-200"
+                              className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-brand/5 hover:text-brand transition-colors duration-150"
                             >
                               {service.title}
                             </Link>
@@ -118,13 +97,13 @@ export default function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`relative text-base font-semibold transition-colors duration-300 py-2 ${
+                    className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 py-2 ${
                       isActive(item.href) ? "text-brand" : "text-ink hover:text-brand"
                     }`}
                   >
                     {item.label}
                     {isActive(item.href) && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-[3px] bg-brand rounded-full" />
+                      <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
                     )}
                   </Link>
                 )}
@@ -132,22 +111,19 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTA - Right */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* CTAs */}
+          <div className="hidden lg:flex items-center gap-3">
             <a
               href={`tel:${contactInfo.phone}`}
-              className="flex items-center gap-2 px-5 py-2.5 border-2 border-brand text-brand text-sm font-semibold rounded-full hover:bg-brand hover:text-white transition-all duration-300"
+              className="px-5 py-2.5 border border-ink text-ink text-sm font-semibold rounded-full hover:border-brand hover:text-brand transition-all duration-200"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
               Bel Ons
             </a>
             <Link
               href="/contact/"
-              className="px-6 py-2.5 bg-brand text-white text-sm font-semibold rounded-full hover:bg-brand-deep transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
+              className="px-5 py-2.5 bg-ink text-[var(--color-base)] text-sm font-semibold rounded-full hover:bg-brand transition-all duration-200"
             >
-              Contact
+              Offerte
             </Link>
           </div>
 
@@ -160,13 +136,13 @@ export default function Header() {
                 return next;
               });
             }}
-            className="lg:hidden w-12 h-12 flex items-center justify-center text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            className="lg:hidden w-10 h-10 flex items-center justify-center text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             aria-label={menuOpen ? "Sluit menu" : "Open menu"}
           >
-            <div className="relative flex flex-col justify-between w-7 h-5">
-              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[9px]" : ""}`} />
-              <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
-              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[9px]" : ""}`} />
+            <div className="relative flex flex-col justify-between w-6 h-4">
+              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+              <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
             </div>
           </button>
         </div>
@@ -174,23 +150,21 @@ export default function Header() {
 
       {/* Mobile overlay */}
       <div
-        className={`lg:hidden fixed inset-0 z-40 bg-white transition-all duration-500 ${
-          menuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+        className={`lg:hidden fixed inset-0 z-40 bg-base transition-all duration-300 ${
+          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
-        <nav className="flex flex-col px-6 pt-36 gap-2">
-          {navItems.map((item, i) => (
+        <nav className="flex flex-col px-6 pt-28 gap-0">
+          {navItems.map((item) => (
             <div key={item.href}>
               {item.isHash ? (
-                <div className="py-5 border-b border-border">
-                  <div className="text-lg font-semibold text-ink mb-3">Diensten</div>
+                <div className="py-4 border-b border-hairline">
+                  <div className="text-lg font-bold text-ink mb-3">Diensten</div>
                   <div className="pl-4 space-y-2">
                     {services.map((service) => (
                       <Link
-                        key={service.title}
-                        href="/#diensten"
+                        key={service.slug}
+                        href={`/diensten/${service.slug}`}
                         onClick={() => setMenuOpen(false)}
                         className="block text-base text-muted hover:text-brand transition-colors"
                       >
@@ -203,40 +177,27 @@ export default function Header() {
                 <Link
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="py-5 border-b border-border text-3xl font-semibold text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-                  style={{
-                    opacity: menuOpen ? 1 : 0,
-                    transform: menuOpen ? "translateY(0)" : "translateY(12px)",
-                    transition: `all 0.4s cubic-bezier(0.22,1,0.36,1) ${i * 60 + 100}ms`,
-                  }}
+                  className="py-4 border-b border-hairline text-xl font-bold text-ink flex items-center justify-between"
                 >
-                  <span className={isActive(item.href) ? "text-brand" : ""}>
-                    {item.label}
-                  </span>
+                  <span className={isActive(item.href) ? "text-brand" : ""}>{item.label}</span>
+                  {isActive(item.href) && <span className="w-2 h-2 rounded-full bg-brand" />}
                 </Link>
               )}
             </div>
           ))}
         </nav>
-        <div
-          className="px-6 pt-10 space-y-5"
-          style={{
-            opacity: menuOpen ? 1 : 0,
-            transform: menuOpen ? "translateY(0)" : "translateY(10px)",
-            transition: `all 0.4s cubic-bezier(0.22,1,0.36,1) 400ms`,
-          }}
-        >
+        <div className="px-6 pt-8 space-y-4">
           <a
             href={`tel:${contactInfo.phone}`}
-            className="flex items-center justify-center w-full py-5 border-2 border-brand text-brand text-lg font-semibold rounded-full hover:bg-brand hover:text-white transition-all"
+            className="flex items-center justify-center w-full py-4 border border-ink text-ink font-semibold rounded-full hover:bg-ink hover:text-[var(--color-base)] transition-all"
           >
             Bel Ons
           </a>
           <Link
             href="/contact/"
-            className="flex items-center justify-center w-full py-5 bg-brand text-white text-lg font-semibold rounded-full hover:bg-brand-hover transition-colors"
+            className="flex items-center justify-center w-full py-4 bg-ink text-[var(--color-base)] font-semibold rounded-full hover:bg-brand transition-colors"
           >
-            Contact Ons
+            Offerte Aanvragen
           </Link>
         </div>
       </div>

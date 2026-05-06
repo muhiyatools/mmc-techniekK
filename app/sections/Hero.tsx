@@ -40,7 +40,7 @@ export default function Hero() {
   }, [handleScroll]);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-[88px] lg:pt-[100px]">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-[70px] lg:pt-[70px]">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -52,7 +52,7 @@ export default function Hero() {
           quality={90}
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/60 to-ink/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/70 to-ink/50" />
       </div>
 
       {/* Decorative elements */}
