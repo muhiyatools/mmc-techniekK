@@ -5,6 +5,51 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems, contactInfo, services } from "@/lib/data";
 
+const trustItems = [
+  "NEN-3140 Gecertificeerd",
+  "VCA Gecertificeerd",
+  "16+ Jaar Ervaring",
+  "Offerte Binnen 24 Uur",
+  "Gratis Adviesgesprek",
+];
+
+function ServiceIcon({ slug }: { slug: string }) {
+  return (
+    <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {slug === "warmtepompen" && (
+        <>
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.5c0 1-1 1.5-1 2.5" />
+        </>
+      )}
+      {slug === "zonnepanelen" && (
+        <>
+          <circle cx="12" cy="12" r="3.5" strokeWidth={1.5} />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+        </>
+      )}
+      {slug === "airconditioning" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8a2 2 0 012-2h12a2 2 0 012 2v5a2 2 0 01-2 2H6a2 2 0 01-2-2V8zM8 15v3M12 15v3M16 15v3M8 11h8" />
+      )}
+      {slug === "batterijopslag" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8zM21 10.5v3h-2v-3h2M11 10l-2 3.5h5L12 18" />
+      )}
+      {slug === "vloerverwarming" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 20h18M7.5 16c0-1.5 1.5-2.5 1.5-5M12 16c0-1.5 1.5-2.5 1.5-5M16.5 16c0-1.5 1.5-2.5 1.5-5" />
+      )}
+      {slug === "meterkast-liften" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3a1 1 0 00-1 1v16a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1H5zM9 7.5v3M9 13.5v3M13 7v6M16.5 7v4" />
+      )}
+      {slug === "onderhoud" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      )}
+      {slug === "renovaties" && (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 21h18M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 21v-8h6v8M9 9h2M13 9h2M9 13h2M13 13h2" />
+      )}
+    </svg>
+  );
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -31,148 +76,186 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 h-20 transition-all duration-300 border-b ${
-          scrolled ? "bg-base/95 backdrop-blur-md border-hairline" : "bg-base/85 backdrop-blur-sm border-transparent"
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+          scrolled ? "bg-base/95 backdrop-blur-md" : "bg-base/90 backdrop-blur-sm"
         }`}
       >
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-between">
-          {/* Logo — sharp edge treatment */}
-          <Link
-            href="/"
-            className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
-          >
-            <img
-              src="/images/logo.png"
-              alt="MMC Techniek B.V."
-              className="h-11 lg:h-12 w-auto object-contain"
-            />
-          </Link>
+        {/* Trust bar — desktop only, collapses on scroll */}
+        <div
+          className={`hidden lg:block overflow-hidden transition-all duration-300 border-b ${
+            scrolled ? "max-h-0 border-transparent" : "max-h-9 border-hairline/60"
+          }`}
+        >
+          <div className="bg-concrete h-9 flex items-center">
+            <div className="max-w-[1280px] mx-auto px-6 lg:px-10 w-full flex items-center justify-center gap-5">
+              {trustItems.map((item, i, arr) => (
+                <span key={item} className="flex items-center gap-5">
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-3 h-3 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-[11px] font-semibold text-muted tracking-wide whitespace-nowrap">
+                      {item}
+                    </span>
+                  </span>
+                  {i < arr.length - 1 && (
+                    <span className="w-px h-3 bg-hairline shrink-0" />
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navItems.map((item) => (
-              <div key={item.href} className="relative">
-                {item.isHash ? (
-                  <div className="relative">
-                    <button
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
-                      onBlur={() => setTimeout(() => setDropdownOpen(false), 180)}
-                      className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 flex items-center gap-1.5 py-2 ${
+        {/* Main nav */}
+        <div className={`h-20 border-b transition-all duration-300 ${scrolled ? "border-hairline" : "border-transparent"}`}>
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-between">
+            {/* Logo */}
+            <Link
+              href="/"
+              className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+            >
+              <img
+                src="/images/logo.png"
+                alt="MMC Techniek B.V."
+                className="h-11 lg:h-12 w-auto object-contain"
+              />
+            </Link>
+
+            {/* Desktop Nav */}
+            <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+              {navItems.map((item) => (
+                <div key={item.href} className="relative">
+                  {item.isHash ? (
+                    <div className="relative">
+                      <button
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        onBlur={() => setTimeout(() => setDropdownOpen(false), 180)}
+                        className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 flex items-center gap-1.5 py-2 ${
+                          isActive(item.href) ? "text-brand" : "text-ink hover:text-brand"
+                        }`}
+                      >
+                        {item.label}
+                        <svg
+                          className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+
+                      {/* Wide dropdown */}
+                      {dropdownOpen && (
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[440px] bg-mist border border-hairline shadow-2xl shadow-ink/8 overflow-hidden">
+                          {/* Dropdown header */}
+                          <div className="px-4 py-3 bg-concrete border-b border-hairline flex items-center justify-between">
+                            <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                              Onze diensten
+                            </span>
+                            <span className="text-xs text-muted">{services.length} diensten</span>
+                          </div>
+
+                          {/* Service list */}
+                          <div className="grid grid-cols-2 gap-px bg-hairline">
+                            {services.map((service) => (
+                              <Link
+                                key={service.slug}
+                                href={`/diensten/${service.slug}`}
+                                onClick={() => setDropdownOpen(false)}
+                                className="flex items-center gap-3 px-4 py-3.5 bg-mist hover:bg-base transition-colors duration-150 group"
+                              >
+                                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 group-hover:bg-brand/15 transition-colors">
+                                  <ServiceIcon slug={service.slug} />
+                                </div>
+                                <div className="min-w-0">
+                                  <span className="block text-sm font-semibold text-ink group-hover:text-brand transition-colors truncate">
+                                    {service.title}
+                                  </span>
+                                  <span className="block text-xs text-muted truncate">
+                                    {service.summary}
+                                  </span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+
+                          {/* Footer */}
+                          <div className="px-4 py-2.5 bg-concrete border-t border-hairline flex items-center justify-between">
+                            <Link
+                              href="/#diensten"
+                              onClick={() => setDropdownOpen(false)}
+                              className="text-xs font-bold uppercase tracking-[0.12em] text-brand hover:text-brand-deep"
+                            >
+                              Bekijk alle diensten →
+                            </Link>
+                            <Link
+                              href="/contact/"
+                              onClick={() => setDropdownOpen(false)}
+                              className="text-xs font-semibold text-muted hover:text-brand transition-colors"
+                            >
+                              Gratis advies
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 py-2 ${
                         isActive(item.href) ? "text-brand" : "text-ink hover:text-brand"
                       }`}
                     >
                       {item.label}
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                      {isActive(item.href) && (
+                        <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
+                      )}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </nav>
 
-                    {/* Wide dropdown with icons */}
-                    {dropdownOpen && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[420px] bg-mist border border-hairline shadow-2xl shadow-ink/10 overflow-hidden">
-                        {/* Header */}
-                        <div className="px-4 py-3 bg-concrete border-b border-hairline">
-                          <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                            Onze diensten
-                          </span>
-                        </div>
-
-                        {/* Service list with icons */}
-                        <div className="grid grid-cols-2 gap-px bg-hairline">
-                          {services.map((service) => (
-                            <Link
-                              key={service.slug}
-                              href={`/diensten/${service.slug}`}
-                              onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3 px-4 py-3 bg-mist hover:bg-concrete transition-colors duration-150"
-                            >
-<div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
-                                <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  {service.slug === "warmtepompen" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.5 2A4.5 4.5 0 0114 6.5V10l4 4 4-4V6.5A4.5 4.5 0 0114.5 2 4.5 4.5 0 0110 6.5 4.5 4.5 0 015.5 2 4.5 4.5 0 019.5 2z" />}
-                                  {service.slug === "zonnepanelen" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2m0 16v2M3 12h2m14 2h2m-3-7l-4-4m0 0l4-4m-4 4l4 4m4-12l-4 4m0 0l4 4m-4-4l-4 4" />}
-                                  {service.slug === "airconditioning" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2v10m4-6.5a4 4 0 00-8 0v10M5 10h14" />}
-                                  {service.slug === "batterijopslag" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10h4v4h-4v-4zM7 10h4v4H7v-4zM13 4h4v4h-4V4zM7 4h4v4H7V4z" />}
-                                  {service.slug === "vloerverwarming" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 18V6l8-2 8 2v12m-8 0h8m-16 0h16" />}
-                                  {service.slug === "meterkast-liften" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v16m0-12h4m4 0h8m4 0h4M8 8h8v8H8V8z" />}
-                                  {service.slug === "onderhoud" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.5 6h-5l-1 6h7l-1-6zm-3 9a3 3 0 110-6 3 3 0 010 6z" />}
-                                  {service.slug === "renovaties" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 21h18M9 4v7l3 3 3-3V4M6 21v-6m12 6V8" />}
-                                </svg>
-                              </div>
-                              <span className="text-sm font-medium text-ink group-hover:text-brand">
-                                {service.title}
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
-
-                        {/* Footer */}
-                        <div className="px-4 py-2.5 bg-concrete border-t border-hairline">
-                          <Link href="/#diensten" onClick={() => setDropdownOpen(false)} className="text-xs font-bold uppercase tracking-[0.12em] text-brand hover:text-brand-deep">
-                            Bekijk alle diensten →
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className={`relative text-[15px] font-semibold tracking-wide transition-colors duration-200 py-2 ${
-                      isActive(item.href) ? "text-brand" : "text-ink hover:text-brand"
-                    }`}
-                  >
-                    {item.label}
-                    {isActive(item.href) && (
-                      <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
-                    )}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </nav>
-
-          {/* CTAs — sharp edge buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-            <a
-              href={`tel:${contactInfo.phone}`}
-              className="group flex items-center gap-2 px-4 py-2.5 border border-brand text-brand text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand hover:text-white transition-all duration-200"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              Bel ons
-            </a>
-            <Link
-              href="/contact/"
-              className="px-5 py-2.5 bg-brand text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand-deep transition-all duration-200"
-            >
-              Offerte
-            </Link>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => {
-              setMenuOpen((p) => {
-                const next = !p;
-                document.body.style.overflow = next ? "hidden" : "";
-                return next;
-              });
-            }}
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-            aria-label={menuOpen ? "Sluit menu" : "Open menu"}
-          >
-            <div className="relative flex flex-col justify-between w-6 h-4">
-              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-              <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            {/* CTAs */}
+            <div className="hidden lg:flex items-center gap-3">
+              <a
+                href={`tel:${contactInfo.phone}`}
+                className="group flex items-center gap-2 px-4 py-2.5 border border-brand text-brand text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand hover:text-white transition-all duration-200"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                Bel ons
+              </a>
+              <Link
+                href="/contact/"
+                className="px-5 py-2.5 bg-brand text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand-deep transition-all duration-200"
+              >
+                Offerte
+              </Link>
             </div>
-          </button>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => {
+                setMenuOpen((p) => {
+                  const next = !p;
+                  document.body.style.overflow = next ? "hidden" : "";
+                  return next;
+                });
+              }}
+              className="lg:hidden w-10 h-10 flex items-center justify-center text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              aria-label={menuOpen ? "Sluit menu" : "Open menu"}
+            >
+              <div className="relative flex flex-col justify-between w-6 h-4">
+                <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+                <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+                <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -194,8 +277,11 @@ export default function Header() {
                         key={service.slug}
                         href={`/diensten/${service.slug}`}
                         onClick={() => setMenuOpen(false)}
-                        className="block text-base text-muted hover:text-brand transition-colors"
+                        className="flex items-center gap-3 py-1 text-base text-muted hover:text-brand transition-colors"
                       >
+                        <div className="w-6 h-6 rounded-md bg-brand/10 flex items-center justify-center shrink-0">
+                          <ServiceIcon slug={service.slug} />
+                        </div>
                         {service.title}
                       </Link>
                     ))}

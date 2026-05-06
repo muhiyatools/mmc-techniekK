@@ -574,4 +574,52 @@ export const faqItems = [
     question: "Wat is het verschil tussen hybride en all-electric?",
     answer: "Een hybride warmtepomp werkt samen met uw bestaande cv-ketel en is ideaal voor woningen die nog niet volledig geïsoleerd zijn. Een all-electric systeem vervangt de ketel volledig en is geschikt voor goed geïsoleerde woningen.",
   },
+  {
+    question: "Hoe lang duurt een installatie?",
+    answer: "De installatietijd varieert per dienst. Een airconditioning is doorgaans binnen één dag geplaatst. Een warmtepomp of complete zonnepaneleninstallatie neemt één tot twee dagen in beslag. Wij bespreken de planning vooraf zodat u precies weet waar u aan toe bent.",
+  },
+  {
+    question: "Welke garantie bieden jullie op installaties?",
+    answer: "Wij bieden fabrieksgarantie op alle producten, aangevuld met onze eigen installatiegarantie. Afhankelijk van het product geldt twee tot vijftien jaar garantie. Bij storingen staan wij klaar voor snel herstel.",
+  },
+  {
+    question: "Zijn er bouwvergunningen nodig voor zonnepanelen of een warmtepomp?",
+    answer: "In de meeste gevallen is geen bouwvergunning nodig. Zonnepanelen op een schuin dak zijn vergunningsvrij. Voor zonnepanelen op een plat dak of bij monumenten kan een melding of vergunning vereist zijn. Wij informeren u hierover tijdens het intakegesprek.",
+  },
+  {
+    question: "Werken jullie ook tijdens de weekenden?",
+    answer: "In overleg is werken op zaterdag mogelijk. Voor spoedgevallen zijn wij zeven dagen per week bereikbaar via 06 3431 1225. Reguliere installaties worden bij voorkeur op werkdagen ingepland.",
+  },
+  {
+    question: "Is mijn dak geschikt voor zonnepanelen?",
+    answer: "De meeste daken zijn geschikt voor zonnepanelen. Wij beoordelen de draagkracht, oriëntatie en schaduwval van uw dak tijdens een gratis adviesbezoek. Zowel schuin als plat dak komen in aanmerking.",
+  },
+  {
+    question: "Hoe werkt een thuisbatterij precies?",
+    answer: "Een thuisbatterij slaat de door uw zonnepanelen opgewekte energie op voor gebruik in de avond of nacht. Zo benut u meer van uw eigen zonne-energie en bent u minder afhankelijk van het net. Moderne batterijen zijn koppelbaar aan uw slimme meter voor automatische sturing.",
+  },
+  {
+    question: "Welke subsidies zijn beschikbaar in 2025?",
+    answer: "De ISDE-subsidie is beschikbaar voor warmtepompen. Daarnaast zijn er gemeentelijke regelingen en gunstige btw-tarieven voor zonnepanelen. Wij adviseren u over de actuele mogelijkheden tijdens het eerste gesprek.",
+  },
+  {
+    question: "Hoe onderhoud ik mijn airconditioning?",
+    answer: "Wij adviseren een jaarlijkse onderhoudsbeurt: schoonmaken van filters, controleren van het koelmiddel en doorlichten van alle onderdelen. Dit verlengt de levensduur aanzienlijk en houdt de efficiëntie op peil. U kunt hiervoor een onderhoudscontract afsluiten.",
+  },
+  {
+    question: "Zijn jullie ook voor noodgevallen beschikbaar?",
+    answer: "Ja. Bij storingen aan door ons geïnstalleerde systemen reageren wij zo snel mogelijk, ook buiten kantooruren. Bel 06 3431 1225 voor directe hulp.",
+  },
+  {
+    question: "Kunnen jullie ook voor bedrijven werken?",
+    answer: "Absoluut. Naast particuliere woningen voeren wij ook installaties uit voor bedrijfspanden, kantoren en utiliteitsgebouwen. Neem contact op voor een commercieel adviesgesprek op maat.",
+  },
+  {
+    question: "Wat kost een zonnepanelen installatie gemiddeld?",
+    answer: "Een complete installatie van zes tot tien panelen kost gemiddeld tussen de €4.500 en €9.000 inclusief montage en omvormer. De terugverdientijd ligt doorgaans tussen vijf en acht jaar. Wij maken altijd een offerte op maat op basis van uw situatie en energieverbruik.",
+  },
+  {
+    question: "Kunnen jullie vloerverwarming combineren met een warmtepomp?",
+    answer: "Ja, dit is zelfs de ideale combinatie. Vloerverwarming werkt het best op lage aanvoertemperaturen, precies waar een warmtepomp optimaal op presteert. Wij ontwerpen de installatie als geheel voor maximale efficiëntie en comfort.",
+  },
 ];

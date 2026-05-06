@@ -59,7 +59,7 @@ export default function FAQPage() {
                       <div
                         className="overflow-hidden transition-all duration-500 ease-out"
                         style={{
-                          maxHeight: isOpen ? "300px" : "0px",
+                          maxHeight: isOpen ? "500px" : "0px",
                           opacity: isOpen ? 1 : 0,
                         }}
                       >

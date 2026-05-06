@@ -5,7 +5,7 @@ import Reveal from "../components/Reveal";
 
 export default function TrustStrip() {
   return (
-    <section className="relative py-24 lg:py-32 bg-base overflow-hidden">
+    <section className="relative py-24 lg:py-32 bg-base">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left — Text + list */}
@@ -21,7 +21,7 @@ export default function TrustStrip() {
                 Het verschil zit in <span className="text-brand">de details</span>
               </h2>
               <p className="text-base text-muted leading-relaxed mb-10 max-w-sm">
-                Sinds 2008 installeren wij duurzame systemen met vakmanschap dat u kunt zien — en voelen.
+                Sinds 2008 installeren wij duurzame systemen met vakmanschap dat u kunt zien en voelen.
               </p>
             </Reveal>
 
@@ -49,7 +49,7 @@ export default function TrustStrip() {
               <div className="mt-10">
                 <Link
                   href="/contact/"
-                  className="px-8 py-3.5 bg-ink text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-ink text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
                 >
                   Vraag een offerte aan
                   <svg
@@ -65,10 +65,10 @@ export default function TrustStrip() {
             </Reveal>
           </div>
 
-          {/* Right — Image */}
-          <div className="lg:col-span-7 relative">
+          {/* Right — Image + stat plaque */}
+          <div className="lg:col-span-7 relative pb-10 lg:pb-12">
             <Reveal variant="scale" delay={150}>
-              <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[560px] overflow-hidden border border-hairline">
+              <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[540px] overflow-hidden border border-hairline">
                 <Image
                   src="/images/projects/PHOTO-2024-12-03-12-54-01.jpg"
                   alt="MMC Techniek monteur aan het werk bij een warmtepomp installatie"
@@ -76,14 +76,13 @@ export default function TrustStrip() {
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 60vw"
                 />
-                {/* Subtle gradient to blend with page bg on mobile */}
                 <div className="absolute inset-0 bg-gradient-to-t from-base/20 to-transparent lg:hidden" />
               </div>
             </Reveal>
 
             {/* Floating stat plaque */}
             <Reveal delay={400}>
-              <div className="absolute -bottom-6 -left-6 lg:-left-10 bg-mist border border-hairline p-5 lg:p-6 max-w-[240px] hidden sm:block">
+              <div className="absolute -bottom-2 -left-4 lg:-left-8 bg-mist border border-hairline p-5 lg:p-6 max-w-[240px] hidden sm:block">
                 <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2 mb-4" />
                 <div className="font-display text-4xl font-extrabold text-brand tabular mb-1">16+</div>
                 <div className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
