@@ -56,6 +56,21 @@ export const priceTierColors: Record<PriceTier, string> = {
   premium: "bg-red-500",
 };
 
+export const brandImages: Record<string, string> = {
+  "LG": "/images/brands/lg.png",
+  "Mitsubishi Electric": "/images/brands/mitsubishi_electric.png",
+  "Daikin": "/images/brands/daikin.png",
+  "Trina Solar": "/images/brands/trina_solar.png",
+  "Jinko": "/images/brands/jinko.png",
+  "Growatt": "/images/brands/growatt.png",
+  "Enphase": "/images/brands/enphase.png",
+  "AlphaESS": "/images/brands/alphaess.png",
+  "Sigenergy": "/images/brands/sigenergy.png",
+  "Nefit Bosch": "",
+  "Uponor": "",
+  "Hager": "",
+};
+
 export const services: Service[] = [
   {
     slug: "airconditioning",

@@ -59,13 +59,15 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-  color: var(--color-ink);
-  letter-spacing: -0.02em;
-}
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+    color: var(--color-ink);
+    letter-spacing: -0.02em;
+  }
 
-p { text-wrap: pretty; }
+  p { text-wrap: pretty; }
+}
 
 ::selection {
   background: var(--color-brand);

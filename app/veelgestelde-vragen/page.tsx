@@ -38,36 +38,71 @@ export default function FAQPage() {
             <div className="space-y-0">
               {faqItems.map((item, i) => {
                 const isOpen = openIndex === i;
+                const isFirst = i === 0;
                 return (
                   <Reveal key={i} delay={i * 50}>
-                    <div className={`border-b border-hairline ${isOpen ? "bg-concrete/50" : ""}`}>
-                      <button
-                        onClick={() => setOpenIndex(isOpen ? null : i)}
-                        className="w-full flex items-start justify-between gap-4 py-6 lg:py-7 text-left group"
-                      >
-                        <span className={`text-base lg:text-lg font-bold transition-colors duration-200 ${isOpen ? "text-brand" : "text-ink group-hover:text-brand"}`}>
-                          {item.question}
-                        </span>
-                        <span className={`shrink-0 mt-1 w-6 h-6 flex items-center justify-center border rounded-full transition-all duration-200 ${
-                          isOpen ? "border-brand bg-brand text-ink rotate-45" : "border-hairline text-muted group-hover:border-brand group-hover:text-brand"
-                        }`}>
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                          </svg>
-                        </span>
-                      </button>
-                      <div
-                        className="overflow-hidden transition-all duration-500 ease-out"
-                        style={{
-                          maxHeight: isOpen ? "500px" : "0px",
-                          opacity: isOpen ? 1 : 0,
-                        }}
-                      >
-                        <p className="text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10" style={{ color: "#334155" }}>
-                          {item.answer}
-                        </p>
+                    {isFirst ? (
+                      /* Featured first question */
+                      <div className={`mb-4 rounded-xl border overflow-hidden transition-colors duration-300 ${
+                        isOpen ? "border-brand/25 bg-brand/5" : "border-hairline hover:border-brand/20"
+                      }`}>
+                        <button
+                          onClick={() => setOpenIndex(isOpen ? null : i)}
+                          className="w-full flex items-start justify-between gap-4 py-7 px-6 text-left group"
+                        >
+                          <span className={`text-xl lg:text-2xl font-bold leading-snug transition-colors duration-200 ${
+                            isOpen ? "text-brand" : "text-ink group-hover:text-brand"
+                          }`}>
+                            {item.question}
+                          </span>
+                          <span className={`shrink-0 mt-1 w-7 h-7 flex items-center justify-center border rounded-full transition-all duration-200 ${
+                            isOpen ? "border-brand bg-brand text-white rotate-45" : "border-hairline text-muted group-hover:border-brand group-hover:text-brand"
+                          }`}>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </span>
+                        </button>
+                        <div
+                          className="overflow-hidden transition-all duration-500 ease-out"
+                          style={{ maxHeight: isOpen ? "500px" : "0px", opacity: isOpen ? 1 : 0 }}
+                        >
+                          <p className="text-base leading-relaxed pb-7 px-6" style={{ color: "#334155" }}>
+                            {item.answer}
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      /* Regular items */
+                      <div className={`border-b border-hairline ${isOpen ? "bg-concrete/50" : ""}`}>
+                        <button
+                          onClick={() => setOpenIndex(isOpen ? null : i)}
+                          className="w-full flex items-start justify-between gap-4 py-6 lg:py-7 text-left group"
+                        >
+                          <span className={`text-base lg:text-lg font-bold transition-colors duration-200 ${isOpen ? "text-brand" : "text-ink group-hover:text-brand"}`}>
+                            {item.question}
+                          </span>
+                          <span className={`shrink-0 mt-1 w-6 h-6 flex items-center justify-center border rounded-full transition-all duration-200 ${
+                            isOpen ? "border-brand bg-brand text-white rotate-45" : "border-hairline text-muted group-hover:border-brand group-hover:text-brand"
+                          }`}>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </span>
+                        </button>
+                        <div
+                          className="overflow-hidden transition-all duration-500 ease-out"
+                          style={{
+                            maxHeight: isOpen ? "500px" : "0px",
+                            opacity: isOpen ? 1 : 0,
+                          }}
+                        >
+                          <p className="text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10" style={{ color: "#334155" }}>
+                            {item.answer}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </Reveal>
                 );
               })}

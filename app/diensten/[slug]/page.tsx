@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { services, contactInfo } from "@/lib/data";
+import { services, contactInfo, brandImages } from "@/lib/data";
 import Reveal from "../../components/Reveal";
+import BrandLogo from "../../components/BrandLogo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -105,7 +106,7 @@ export default async function ServicePage({ params }: Props) {
         <section className="py-16 lg:py-24 bg-surface">
           <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
             <Reveal>
-              <div className="mb-12 max-w-xl">
+              <div className="mb-8 max-w-xl">
                 <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand" />
                   Producten & Merken
@@ -119,11 +120,33 @@ export default async function ServicePage({ params }: Props) {
               </div>
             </Reveal>
 
+            {/* Brand logos strip */}
+            {(() => {
+              const uniqueBrands = [...new Set(service.products.map((p) => p.brand))];
+              return (
+                <Reveal delay={80}>
+                  <div className="flex flex-wrap items-center gap-6 mb-10 p-5 bg-concrete rounded-xl border border-hairline">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted shrink-0">Merken:</span>
+                    <div className="flex flex-wrap items-center gap-6">
+                      {uniqueBrands.map((brand) => (
+                        <BrandLogo
+                          key={brand}
+                          brand={brand}
+                          imageSrc={brandImages[brand] ?? ""}
+                          height={28}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })()}
+
             {/* Flat product grid */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {service.products.map((product, i) => (
                 <Reveal key={product.name} delay={i * 80}>
-                  <div className="group bg-white border border-hairline hover:border-brand/40 transition-all duration-300 overflow-hidden flex flex-col">
+                  <div className="group bg-white border border-hairline hover:border-brand/40 transition-all duration-300 overflow-hidden flex flex-col rounded-xl">
                     {/* Product Image */}
                     <div className="relative aspect-[4/3] overflow-hidden bg-concrete">
                       <Image
@@ -137,8 +160,12 @@ export default async function ServicePage({ params }: Props) {
 
                     {/* Product Info */}
                     <div className="p-5 flex flex-col flex-1">
-                      <div className="text-xs font-bold uppercase tracking-wider text-brand mb-1">
-                        {product.brand}
+                      <div className="mb-1.5 h-6 flex items-center">
+                        <BrandLogo
+                          brand={product.brand}
+                          imageSrc={brandImages[product.brand] ?? ""}
+                          height={20}
+                        />
                       </div>
                       <h4 className="text-base font-bold text-ink mb-2 group-hover:text-brand transition-colors">
                         {product.name}
@@ -187,7 +214,7 @@ export default async function ServicePage({ params }: Props) {
             </div>
 
             <Reveal delay={300}>
-              <div className="mt-14 p-8 lg:p-10 bg-mist border border-hairline relative">
+              <div className="mt-14 p-8 lg:p-10 bg-mist border border-hairline relative rounded-xl overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
                 <p className="text-muted mb-5 max-w-md">
                   Niet zeker welk product het beste bij uw situatie past? Wij adviseren u graag vrijblijvend.
@@ -223,7 +250,7 @@ export default async function ServicePage({ params }: Props) {
               <Reveal key={related.slug} delay={i * 100}>
                 <Link
                   href={`/diensten/${related.slug}`}
-                  className="group block bg-white overflow-hidden border border-hairline hover:border-brand/40 hover:shadow-lg hover:shadow-brand/5 transition-all duration-300"
+                  className="group block bg-white overflow-hidden border border-hairline hover:border-brand/40 hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 rounded-xl"
                 >
                   <div className="aspect-[3/2] relative">
                     <Image
@@ -243,32 +270,6 @@ export default async function ServicePage({ params }: Props) {
                 </Link>
               </Reveal>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-14 lg:py-20 bg-brand">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 text-center">
-          <h2 className="text-[1.75rem] sm:text-[2.25rem] font-bold text-white mb-4">
-            Klaar voor een duurzame toekomst?
-          </h2>
-          <p className="text-white/70 max-w-lg mx-auto mb-8">
-            Neem contact met ons op voor een vrijblijvend gesprek over uw wensen.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href={`/contact/?service=${service.slug}`}
-              className="px-8 py-4 bg-white text-brand text-base font-semibold rounded-full hover:bg-white/90 transition-all duration-200"
-            >
-              Offerte Aanvragen
-            </Link>
-            <a
-              href={`tel:${contactInfo.phone}`}
-              className="px-8 py-4 border-2 border-white text-white text-base font-semibold rounded-full hover:bg-white/10 transition-all duration-200"
-            >
-              {contactInfo.phoneDisplay}
-            </a>
           </div>
         </div>
       </section>

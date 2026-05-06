@@ -5,136 +5,145 @@ import Reveal from "./Reveal";
 
 export default function Footer() {
   return (
-    <footer className="bg-brand text-white overflow-hidden relative">
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-      
-      {/* Main content */}
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
-          
-          {/* Brand & Contact */}
-          <Reveal className="lg:col-span-5">
-            <div className="mb-8">
-              <Image
-                src="/images/logo.png"
-                alt="MMC Techniek B.V."
-                width={200}
-                height={60}
-                className="h-16 w-auto object-contain mb-6 brightness-0 invert"
-              />
-              <p className="text-sm text-white/80 leading-relaxed max-w-sm mb-8">
-                Specialist in warmtepompen, zonnepanelen, airco en complete verduurzaming. 
-                Sinds 2008 actief vanuit Oudewater.
-              </p>
-              
-              {/* Contact CTA */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href={`tel:${contactInfo.phone}`}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-white text-brand text-sm font-semibold rounded-full hover:bg-hairline transition-all duration-300"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                  {contactInfo.phoneDisplay}
-                </a>
-                <Link
-                  href="/contact/"
-                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white text-sm font-semibold rounded-full hover:bg-white hover:text-brand transition-all duration-300"
-                >
-                  Contact
-                </Link>
-              </div>
+    <footer>
+      {/* Pre-footer CTA band — brand-blue, distinct from dark footer below */}
+      <div className="bg-brand relative overflow-hidden">
+        {/* Subtle background texture */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-brand-deep)/40,_transparent_60%)]" />
+        <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-20 lg:py-24 text-center">
+          <Reveal>
+            <div className="inline-flex items-center gap-2.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/60 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
+              Klaar om te beginnen?
             </div>
           </Reveal>
-
-          {/* Navigatie */}
-          <Reveal delay={100} className="lg:col-span-2">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-white/50 mb-6">
-                Navigatie
-              </h4>
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link href="/" className="text-white/70 hover:text-white transition-colors duration-200">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/our-work/" className="text-white/70 hover:text-white transition-colors duration-200">
-                    Projecten
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/over-ons/" className="text-white/70 hover:text-white transition-colors duration-200">
-                    Over ons
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact/" className="text-white/70 hover:text-white transition-colors duration-200">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/veelgestelde-vragen/" className="text-white/70 hover:text-white transition-colors duration-200">
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          <Reveal delay={80}>
+            <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-[1.0] tracking-tight text-white mb-5">
+              Klaar voor een duurzame woning?
+            </h2>
           </Reveal>
-
-          {/* Contact Info */}
-          <Reveal delay={200} className="lg:col-span-3">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-white/50 mb-6">
-                Contactgegevens
-              </h4>
-              <ul className="space-y-4 text-sm">
-                <li>
-                  <a
-                    href={`mailto:${contactInfo.email}`}
-                    className="text-white/70 hover:text-white transition-colors duration-200"
-                  >
-                    {contactInfo.email}
-                  </a>
-                </li>
-                <li className="text-white/70 leading-relaxed">
-                  {contactInfo.address}
-                </li>
-                <li className="text-white/70">
-                  {contactInfo.hours}
-                </li>
-              </ul>
-            </div>
+          <Reveal delay={160}>
+            <p className="text-white/75 text-lg max-w-xl mx-auto mb-10">
+              Vraag vandaag nog een gratis en vrijblijvend adviesgesprek aan. Wij nemen binnen 24 uur contact op.
+            </p>
           </Reveal>
-
-          {/* KvK & BTW */}
-          <Reveal delay={300} className="lg:col-span-2">
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-white/50 mb-6">
-                Bedrijfsinfo
-              </h4>
-              <ul className="space-y-3 text-sm">
-                <li className="text-white/60">
-                  <span className="text-white/40">KvK:</span> {contactInfo.kvk}
-                </li>
-                <li className="text-white/60">
-                  <span className="text-white/40">BTW:</span> {contactInfo.btw}
-                </li>
-              </ul>
+          <Reveal delay={240}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/contact/"
+                className="px-8 py-4 bg-white text-brand text-sm font-bold uppercase tracking-wide rounded-full hover:bg-hairline transition-all duration-200 shadow-lg shadow-ink/10"
+              >
+                Offerte aanvragen
+              </Link>
+              <a
+                href={`tel:${contactInfo.phone}`}
+                className="px-8 py-4 border-2 border-white/60 text-white text-sm font-bold uppercase tracking-wide rounded-full hover:border-white hover:bg-white/10 transition-all duration-200"
+              >
+                {contactInfo.phoneDisplay}
+              </a>
             </div>
           </Reveal>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-white/10">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-6 text-center">
-          <p className="text-white/40 text-xs">
-            &copy; {new Date().getFullYear()} MMC Techniek B.V. Alle rechten voorbehouden.
-          </p>
+      {/* Footer navigation — carbon black, brand-blue accents */}
+      <div className="bg-[#0d0d0d] text-white">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-20">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+
+            {/* Brand */}
+            <Reveal className="lg:col-span-5">
+              <div>
+                <Image
+                  src="/images/logo.png"
+                  alt="MMC Techniek B.V."
+                  width={200}
+                  height={60}
+                  className="h-14 w-auto object-contain mb-5"
+                  style={{ filter: "brightness(0) invert(1) sepia(1) hue-rotate(165deg) saturate(3.5) brightness(0.95)" }}
+                />
+                <p className="text-sm text-white/40 leading-relaxed max-w-sm">
+                  Specialist in warmtepompen, zonnepanelen, airco en complete verduurzaming.
+                  Sinds 2008 actief vanuit Oudewater.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Navigatie */}
+            <Reveal delay={100} className="lg:col-span-2">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-brand mb-5">
+                  Navigatie
+                </h4>
+                <ul className="space-y-3 text-sm">
+                  {[
+                    { label: "Home", href: "/" },
+                    { label: "Projecten", href: "/our-work/" },
+                    { label: "Over ons", href: "/over-ons/" },
+                    { label: "Contact", href: "/contact/" },
+                    { label: "FAQ", href: "/veelgestelde-vragen/" },
+                  ].map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className="text-brand/55 hover:text-brand transition-colors duration-200">
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+
+            {/* Contact Info */}
+            <Reveal delay={200} className="lg:col-span-3">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-brand mb-5">
+                  Contactgegevens
+                </h4>
+                <ul className="space-y-3.5 text-sm">
+                  <li>
+                    <a
+                      href={`mailto:${contactInfo.email}`}
+                      className="text-brand/55 hover:text-brand transition-colors duration-200"
+                    >
+                      {contactInfo.email}
+                    </a>
+                  </li>
+                  <li className="text-white/40 leading-relaxed">
+                    {contactInfo.address}
+                  </li>
+                  <li className="text-white/40">
+                    {contactInfo.hours}
+                  </li>
+                </ul>
+              </div>
+            </Reveal>
+
+            {/* KvK & BTW */}
+            <Reveal delay={300} className="lg:col-span-2">
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-brand mb-5">
+                  Bedrijfsinfo
+                </h4>
+                <ul className="space-y-3 text-sm">
+                  <li className="text-white/35">
+                    <span className="text-white/20">KvK:</span> {contactInfo.kvk}
+                  </li>
+                  <li className="text-white/35">
+                    <span className="text-white/20">BTW:</span> {contactInfo.btw}
+                  </li>
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-brand/10">
+          <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-6 text-center">
+            <p className="text-white/20 text-xs">
+              &copy; {new Date().getFullYear()} MMC Techniek B.V. Alle rechten voorbehouden.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
