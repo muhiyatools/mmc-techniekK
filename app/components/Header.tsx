@@ -9,6 +9,7 @@ import { navItems, contactInfo } from "@/lib/data";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [servicesInView, setServicesInView] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -18,13 +19,30 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Track whether #diensten section is actually in the viewport
+  useEffect(() => {
+    const el = document.getElementById("diensten");
+    if (!el) {
+      setServicesInView(false);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => setServicesInView(entry.isIntersecting),
+      // Fires when section occupies the middle band of the viewport
+      { rootMargin: "-25% 0px -55% 0px", threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [pathname]);
+
   useEffect(() => {
     setMenuOpen(false);
     document.body.style.overflow = "";
   }, [pathname]);
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
+    if (href === "/") return pathname === "/" && !servicesInView;
+    if (href === "/#diensten") return pathname === "/" && servicesInView;
     return pathname === href || pathname.startsWith(href);
   };
 
@@ -37,8 +55,8 @@ export default function Header() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 h-[90px] lg:h-[120px] flex items-center justify-between">
-          {/* Logo — 2x bigger */}
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 h-[88px] lg:h-[118px] flex items-center justify-between">
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
@@ -48,12 +66,12 @@ export default function Header() {
               alt="MMC Techniek B.V."
               width={400}
               height={120}
-              className="h-14 lg:h-[72px] w-auto object-contain"
+              className="h-[52px] lg:h-[70px] w-auto object-contain"
               priority
             />
           </Link>
 
-          {/* Desktop nav — 2x bigger items */}
+          {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-10">
             {navItems.map((item) => (
               <Link
@@ -73,23 +91,23 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Desktop CTA — bigger */}
-          <div className="hidden lg:flex items-center gap-6">
+          {/* Desktop CTA */}
+          <div className="hidden lg:flex items-center gap-5">
             <a
               href={`tel:${contactInfo.phone}`}
-              className="text-lg font-medium text-muted hover:text-ink transition-colors duration-200 tabular"
+              className="px-7 py-3.5 border-2 border-brand text-brand text-lg font-semibold rounded-full hover:bg-brand hover:text-white transition-all duration-300"
             >
-              {contactInfo.phoneDisplay}
+              Bel Ons
             </a>
             <Link
               href="/contact/"
-              className="px-7 py-3.5 bg-brand text-white text-lg font-semibold rounded-full hover:bg-brand-hover transition-colors duration-200"
+              className="px-7 py-3.5 bg-brand text-white text-lg font-semibold rounded-full hover:bg-brand-hover transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
             >
-              Offerte aanvragen
+              Contact Ons
             </Link>
           </div>
 
-          {/* Mobile hamburger — bigger */}
+          {/* Mobile hamburger */}
           <button
             onClick={() => {
               setMenuOpen((p) => {
@@ -145,14 +163,17 @@ export default function Header() {
             transition: `all 0.4s cubic-bezier(0.22,1,0.36,1) 400ms`,
           }}
         >
-          <a href={`tel:${contactInfo.phone}`} className="block text-muted hover:text-ink text-lg font-medium tabular">
-            Bel {contactInfo.phoneDisplay}
+          <a
+            href={`tel:${contactInfo.phone}`}
+            className="flex items-center justify-center w-full py-5 border-2 border-brand text-brand text-lg font-semibold rounded-full hover:bg-brand hover:text-white transition-all"
+          >
+            Bel Ons
           </a>
           <Link
             href="/contact/"
             className="flex items-center justify-center w-full py-5 bg-brand text-white text-lg font-semibold rounded-full hover:bg-brand-hover transition-colors"
           >
-            Offerte aanvragen
+            Contact Ons
           </Link>
         </div>
       </div>

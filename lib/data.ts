@@ -3,15 +3,15 @@ export const contactInfo = {
   email: "info@mmctechniek.nl",
   phone: "+31 6 3431 1225",
   phoneDisplay: "06 3431 1225",
-  hours: "Maandag t/m vrijdag, 09:00 \u2013 18:00",
+  hours: "Maandag t/m vrijdag, 09:00 – 18:00",
   kvk: "95551255",
   btw: "NL867177536B01",
 };
 
 export const navItems = [
   { label: "Home", href: "/" },
-  { label: "Over ons", href: "/over-ons/" },
-  { label: "Contact", href: "/contact/" },
+  { label: "Diensten", href: "/#diensten", isHash: true },
+  { label: "Projecten", href: "/our-work/" },
 ];
 
 export const heroMetrics = [
@@ -81,17 +81,14 @@ export const whyChooseUs = [
   {
     title: "16+ jaar ervaring",
     description: "Sinds 2008 actief vanuit Oudewater. Dezelfde betrokkenheid, jaar na jaar.",
-    image: "/images/branding/icon-experience.png",
   },
   {
     title: "Eigen vakmensen",
     description: "Een vast team van gecertificeerde monteurs. Kwaliteit in eigen hand.",
-    image: "/images/branding/icon-team.png",
   },
   {
     title: "Service na oplevering",
     description: "Een installatie is een relatie van jaren. Wij staan paraat.",
-    image: "/images/branding/icon-support.png",
   },
 ];
 
@@ -134,17 +131,20 @@ export const clientLogos = [
 ];
 
 export const projectImages = [
-  { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Warmtepomp installatie", location: "Oudewater" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", label: "Elektrische installatie", location: "Woerden" },
-  { src: "/images/projects/20240920_112524-scaled.jpg", label: "Technisch onderhoud", location: "Oudewater" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-05-59.jpg", label: "Renovatieproject", location: "Utrecht" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-12-08.jpg", label: "Nieuwbouwproject", location: "Bodegraven" },
-  { src: "/images/projects/PHOTO-2024-12-03-12-54-08.jpg", label: "Service en onderhoud", location: "Oudewater" },
+  { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Warmtepomp installatie", location: "Oudewater", category: "Verwarming" },
+  { src: "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", label: "Elektrische installatie", location: "Woerden", category: "Elektra" },
+  { src: "/images/projects/20240920_112524-scaled.jpg", label: "Technisch onderhoud", location: "Oudewater", category: "Onderhoud" },
+  { src: "/images/projects/PHOTO-2024-12-08-15-05-59.jpg", label: "Renovatieproject", location: "Utrecht", category: "Renovatie" },
+  { src: "/images/projects/PHOTO-2024-12-08-15-12-08.jpg", label: "Nieuwbouwproject", location: "Bodegraven", category: "Nieuwbouw" },
+  { src: "/images/projects/PHOTO-2024-12-03-12-54-08.jpg", label: "Service en onderhoud", location: "Oudewater", category: "Service" },
+  { src: "/images/projects/PHOTO-2024-12-03-12-54-02_1.jpg", label: "Zonnepanelen", location: "Woerden", category: "Zonne-energie" },
+  { src: "/images/projects/20240920_120951-scaled.jpg", label: "Meterkast upgrade", location: "Oudewater", category: "Elektra" },
+  { src: "/images/projects/PHOTO-2024-12-08-15-06-00.jpg", label: "Airconditioning", location: "Bodegraven", category: "Airco" },
 ];
 
 export const certifications = [
-  { name: "NEN-3140", src: "/images/certifications/nen-3140.png" },
-  { name: "VCA", src: "/images/certifications/vca.png" },
+  { name: "NEN-3140", src: "/images/certifications/nen-3140.png", description: "Veilig werken aan elektrische installaties" },
+  { name: "VCA", src: "/images/certifications/vca.png", description: "Veiligheid, gezondheid en milieu" },
 ];
 
 export const companyStats = [

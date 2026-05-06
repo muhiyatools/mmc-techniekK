@@ -1,25 +1,47 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Logo-exact blue: #38BDF8 */
-  --color-brand:       #38BDF8;
-  --color-brand-hover: #0EA5E9;
-  --color-brand-deep:  #0284C7;
-  --color-brand-light: #E0F2FE;
-  --color-brand-glow:  #7DD3FC;
-
-  /* Neutrals — tinted toward blue hue 240 */
-  --color-base:        #F8FAFC;
-  --color-surface:     #F1F5F9;
-  --color-elevated:    #FFFFFF;
-  --color-border:      #E2E8F0;
-  --color-muted:       #64748B;
-  --color-copy:        #334155;
-  --color-ink:         #0F172A;
+  /* OKLCH Color Palette - tinted toward hue 240 */
+  --color-base:        #f8fafc; /* 98% 0.004 240 - Pearled cool off-white */
+  --color-concrete:     #f1f5f9; /* 95% 0.010 240 - Section alternate */
+  --color-surface:     #f1f5f9; /* 95% 0.010 240 - Gentle ground for content */
+  --color-mist:        #e2e8f0; /* 90% 0.018 240 - Layered shelf surface */
+  --color-hairline:    #d1d9e6; /* 82% 0.022 240 - All 1px borders and dividers */
+  --color-muted:       #64748b; /* 55% 0.025 240 - Secondary text, technical labels */
+  --color-copy:        #334155; /* 26% 0.025 240 - Body text */
+  --color-ink:         #0f172a; /* 14% 0.014 240 - Primary buttons, headlines */
+  
+  /* Brand blue - carries 30-50% of surface */
+  --color-brand:       #5A9EFF; /* 60% 0.18 250 - Logo blue */
+  --color-brand-deep:  #1A6FFF; /* 38% 0.18 250 - Hover, footer block */
+  --color-brand-hover: #3D86FF; /* Brand hover state */
+  
+  /* Iridescent accents */
+  --color-aurora-1:    #e0f2fe; /* 78% 0.10 220 - Cool cyan-blue */
+  --color-aurora-2:    #f3e8ff; /* 80% 0.09 290 - Cool violet */
 
   /* Typography */
-  --font-sans:    var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans:         var(--font-barlow), system-ui, -apple-system, sans-serif;
+  --font-display:      var(--font-barlow-condensed), var(--font-barlow), system-ui, -apple-system, sans-serif;
+}
+
+/* Custom utility classes */
+.text-border { color: var(--color-hairline); }
+.bg-elevated { background: var(--color-elevated); }
+.border-border { border-color: var(--color-hairline); }
+.bg-surface { background: var(--color-surface); }
+.bg-concrete { background: var(--color-concrete); }
+.bg-mist { background: var(--color-mist); }
+
+/* Aurora border utilities */
+.border-aurora {
+  border-image: linear-gradient(90deg, var(--color-aurora-1), var(--color-aurora-2)) 1;
+  border-width: 1px 0;
+}
+
+/* Tabular numbers */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 html {
@@ -30,8 +52,8 @@ body {
   background: var(--color-base);
   color: var(--color-copy);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -146,6 +168,23 @@ p { text-wrap: pretty; }
 /* ── Smooth section transitions ── */
 section {
   position: relative;
+}
+
+/* ── Section target highlight (for /#diensten footer links) ── */
+#diensten:target::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-brand);
+  opacity: 0;
+  animation: sectionFlash 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes sectionFlash {
+  0%   { opacity: 0.10; }
+  18%  { opacity: 0.10; }
+  100% { opacity: 0; }
 }
 
 /* ── Reduced motion ── */

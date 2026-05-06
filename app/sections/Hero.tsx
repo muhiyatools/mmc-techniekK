@@ -8,13 +8,22 @@ import Reveal from "../components/Reveal";
 
 export default function Hero() {
   const imageRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
 
   const handleScroll = useCallback(() => {
-    if (!imageRef.current) return;
     const scrollY = window.scrollY;
-    const rate = scrollY * 0.3;
-    imageRef.current.style.transform = `translateY(${rate}px) scale(1.08)`;
+    if (imageRef.current) {
+      // Image moves up at 0.35× scroll speed — smooth, not too aggressive
+      imageRef.current.style.transform = `translateY(${scrollY * 0.35}px) scale(1.12)`;
+      // Subtle fade out as we scroll away
+      const opacity = Math.max(0, 1 - scrollY * 0.0008);
+      imageRef.current.style.opacity = String(opacity);
+    }
+    if (textRef.current) {
+      // Text panel drifts slightly upward at 0.1× for depth
+      textRef.current.style.transform = `translateY(${scrollY * 0.1}px)`;
+    }
   }, []);
 
   useEffect(() => {
@@ -34,9 +43,9 @@ export default function Hero() {
   }, [handleScroll]);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-[90px] lg:pt-[120px]">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-[88px] lg:pt-[118px]">
       <div className="absolute inset-0 bg-gradient-to-br from-base via-base to-surface pointer-events-none" />
-      <div 
+      <div
         className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[120px] pointer-events-none"
         aria-hidden="true"
       />
@@ -44,7 +53,7 @@ export default function Hero() {
       <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 w-full py-16 lg:py-0">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left */}
-          <div className="order-2 lg:order-1">
+          <div ref={textRef} className="order-2 lg:order-1 will-change-transform">
             <Reveal>
               <div className="flex items-center gap-3 mb-8">
                 <span className="w-2.5 h-2.5 rounded-full bg-brand" />
@@ -82,7 +91,7 @@ export default function Hero() {
                   href={`tel:${contactInfo.phone}`}
                   className="px-9 py-4 border-2 border-border text-ink text-base font-semibold rounded-full hover:border-brand hover:text-brand transition-colors duration-300 tabular"
                 >
-                  Bel {contactInfo.phoneDisplay}
+                  Bel Ons
                 </a>
               </div>
             </Reveal>
@@ -99,10 +108,6 @@ export default function Hero() {
                     </div>
                   </div>
                 ))}
-                <div className="hidden sm:block w-px h-12 bg-border" />
-                <div className="text-sm font-semibold uppercase tracking-[0.12em] text-muted">
-                  NEN-3140 &middot; VCA
-                </div>
               </div>
             </Reveal>
           </div>
@@ -110,11 +115,11 @@ export default function Hero() {
           {/* Right — image */}
           <div className="order-1 lg:order-2 relative">
             <Reveal variant="scale" delay={150}>
-              <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden">
+              <div className="relative aspect-[4/5] lg:aspect-[4/5] rounded-3xl overflow-hidden">
                 <div
                   ref={imageRef}
                   className="absolute inset-0 will-change-transform"
-                  style={{ transform: "scale(1.08)" }}
+                  style={{ transform: "scale(1.12)" }}
                 >
                   <Image
                     src="/images/services/warmtepompen.webp"
@@ -124,22 +129,6 @@ export default function Hero() {
                     priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70 mb-1">
-                        In uitvoering
-                      </p>
-                      <p className="text-white font-semibold text-xl leading-tight">
-                        Warmtepomp &middot; Oudewater
-                      </p>
-                    </div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70 tabular">
-                      Nr 247
-                    </p>
-                  </div>
                 </div>
               </div>
             </Reveal>

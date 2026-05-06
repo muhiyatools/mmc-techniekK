@@ -1,0 +1,129 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { projectImages } from "@/lib/data";
+import Reveal from "../components/Reveal";
+
+export default function OurProjectsPage() {
+  const [lightbox, setLightbox] = useState<(typeof projectImages)[0] | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox]);
+
+  return (
+    <>
+      {/* Hero */}
+      <section className="relative pt-[88px] lg:pt-[118px]">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-24 lg:py-32">
+          <div className="max-w-3xl">
+            <Reveal>
+              <span className="inline-flex items-center gap-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-muted mb-6">
+                <span className="w-2.5 h-2.5 rounded-full bg-brand" />
+                Projecten
+              </span>
+            </Reveal>
+            <Reveal delay={100}>
+              <h1 className="text-[2.75rem] sm:text-[3.5rem] lg:text-[4.5rem] font-bold leading-[1.02] tracking-tight text-ink mb-8">
+                Onze Projecten
+              </h1>
+            </Reveal>
+            <Reveal delay={200}>
+              <p className="text-xl text-muted leading-relaxed max-w-2xl">
+                Van warmtepompen tot complete renovaties. Elk project verdient dezelfde precisie en aandacht.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Masonry Grid */}
+      <section className="pb-28 lg:pb-36 bg-base">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-5 space-y-5">
+            {projectImages.map((project, i) => (
+              <Reveal key={project.src} delay={i * 60}>
+                <button
+                  onClick={() => setLightbox(project)}
+                  className="group relative w-full overflow-hidden rounded-2xl cursor-zoom-in img-hover break-inside-avoid mb-5"
+                >
+                  <div className={`relative w-full ${
+                    i % 5 === 0 ? "aspect-[4/5]" : i % 5 === 1 ? "aspect-[3/4]" : i % 5 === 2 ? "aspect-[4/3]" : i % 5 === 3 ? "aspect-[1/1]" : "aspect-[3/4]"
+                  }`}>
+                    <Image
+                      src={project.src}
+                      alt={project.label}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-3">
+                      {project.category}
+                    </span>
+                    <p className="text-white font-semibold text-xl">{project.label}</p>
+                    <p className="text-white/70 text-sm mt-1">{project.location}</p>
+                  </div>
+                </button>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-ink/95 cursor-zoom-out"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightbox(null);
+            }}
+            aria-label="Sluiten"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <Image
+            src={lightbox.src}
+            alt={lightbox.label}
+            width={1400}
+            height={1000}
+            className="max-w-full max-h-[88vh] w-auto h-auto object-contain rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className="absolute bottom-6 inset-x-0 text-center">
+            <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-2">
+              {lightbox.category}
+            </span>
+            <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">
+              {lightbox.location}
+            </p>
+            <p className="text-white/80 text-base font-semibold mt-1">
+              {lightbox.label}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
