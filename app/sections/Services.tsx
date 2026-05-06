@@ -4,12 +4,20 @@ import Reveal from "../components/Reveal";
 
 export default function Services() {
   return (
-    <section id="diensten" className="relative py-20 lg:py-28 bg-surface overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-brand/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-aurora-1/5 rounded-full blur-3xl" />
+    <section id="diensten" className="relative py-20 lg:py-28 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/services-bg.jpg"
+          alt=""
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-surface/95" />
       </div>
+
+      {/* Decorative */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
 
