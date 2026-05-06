@@ -1,16 +1,55 @@
 "use client";
 
-import { useState } from "react";
-import { contactInfo } from "@/lib/data";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { contactInfo, services } from "@/lib/data";
+import { supabase } from "@/lib/supabase";
 import Reveal from "../components/Reveal";
 
-export default function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
+function ContactForm() {
+  const searchParams = useSearchParams();
+  const serviceParam = searchParams.get("service");
+  const productParam = searchParams.get("product");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: serviceParam || "",
+    product: productParam || "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Get selected service data
+  const selectedService = services.find((s) => s.slug === form.service);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const { error: supaError } = await supabase.from("quote_requests").insert({
+        name: form.name,
+        email: form.email,
+        phone: form.phone || null,
+        service_slug: form.service || null,
+        product_name: form.product || null,
+        message: form.message || null,
+        status: "pending",
+      });
+
+      if (supaError) throw supaError;
+
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message || "Er is iets misgegaan. Probeer het opnieuw.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -126,10 +165,21 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Pre-selected service info */}
+                    {selectedService && (
+                      <div className="p-4 bg-brand/5 border border-brand/20 rounded-xl mb-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-brand mb-1">Geselecteerde dienst</p>
+                        <p className="text-sm font-bold text-ink">{selectedService.title}</p>
+                        {form.product && (
+                          <p className="text-sm text-muted mt-1">Product: {form.product}</p>
+                        )}
+                      </div>
+                    )}
+
                     <div className="grid sm:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="name" className="block text-sm font-semibold text-ink mb-2">
-                          Naam
+                          Naam *
                         </label>
                         <input
                           id="name"
@@ -143,7 +193,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-semibold text-ink mb-2">
-                          E-mail
+                          E-mail *
                         </label>
                         <input
                           id="email"
@@ -178,21 +228,35 @@ export default function ContactPage() {
                         <select
                           id="service"
                           value={form.service}
-                          onChange={(e) => setForm({ ...form, service: e.target.value })}
+                          onChange={(e) => setForm({ ...form, service: e.target.value, product: "" })}
                           className="w-full px-4 py-3.5 rounded-xl border border-border bg-base text-ink text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all appearance-none"
                         >
                           <option value="">Kies een dienst</option>
-                          <option value="warmtepomp">Warmtepomp</option>
-                          <option value="zonnepanelen">Zonnepanelen</option>
-                          <option value="airco">Airconditioning</option>
-                          <option value="batterij">Batterijopslag</option>
-                          <option value="vloerverwarming">Vloerverwarming</option>
-                          <option value="meterkast">Meterkast</option>
-                          <option value="lift">Liften</option>
-                          <option value="overig">Overig</option>
+                          {services.map((s) => (
+                            <option key={s.slug} value={s.slug}>{s.title}</option>
+                          ))}
                         </select>
                       </div>
                     </div>
+
+                    {selectedService && selectedService.products && selectedService.products.length > 0 && (
+                      <div>
+                        <label htmlFor="product" className="block text-sm font-semibold text-ink mb-2">
+                          Product
+                        </label>
+                        <select
+                          id="product"
+                          value={form.product}
+                          onChange={(e) => setForm({ ...form, product: e.target.value })}
+                          className="w-full px-4 py-3.5 rounded-xl border border-border bg-base text-ink text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all appearance-none"
+                        >
+                          <option value="">Kies een product (optioneel)</option>
+                          {selectedService.products.map((p) => (
+                            <option key={p.name} value={p.name}>{p.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
                     <div>
                       <label htmlFor="message" className="block text-sm font-semibold text-ink mb-2">
@@ -208,11 +272,16 @@ export default function ContactPage() {
                       />
                     </div>
 
+                    {error && (
+                      <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{error}</p>
+                    )}
+
                     <button
                       type="submit"
-                      className="w-full py-4 bg-brand text-white text-sm font-semibold rounded-full hover:bg-brand-hover transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
+                      disabled={loading}
+                      className="w-full py-4 bg-brand text-white text-sm font-semibold rounded-full hover:bg-brand-hover transition-all duration-300 hover:shadow-lg hover:shadow-brand/25 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Offerte aanvragen
+                      {loading ? "Verzenden..." : "Offerte aanvragen"}
                     </button>
 
                     <p className="text-xs text-muted text-center">
@@ -226,5 +295,13 @@ export default function ContactPage() {
         </div>
       </section>
     </>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-base" />}>
+      <ContactForm />
+    </Suspense>
   );
 }

@@ -7,8 +7,7 @@ import { heroMetrics, contactInfo } from "@/lib/data";
 import Reveal from "./components/Reveal";
 import Services from "./sections/Services";
 import TrustStrip from "./sections/TrustStrip";
-import Process from "./sections/Process";
-import ProjectsPreview from "./sections/ProjectsPreview";
+import FAQSection from "./sections/FAQSection";
 
 export default function Home() {
   const imageRef = useRef<HTMLDivElement>(null);
@@ -91,7 +90,7 @@ export default function Home() {
                 <div className="flex flex-wrap gap-3 mb-10">
                   <Link
                     href="/contact/"
-                    className="px-8 py-3.5 bg-ink text-[var(--color-base)] text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
+                    className="px-8 py-3.5 bg-ink text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
                   >
                     Offerte aanvragen
                   </Link>
@@ -139,11 +138,8 @@ export default function Home() {
       {/* Trust / Why us */}
       <TrustStrip />
 
-      {/* Process */}
-      <Process />
-
-      {/* Projects preview */}
-      <ProjectsPreview />
+      {/* FAQ preview */}
+      <FAQSection />
     </>
   );
 }

@@ -49,7 +49,7 @@ export default function TrustStrip() {
               <div className="mt-10">
                 <Link
                   href="/contact/"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-ink text-[var(--color-base)] text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
+                  className="px-8 py-3.5 bg-ink text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
                 >
                   Vraag een offerte aan
                   <svg

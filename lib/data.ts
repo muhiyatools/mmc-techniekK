@@ -12,6 +12,7 @@ export const navItems = [
   { label: "Home", href: "/" },
   { label: "Diensten", href: "/#diensten", isHash: true },
   { label: "Projecten", href: "/our-work/" },
+  { label: "FAQ", href: "/veelgestelde-vragen/" },
 ];
 
 export const heroMetrics = [
@@ -20,7 +21,315 @@ export const heroMetrics = [
   { value: "24u", label: "offerte" },
 ];
 
-export const services = [
+export type PriceTier = "economy" | "medium" | "premium";
+
+export interface Product {
+  name: string;
+  brand: string;
+  price: string | null;
+  tier: PriceTier;
+  description: string;
+  techSpecs: string[];
+  image: string;
+}
+
+export interface Service {
+  slug: string;
+  title: string;
+  summary: string;
+  image: string;
+  popular: boolean;
+  caption: string;
+  description: string;
+  products: Product[];
+}
+
+export const priceTierLabels: Record<PriceTier, string> = {
+  economy: "Economy",
+  medium: "Medium",
+  premium: "Premium",
+};
+
+export const priceTierColors: Record<PriceTier, string> = {
+  economy: "bg-green-500",
+  medium: "bg-yellow-500",
+  premium: "bg-red-500",
+};
+
+export const services: Service[] = [
+  {
+    slug: "airconditioning",
+    title: "Airconditioning",
+    summary: "Stille systemen voor koelen en verwarmen.",
+    image: "/images/services/airco.jpg",
+    popular: true,
+    caption: "Stille en energiezuinige airco voor elk seizoen",
+    description: "Moderne airco systemen bieden niet alleen verkoeling in de zomer, maar ook efficiënte verwarming in de winter. Perfect voor een comfortabel binnenklimaat het hele jaar door.",
+    products: [
+      {
+        name: "LG Artcool Gallery",
+        brand: "LG",
+        price: "€2.800 - €5.000",
+        tier: "premium",
+        description: "Design wandmodel met ionisator en WiFi. Ultra-stil met maar 19 dB."
+        , techSpecs: [
+          "A+++ energielabel",
+          "19 dB geluidsniveau",
+          "Ionisator luchtzuivering",
+          "WiFi bediening",
+          "Dual Inverter Compressor",
+          "Tot 60% energiebesparing"
+        ],
+        image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "LG Prestige",
+        brand: "LG",
+        price: "€2.200 - €3.800",
+        tier: "medium",
+        description: "Slim wandmodel met Dual Inverter. Snel koelen en verwarmen.",
+        techSpecs: [
+          "A++ energielabel",
+          "22 dB geluidsniveau",
+          "Dual Inverter Compressor",
+          "WiFi bediening",
+          "Snelkoelfunctie",
+          "Slaapmodus"
+        ],
+        image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Mitsubishi Electric MSZ-AP",
+        brand: "Mitsubishi Electric",
+        price: "€2.500 - €4.200",
+        tier: "medium",
+        description: "Betrouwbaar en stil. Geschikt voor alle ruimtes.",
+        techSpecs: [
+          "A++ energielabel",
+          "20 dB geluidsniveau",
+          "3D i-See Sensor",
+          "Jet Airflow",
+          "Snelle installatie",
+          "5 jaar garantie"
+        ],
+        image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Mitsubishi Electric MSZ-LN",
+        brand: "Mitsubishi Electric",
+        price: "€3.200 - €5.500",
+        tier: "premium",
+        description: "Premium design met plasma quad filter en 3D i-See Sensor.",
+        techSpecs: [
+          "A+++ energielabel",
+          "19 dB geluidsniveau",
+          "Plasma Quad Filter",
+          "3D i-See Sensor",
+          "Natural Colour finish",
+          "7 jaar garantie"
+        ],
+        image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Daikin Perfera",
+        brand: "Daikin",
+        price: "€2.800 - €4.500",
+        tier: "medium",
+        description: "Stil en energiezuinig met Flash Streamer luchtzuivering.",
+        techSpecs: [
+          "A++ energielabel",
+          "21 dB geluidsniveau",
+          "Flash Streamer technologie",
+          "3D luchtstroom",
+          "Vochtigheidsregeling",
+          "Online controller"
+        ],
+        image: "https://images.unsplash.com/photo-1631545308772-81a0e0a3a6ff?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Daikin Stylish",
+        brand: "Daikin",
+        price: "€3.500 - €6.000",
+        tier: "premium",
+        description: "Design wandmodel met Coanda airflow en zilver-ion filter.",
+        techSpecs: [
+          "A+++ energielabel",
+          "19 dB geluidsniveau",
+          "Coanda Airflow",
+          "Zilver-ion filter",
+          "3D luchtstroom",
+          "Online controller"
+        ],
+        image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
+  },
+  {
+    slug: "zonnepanelen",
+    title: "Zonnepanelen",
+    summary: "Hoogrendementspanelen met monitoring.",
+    image: "/images/services/zonnepanelen.webp",
+    popular: true,
+    caption: "Hoogwaardige zonnepanelen voor maximale energieopbrengst",
+    description: "Zonnepanelen zijn een slimme investering voor uw energierekening. Wij leveren en installeren hoogwaardige panelen met uitgebreide monitoring.",
+    products: [
+      {
+        name: "Trina Solar Vertex",
+        brand: "Trina Solar",
+        price: "€4.500 - €7.500",
+        tier: "economy",
+        description: "Betaalbare mono-crystalline panelen met 21% rendement.",
+        techSpecs: [
+          "21% rendement",
+          "600W vermogen",
+          "25 jaar productgarantie",
+          "Half-cut cell technologie",
+          "PID-bestendig",
+          "Tot -0.35%/C temperatuurscoefficient"
+        ],
+        image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Trina Solar Duomax",
+        brand: "Trina Solar",
+        price: "€5.500 - €9.000",
+        tier: "medium",
+        description: "Dubbelglas panelen met 30 jaar garantie en 22% rendement.",
+        techSpecs: [
+          "22% rendement",
+          "650W vermogen",
+          "30 jaar productgarantie",
+          "Dubbelglas technologie",
+          "PID-bestendig",
+          "Hagelbestendig tot 35mm"
+        ],
+        image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Jinko Solar Tiger Neo",
+        brand: "Jinko",
+        price: "€5.000 - €8.000",
+        tier: "economy",
+        description: "Betaalbare TOPCon panelen met 22.5% rendement.",
+        techSpecs: [
+          "22.5% rendement",
+          "620W vermogen",
+          "25 jaar productgarantie",
+          "TOPCon technologie",
+          "Half-cut cell",
+          "Excellent low-light prestatie"
+        ],
+        image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Jinko Solar N-Type",
+        brand: "Jinko",
+        price: "€6.500 - €10.000",
+        tier: "medium",
+        description: "Premium N-type panelen met 23% rendement en 30 jaar garantie.",
+        techSpecs: [
+          "23% rendement",
+          "670W vermogen",
+          "30 jaar productgarantie",
+          "N-type TOPCon",
+          "Dubbelglas",
+          "0.3%/C temperatuurscoefficient"
+        ],
+        image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Growatt MIC",
+        brand: "Growatt",
+        price: null,
+        tier: "economy",
+        description: "Betrouwbare string omvormer met WiFi monitoring.",
+        techSpecs: [
+          "98.4% max efficiëntie",
+          "WiFi monitoring",
+          "IP65 bescherming",
+          "Dubbele MPPT",
+          "5 jaar garantie",
+          "Natuurlijke koeling"
+        ],
+        image: "https://images.unsplash.com/photo-1611365892117-00ac5ef43c90?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Enphase IQ8",
+        brand: "Enphase",
+        price: null,
+        tier: "premium",
+        description: "Premium micro-omvormer met per-paneel monitoring en back-up.",
+        techSpecs: [
+          "97.6% CEC efficiëntie",
+          "Per-paneel monitoring",
+          "Sunlight back-up",
+          "25 jaar garantie",
+          "Stroomuitval bescherming",
+          "Module-level optimalisatie"
+        ],
+        image: "https://images.unsplash.com/photo-1611365892117-00ac5ef43c90?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
+  },
+  {
+    slug: "batterijopslag",
+    title: "Batterijopslag",
+    summary: "Bewaar uw eigen stroom voor de avond.",
+    image: "/images/services/batterijopslag.webp",
+    popular: false,
+    caption: "Slimme energieopslag voor dag en nacht",
+    description: "Met een thuisbatterij slaat u de opgewekte zonne-energie op voor later gebruik. Dit maximaliseert uw eigenverbruik en reduceert energiekosten.",
+    products: [
+      {
+        name: "AlphaESS Smile",
+        brand: "AlphaESS",
+        price: "€5.500 - €8.000",
+        tier: "economy",
+        description: "Betaalbare thuisbatterij met 5.7 kWh capaciteit en modulair uitbreidbaar.",
+        techSpecs: [
+          "5.7 kWh basiscapaciteit",
+          "Modulair tot 34.2 kWh",
+          "LFP batterijtechnologie",
+          "6000+ cycli",
+          "10 jaar garantie",
+          "IP65 bescherming"
+        ],
+        image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "AlphaESS Storion",
+        brand: "AlphaESS",
+        price: "€8.000 - €12.000",
+        tier: "medium",
+        description: "High-end thuisbatterij met 13.3 kWh en zonnepaneel integratie.",
+        techSpecs: [
+          "13.3 kWh capaciteit",
+          "LFP batterijtechnologie",
+          "8000+ cycli",
+          "Hybride omvormer",
+          "10 jaar garantie",
+          "Slimme energiemanagement"
+        ],
+        image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Sigenergy SigenStor",
+        brand: "Sigenergy",
+        price: "€7.000 - €10.000",
+        tier: "premium",
+        description: "Premium batterij met AI-optimalisatie en EV-laden integratie.",
+        techSpecs: [
+          "5-48 kWh configuratie",
+          "LFP batterijtechnologie",
+          "AI energieoptimalisatie",
+          "EV-laden integratie",
+          "15 jaar garantie",
+          "97% round-trip efficiëntie"
+        ],
+        image: "https://images.unsplash.com/photo-1620770679803-964c922db3c5?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
+  },
   {
     slug: "warmtepompen",
     title: "Warmtepompen",
@@ -30,109 +339,113 @@ export const services = [
     caption: "Moderne warmtepomp installatie voor optimaal comfort en energiebesparing",
     description: "Een warmtepomp is de basis voor een duurzame en energiezuinige woning. Wij installeren zowel hybride als full-electric warmtepompen, afgestemd op uw specifieke situatie en wensen.",
     products: [
-      { name: "Nefit Bosch Warmtepomp", price: "€4.500 - €7.500", description: "Hybride systeem" },
-      { name: "Daikin Altherma", price: "€5.000 - €8.000", description: "Full-electric" },
-      { name: "Viessmann Vitocal", price: "€5.500 - €8.500", description: "All-electric" },
-      { name: "Atlantic Explorer", price: "€4.000 - €6.500", description: "Hybride" },
-    ]
-  },
-  {
-    slug: "zonnepanelen",
-    title: "Zonnepanelen",
-    summary: "Hoogrendementspanelen met monitoring.",
-    image: "/images/services/zonnepanelen.webp",
-    caption: "Hoogwaardige zonnepanelen voor maximale energieopbrengst",
-    description: "Zonnepanelen zijn een slimme investering voor uw energierekening. Wij leveren en installeren hoogwaardige panelen met uitgebreide monitoring.",
-    products: [
-      { name: "Sunpower Maxeon", price: "€3.500 - €6.000", description: "Mono-crystalline" },
-      { name: "LG Neon R", price: "€3.000 - €5.500", description: "Premium" },
-      { name: "Solarwatt Vision", price: null, description: "Glas-glas" },
-      { name: "Growatt Omvormer", price: null, description: "Monitoring" },
-    ]
-  },
-  {
-    slug: "airconditioning",
-    title: "Airconditioning",
-    summary: "Stille systemen voor koelen en verwarmen.",
-    image: "/images/services/airco.jpg",
-    caption: "Stille en energiezuinige airco voor elk seizoen",
-    description: "Moderne airco systemen bieden niet alleen verkoeling in de zomer, maar ook efficiënte verwarming in de winter. Perfect voor een comfortabel binnenklimaat het hele jaar door.",
-    products: [
-      { name: "Daikin Perfera", price: "€2.500 - €4.500", description: "Wandmodel" },
-      { name: "Mitsubishi Heavy", price: "€2.200 - €4.000", description: "Stil" },
-      { name: "LG Artcool Gallery", price: "€2.800 - €5.000", description: "Design" },
-      { name: "Gree G-Power", price: "€1.800 - €3.500", description: "Budget" },
-    ]
-  },
-  {
-    slug: "batterijopslag",
-    title: "Batterijopslag",
-    summary: "Bewaar uw eigen stroom voor de avond.",
-    image: "/images/services/batterijopslag.webp",
-    caption: "Slimme energieopslag voor dag en nacht",
-    description: "Met een thuisbatterij slaat u de opgewekte zonne-energie op voor later gebruik. Dit maximaliseert uw eigenverbruik en reduceert energiekosten.",
-    products: [
-      { name: "Tesla Powerwall 3", price: "€8.000 - €10.000", description: "13.5 kWh" },
-      { name: "BYD HVS", price: "€5.000 - €8.000", description: "Modulair" },
-      { name: "Sonnen Batterie", price: "€6.000 - €9.000", description: "Smart" },
-      { name: "FoxESS", price: "€4.500 - €7.000", description: "Hybride" },
-    ]
+      {
+        name: "Nefit Bosch Compress 7000i",
+        brand: "Nefit Bosch",
+        price: "€4.500 - €7.500",
+        tier: "economy",
+        description: "Hybride warmtepomp met hoog rendement voor woningen met bestaande cv.",
+        techSpecs: [
+          "A+ energielabel",
+          "COP tot 4.5",
+          "Lucht/water technologie",
+          "Ingebouwde boiler",
+          "Modulerend vermogen",
+          "Stil: 48 dB"
+        ],
+        image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
+      },
+      {
+        name: "Daikin Altherma 3",
+        brand: "Daikin",
+        price: "€8.000 - €12.000",
+        tier: "premium",
+        description: "Full-electric warmtepomp met geïntegreerde boiler en vloerverwarming.",
+        techSpecs: [
+          "A+++ energielabel",
+          "COP tot 5.0",
+          "Lucht/water",
+          "230L geïntegreerde boiler",
+          "Smart grid ready",
+          "Stil: 42 dB"
+        ],
+        image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
   },
   {
     slug: "vloerverwarming",
     title: "Vloerverwarming",
     summary: "Ingregeld voor lage aanvoertemperatuur.",
     image: "/images/services/vloerverwarming.webp",
+    popular: false,
     caption: "Comfortabele vloerverwarming met lage temperatuur",
     description: "Vloerverwarming is de meest comfortabele en efficiënte manier van verwarmen. Perfect te combineren met een warmtepomp voor optimaal rendement.",
     products: [
-      { name: "Uponor Slimfit", price: null, description: "Noppenplaat" },
-      { name: "Raychem T2Blue", price: null, description: "Elektrisch" },
-      { name: "Danfoss ECtemp", price: null, description: "Thermostaat" },
-      { name: "Warmup", price: null, description: "Folieverwarming" },
-    ]
+      {
+        name: "Uponor Tacker",
+        brand: "Uponor",
+        price: null,
+        tier: "medium",
+        description: "Professioneel vloerverwarmingssysteem met noppenplaat en PE-RT leiding.",
+        techSpecs: [
+          "PE-RT leidingen",
+          "Noppenplaat isolatie",
+          "Lage aanvoertemperatuur",
+          "50 jaar levensduur",
+          "Verdeelunit inbegrepen",
+          "Geschikt voor alle vloeren"
+        ],
+        image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
   },
   {
     slug: "meterkast-liften",
     title: "Meterkast & Liften",
     summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.",
     image: "/images/services/meterkast.webp",
+    popular: false,
     caption: "Professionele meterkast uitbreiding en liften",
     description: "Van een volledige meterkast vernieuwing tot het plaatsen van een traplift. Wij zorgen voor een veilige en moderne elektrische installatie.",
     products: [
-      { name: "Groepenkast Vernieuwing", price: "€1.500 - €3.000", description: "Complete" },
-      { name: "Laadpaal Aansluiting", price: "€800 - €1.500", description: "32A" },
-      { name: "Traplift", price: null, description: "Personenlift" },
-      { name: "Keuring NEN3140", price: "€200 - €400", description: "Inspectie" },
-    ]
+      {
+        name: "Hager groepenkast",
+        brand: "Hager",
+        price: "€1.500 - €3.000",
+        tier: "medium",
+        description: "Complete groepenkast vervanging met ruimte voor laadpaal en zonnepanelen.",
+        techSpecs: [
+          "3-fase aansluiting",
+          "Ruimte voor 12 groepen",
+          "Aardlekautomaten",
+          "Overspanningsbeveiliging",
+          "Keuringscertificaat",
+          "5 jaar garantie"
+        ],
+        image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
+      },
+    ],
   },
   {
     slug: "onderhoud",
     title: "Onderhoud",
     summary: "Service en onderhoud voor alle installaties.",
     image: "/images/services/warmtepompen.webp",
+    popular: false,
     caption: "Service en onderhoud voor langdurige prestaties",
     description: "Regelmatig onderhoud verlengt de levensduur van uw installaties en houdt ze optimaal presteren. Wij bieden onderhoudscontracten op maat.",
-    products: [
-      { name: "Warmtepomp Onderhoud", price: "€150 - €250", description: "Jaarlijks" },
-      { name: "CV Ketel Service", price: "€100 - €200", description: "Periodiek" },
-      { name: "Airco Reiniging", price: "€120 - €180", description: "Jaarlijks" },
-      { name: "Onderhoudscontract", price: null, description: "All-in" },
-    ]
+    products: [],
   },
   {
     slug: "renovaties",
     title: "Renovaties",
     summary: "Complete woningverduurzaming naar label A++.",
     image: "/images/services/vloerverwarming.webp",
+    popular: false,
     caption: "Complete woningverduurzaming",
     description: "Wij renoveren uw woning naar energielabel A++ met een combinatie van isolatie, verwarming en duurzame energiesystemen.",
-    products: [
-      { name: "isolatie", price: "€2.000 - €5.000", description: "Vloer/gevel/dak" },
-      { name: "Zonnepanelen Systeem", price: "€4.000 - €8.000", description: "Complete" },
-      { name: "Warmtepomp Installatie", price: "€5.000 - €8.000", description: "All-electric" },
-      { name: "VENTILATIE", price: "€1.500 - €3.000", description: "Balansventilatie" },
-    ]
+    products: [],
   },
 ];
 
@@ -234,4 +547,31 @@ export const companyStats = [
   { value: "2500+", label: "Projecten opgeleverd" },
   { value: "8", label: "Vakmensen in dienst" },
   { value: "100%", label: "Eigen personeel" },
+];
+
+export const faqItems = [
+  {
+    question: "Wat kost een warmtepomp?",
+    answer: "De kosten van een warmtepomp variëren tussen €4.500 en €8.500, afhankelijk van het type (hybride of all-electric) en uw specifieke situatie. Wij maken graag een vrijblijvende offerte op maat.",
+  },
+  {
+    question: "Hoe snel kan ik een offerte verwachten?",
+    answer: "Na een eerste gesprek en eventueel een bezoek ter plaatse ontvangt u binnen 24 uur een heldere, gedetailleerde offerte zonder verborgen kosten.",
+  },
+  {
+    question: "Werken jullie ook buiten Oudewater?",
+    answer: "Ja, wij zijn actief in de hele regio Utrecht, Woerden, Bodegraven en omgeving. Neem contact op om te bespreken of uw locatie binnen ons werkgebied valt.",
+  },
+  {
+    question: "Kan ik subsidie krijgen voor een warmtepomp of zonnepanelen?",
+    answer: "In veel gevallen komt u in aanmerking voor ISDE-subsidie of lokale duurzaamheidsregelingen. Wij adviseren u hier graag over tijdens het intakegesprek.",
+  },
+  {
+    question: "Bieden jullie ook onderhoud aan na installatie?",
+    answer: "Absoluut. Wij bieden verschillende onderhoudscontracten aan zodat uw installaties jarenlang optimaal blijven presteren. Service na oplevering is voor ons vanzelfsprekend.",
+  },
+  {
+    question: "Wat is het verschil tussen hybride en all-electric?",
+    answer: "Een hybride warmtepomp werkt samen met uw bestaande cv-ketel en is ideaal voor woningen die nog niet volledig geïsoleerd zijn. Een all-electric systeem vervangt de ketel volledig en is geschikt voor goed geïsoleerde woningen.",
+  },
 ];

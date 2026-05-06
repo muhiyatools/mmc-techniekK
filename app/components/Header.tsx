@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems, contactInfo, services } from "@/lib/data";
@@ -33,22 +32,19 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 h-20 transition-all duration-300 border-b ${
-          scrolled ? "bg-base/90 backdrop-blur-md border-hairline" : "bg-base/80 backdrop-blur-sm border-transparent"
+          scrolled ? "bg-base/95 backdrop-blur-md border-hairline" : "bg-base/85 backdrop-blur-sm border-transparent"
         }`}
       >
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo — sharp edge treatment */}
           <Link
             href="/"
             className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
           >
-            <Image
+            <img
               src="/images/logo.png"
               alt="MMC Techniek B.V."
-              width={300}
-              height={90}
               className="h-11 lg:h-12 w-auto object-contain"
-              priority
             />
           </Link>
 
@@ -76,20 +72,49 @@ export default function Header() {
                       </svg>
                     </button>
 
-                    {/* Dropdown */}
+                    {/* Wide dropdown with icons */}
                     {dropdownOpen && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-60 bg-mist border border-hairline overflow-hidden">
-                        <div className="py-2">
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[420px] bg-mist border border-hairline shadow-2xl shadow-ink/10 overflow-hidden">
+                        {/* Header */}
+                        <div className="px-4 py-3 bg-concrete border-b border-hairline">
+                          <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                            Onze diensten
+                          </span>
+                        </div>
+
+                        {/* Service list with icons */}
+                        <div className="grid grid-cols-2 gap-px bg-hairline">
                           {services.map((service) => (
                             <Link
                               key={service.slug}
                               href={`/diensten/${service.slug}`}
                               onClick={() => setDropdownOpen(false)}
-                              className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-brand/5 hover:text-brand transition-colors duration-150"
+                              className="flex items-center gap-3 px-4 py-3 bg-mist hover:bg-concrete transition-colors duration-150"
                             >
-                              {service.title}
+<div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+                                <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  {service.slug === "warmtepompen" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.5 2A4.5 4.5 0 0114 6.5V10l4 4 4-4V6.5A4.5 4.5 0 0114.5 2 4.5 4.5 0 0110 6.5 4.5 4.5 0 015.5 2 4.5 4.5 0 019.5 2z" />}
+                                  {service.slug === "zonnepanelen" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2m0 16v2M3 12h2m14 2h2m-3-7l-4-4m0 0l4-4m-4 4l4 4m4-12l-4 4m0 0l4 4m-4-4l-4 4" />}
+                                  {service.slug === "airconditioning" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2v10m4-6.5a4 4 0 00-8 0v10M5 10h14" />}
+                                  {service.slug === "batterijopslag" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10h4v4h-4v-4zM7 10h4v4H7v-4zM13 4h4v4h-4V4zM7 4h4v4H7V4z" />}
+                                  {service.slug === "vloerverwarming" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 18V6l8-2 8 2v12m-8 0h8m-16 0h16" />}
+                                  {service.slug === "meterkast-liften" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v16m0-12h4m4 0h8m4 0h4M8 8h8v8H8V8z" />}
+                                  {service.slug === "onderhoud" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.5 6h-5l-1 6h7l-1-6zm-3 9a3 3 0 110-6 3 3 0 010 6z" />}
+                                  {service.slug === "renovaties" && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 21h18M9 4v7l3 3 3-3V4M6 21v-6m12 6V8" />}
+                                </svg>
+                              </div>
+                              <span className="text-sm font-medium text-ink group-hover:text-brand">
+                                {service.title}
+                              </span>
                             </Link>
                           ))}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="px-4 py-2.5 bg-concrete border-t border-hairline">
+                          <Link href="/#diensten" onClick={() => setDropdownOpen(false)} className="text-xs font-bold uppercase tracking-[0.12em] text-brand hover:text-brand-deep">
+                            Bekijk alle diensten →
+                          </Link>
                         </div>
                       </div>
                     )}
@@ -111,17 +136,20 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTAs */}
+          {/* CTAs — sharp edge buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <a
               href={`tel:${contactInfo.phone}`}
-              className="px-5 py-2.5 border border-ink text-ink text-sm font-semibold rounded-full hover:border-brand hover:text-brand transition-all duration-200"
+              className="group flex items-center gap-2 px-4 py-2.5 border border-brand text-brand text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand hover:text-white transition-all duration-200"
             >
-              Bel Ons
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              Bel ons
             </a>
             <Link
               href="/contact/"
-              className="px-5 py-2.5 bg-ink text-[var(--color-base)] text-sm font-semibold rounded-full hover:bg-brand transition-all duration-200"
+              className="px-5 py-2.5 bg-brand text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand-deep transition-all duration-200"
             >
               Offerte
             </Link>
@@ -185,19 +213,27 @@ export default function Header() {
               )}
             </div>
           ))}
+          <Link
+            href="/veelgestelde-vragen/"
+            onClick={() => setMenuOpen(false)}
+            className="py-4 border-b border-hairline text-xl font-bold text-ink flex items-center justify-between"
+          >
+            <span className={pathname === "/veelgestelde-vragen/" ? "text-brand" : ""}>FAQ</span>
+            {pathname === "/veelgestelde-vragen/" && <span className="w-2 h-2 rounded-full bg-brand" />}
+          </Link>
         </nav>
         <div className="px-6 pt-8 space-y-4">
           <a
             href={`tel:${contactInfo.phone}`}
-            className="flex items-center justify-center w-full py-4 border border-ink text-ink font-semibold rounded-full hover:bg-ink hover:text-[var(--color-base)] transition-all"
+            className="flex items-center justify-center w-full py-4 border border-brand text-brand font-semibold rounded-full hover:bg-brand hover:text-white transition-all"
           >
-            Bel Ons
+            Bel ons
           </a>
           <Link
             href="/contact/"
-            className="flex items-center justify-center w-full py-4 bg-ink text-[var(--color-base)] font-semibold rounded-full hover:bg-brand transition-colors"
+            className="flex items-center justify-center w-full py-4 bg-brand text-white font-semibold rounded-full hover:bg-brand-deep transition-colors"
           >
-            Offerte Aanvragen
+            Offerte aanvragen
           </Link>
         </div>
       </div>
