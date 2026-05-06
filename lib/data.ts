@@ -10,8 +10,7 @@ export const contactInfo = {
 
 export const navItems = [
   { label: "Home", href: "/" },
-  { label: "Diensten", href: "/#diensten", isHash: true },
-  { label: "Producten", href: "/producten/" },
+  { label: "Diensten", href: "/aanbod/", isHash: true },
   { label: "Projecten", href: "/our-work/" },
   { label: "Over ons", href: "/over-ons/" },
   { label: "FAQ", href: "/veelgestelde-vragen/" },

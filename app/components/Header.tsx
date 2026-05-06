@@ -89,7 +89,8 @@ export default function Header() {
   const normalize = (p: string) => p.replace(/\/$/, "") || "/";
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/#diensten") return pathname.startsWith("/diensten");
+    if (href === "/aanbod/")
+      return normalize(pathname).startsWith("/aanbod") || pathname.startsWith("/diensten");
     return normalize(pathname) === normalize(href);
   };
 
@@ -116,244 +117,254 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-50">
-        {/* Main nav row */}
+        {/* Main nav row — 3-zone layout */}
         <div className="bg-white h-[70px] shadow-[0_1px_0_0_rgba(15,23,42,0.06)]">
-          <div className="w-full px-8 lg:px-14 h-full flex items-center gap-10">
+          <div className="w-full px-6 lg:px-10 h-full flex items-center">
 
-            {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
-            >
-              <Image
-                src="/images/logo.png"
-                alt="MMC Techniek B.V."
-                width={300}
-                height={90}
-                className="h-[42px] lg:h-[48px] w-auto object-contain"
-                priority
-              />
-            </Link>
+            {/* ── LEFT: Logo + Nav ── */}
+            <div className="flex items-center gap-5 lg:gap-7 shrink-0">
+              <Link
+                href="/"
+                className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+              >
+                <Image
+                  src="/images/logo.png"
+                  alt="MMC Techniek B.V."
+                  width={300}
+                  height={90}
+                  className="h-[38px] lg:h-[44px] w-auto object-contain"
+                  priority
+                />
+              </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-0.5">
-              {navItems.map((item) => (
-                <div key={item.href} className="relative" ref={item.isHash ? dropdownRef : undefined}>
-                  {item.isHash ? (
-                    <>
-                      <button
-                        onClick={() => setDropdownOpen((p) => !p)}
-                        className={`relative flex items-center gap-1.5 px-4 py-2.5 text-[0.9375rem] font-semibold transition-colors duration-200 rounded-md ${
-                          isActive(item.href) || dropdownOpen
+              {/* Desktop nav */}
+              <nav className="hidden lg:flex items-center gap-0.5">
+                {navItems.map((item) => (
+                  <div
+                    key={item.href}
+                    className="relative"
+                    ref={item.isHash ? dropdownRef : undefined}
+                  >
+                    {item.isHash ? (
+                      <>
+                        <button
+                          onClick={() => setDropdownOpen((p) => !p)}
+                          className={`relative flex items-center gap-1.5 px-3.5 py-2 text-[0.875rem] font-semibold transition-colors duration-200 rounded-md ${
+                            isActive(item.href) || dropdownOpen
+                              ? "text-brand bg-brand/5"
+                              : "text-ink hover:text-brand hover:bg-brand/5"
+                          }`}
+                        >
+                          {item.label}
+                          <svg
+                            className={`w-3 h-3 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        {/* Aanbod dropdown */}
+                        {dropdownOpen && (
+                          <div className="absolute top-full left-0 mt-2 w-[540px] max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden">
+                            <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
+                            <div className="p-4 grid grid-cols-2 gap-1">
+                              {services.map((service) => (
+                                <Link
+                                  key={service.slug}
+                                  href={`/aanbod/?dienst=${service.slug}`}
+                                  onClick={() => setDropdownOpen(false)}
+                                  className="group flex items-start gap-3 p-3 rounded-lg hover:bg-brand/5 transition-colors duration-150"
+                                >
+                                  <div className="shrink-0 w-9 h-9 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-all duration-150">
+                                    {serviceIcons[service.slug] ?? (
+                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                      </svg>
+                                    )}
+                                  </div>
+                                  <div className="min-w-0 pt-0.5">
+                                    <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-tight mb-0.5">
+                                      {service.title}
+                                    </p>
+                                    <p className="text-xs text-muted leading-relaxed line-clamp-1">
+                                      {service.summary}
+                                    </p>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                            <div className="border-t border-hairline px-4 py-3 bg-concrete flex items-center justify-between">
+                              <Link
+                                href="/aanbod/"
+                                onClick={() => setDropdownOpen(false)}
+                                className="text-xs font-bold text-muted hover:text-ink transition-colors"
+                              >
+                                Bekijk volledig aanbod
+                              </Link>
+                              <Link
+                                href="/contact/"
+                                onClick={() => setDropdownOpen(false)}
+                                className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
+                              >
+                                Offerte aanvragen →
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={`relative flex items-center px-3.5 py-2 text-[0.875rem] font-semibold transition-colors duration-200 rounded-md ${
+                          isActive(item.href)
                             ? "text-brand bg-brand/5"
                             : "text-ink hover:text-brand hover:bg-brand/5"
                         }`}
                       >
                         {item.label}
-                        <svg
-                          className={`w-3.5 h-3.5 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
-                          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-                      {/* Rich dropdown */}
-                      {dropdownOpen && (
-                        <div className="absolute top-full left-0 mt-2 w-[520px] max-w-[calc(100vw-8rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden">
-                          <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
-                          <div className="p-4 grid grid-cols-2 gap-1">
-                            {services.map((service) => (
-                              <Link
-                                key={service.slug}
-                                href={`/diensten/${service.slug}`}
-                                onClick={() => setDropdownOpen(false)}
-                                className="group flex items-start gap-3 p-3 rounded-lg hover:bg-brand/5 transition-colors duration-150"
-                              >
-                                <div className="shrink-0 w-9 h-9 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-all duration-150">
-                                  {serviceIcons[service.slug] ?? (
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                  )}
-                                </div>
-                                <div className="min-w-0 pt-0.5">
-                                  <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-tight mb-0.5">
-                                    {service.title}
-                                  </p>
-                                  <p className="text-xs text-muted leading-relaxed line-clamp-1">
-                                    {service.summary}
-                                  </p>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                          <div className="border-t border-hairline px-4 py-3 bg-concrete flex items-center justify-between">
-                            <span className="text-xs text-muted">
-                              16+ jaar vakmanschap in de regio Utrecht
-                            </span>
-                            <Link
-                              href="/contact/"
-                              onClick={() => setDropdownOpen(false)}
-                              className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
-                            >
-                              Offerte aanvragen →
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className={`relative flex items-center px-4 py-2.5 text-[0.9375rem] font-semibold transition-colors duration-200 rounded-md ${
-                        isActive(item.href)
-                          ? "text-brand bg-brand/5"
-                          : "text-ink hover:text-brand hover:bg-brand/5"
-                      }`}
-                    >
-                      {item.label}
-                      {isActive(item.href) && (
-                        <span className="absolute bottom-1 left-4 right-4 h-[2px] bg-brand rounded-full" />
-                      )}
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </nav>
-
-            {/* Search — always open, large */}
-            <div ref={searchRef} className="hidden lg:flex items-center flex-1 justify-end mr-4 relative max-w-md">
-              <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-white hover:border-brand/30 transition-colors duration-200">
-                <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
-                  placeholder="Zoek diensten of producten..."
-                  className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-3"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="shrink-0 mr-3 text-muted hover:text-ink transition-colors"
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-
-              {/* Search results dropdown */}
-              {showResults && (
-                <div className="absolute top-full right-0 mt-2 w-96 max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden z-50">
-                  <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
-
-                  {!hasResults && (
-                    <div className="px-4 py-6 text-center">
-                      <p className="text-sm text-muted">Geen resultaten voor</p>
-                      <p className="text-sm font-bold text-ink mt-0.5">
-                        &ldquo;{searchQuery}&rdquo;
-                      </p>
-                    </div>
-                  )}
-
-                  {matchedServices.length > 0 && (
-                    <div>
-                      <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
-                        Diensten
-                      </div>
-                      {matchedServices.slice(0, 4).map((service) => (
-                        <Link
-                          key={service.slug}
-                          href={`/diensten/${service.slug}`}
-                          onClick={() => setSearchQuery("")}
-                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
-                        >
-                          <div className="shrink-0 w-7 h-7 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand">
-                            {serviceIcons[service.slug] ?? (
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-ink leading-tight">{service.title}</p>
-                            <p className="text-xs text-muted line-clamp-1">{service.summary}</p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  {matchedProducts.length > 0 && (
-                    <div className={matchedServices.length > 0 ? "border-t border-hairline" : ""}>
-                      <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
-                        Producten
-                      </div>
-                      {matchedProducts.slice(0, 5).map((product) => (
-                        <Link
-                          key={product.name}
-                          href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
-                          onClick={() => setSearchQuery("")}
-                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
-                        >
-                          <div className="shrink-0 w-7 h-7 rounded bg-concrete border border-hairline flex items-center justify-center">
-                            <svg className="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-semibold text-ink leading-tight">{product.name}</p>
-                            <p className="text-xs text-muted">{product.brand}</p>
-                          </div>
-                          {product.price && (
-                            <span className="text-xs font-bold text-ink tabular-nums shrink-0">
-                              {product.price.split(" - ")[0]}+
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="border-t border-hairline px-4 py-2.5 bg-concrete flex items-center justify-between">
-                    <span className="text-xs text-muted">
-                      {matchedServices.length + matchedProducts.length} resultaten
-                    </span>
-                    <Link
-                      href="/producten/"
-                      onClick={() => setSearchQuery("")}
-                      className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
-                    >
-                      Alle producten →
-                    </Link>
+                        {isActive(item.href) && (
+                          <span className="absolute bottom-1 left-3.5 right-3.5 h-[2px] bg-brand rounded-full" />
+                        )}
+                      </Link>
+                    )}
                   </div>
-                </div>
-              )}
+                ))}
+              </nav>
             </div>
 
-            {/* CTA buttons */}
-            <div className="hidden lg:flex items-center gap-3">
+            {/* ── CENTER: Search bar (takes all flex-1 space, centered) ── */}
+            <div ref={searchRef} className="hidden lg:flex flex-1 justify-center px-6 relative">
+              <div className="w-full max-w-[640px] relative">
+                <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-white hover:border-brand/40 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all duration-200">
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
+                    placeholder="Zoek diensten of producten..."
+                    className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-3"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="shrink-0 mr-3 text-muted hover:text-ink transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                {/* Search results dropdown */}
+                {showResults && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[420px] max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden z-50">
+                    <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
+
+                    {!hasResults && (
+                      <div className="px-4 py-6 text-center">
+                        <p className="text-sm text-muted">Geen resultaten voor</p>
+                        <p className="text-sm font-bold text-ink mt-0.5">&ldquo;{searchQuery}&rdquo;</p>
+                      </div>
+                    )}
+
+                    {matchedServices.length > 0 && (
+                      <div>
+                        <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
+                          Diensten
+                        </div>
+                        {matchedServices.slice(0, 4).map((service) => (
+                          <Link
+                            key={service.slug}
+                            href={`/aanbod/?dienst=${service.slug}`}
+                            onClick={() => setSearchQuery("")}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
+                          >
+                            <div className="shrink-0 w-7 h-7 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand">
+                              {serviceIcons[service.slug] ?? (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-ink leading-tight">{service.title}</p>
+                              <p className="text-xs text-muted line-clamp-1">{service.summary}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {matchedProducts.length > 0 && (
+                      <div className={matchedServices.length > 0 ? "border-t border-hairline" : ""}>
+                        <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
+                          Producten
+                        </div>
+                        {matchedProducts.slice(0, 5).map((product) => (
+                          <Link
+                            key={product.name}
+                            href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
+                            onClick={() => setSearchQuery("")}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
+                          >
+                            <div className="shrink-0 w-7 h-7 rounded bg-concrete border border-hairline flex items-center justify-center">
+                              <svg className="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                              </svg>
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-semibold text-ink leading-tight">{product.name}</p>
+                              <p className="text-xs text-muted">{product.brand}</p>
+                            </div>
+                            {product.price && (
+                              <span className="text-xs font-bold text-ink tabular-nums shrink-0">
+                                {product.price.split(" - ")[0]}+
+                              </span>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="border-t border-hairline px-4 py-2.5 bg-concrete flex items-center justify-between">
+                      <span className="text-xs text-muted">
+                        {matchedServices.length + matchedProducts.length} resultaten
+                      </span>
+                      <Link
+                        href="/aanbod/"
+                        onClick={() => setSearchQuery("")}
+                        className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
+                      >
+                        Volledig aanbod →
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── RIGHT: CTA buttons ── */}
+            <div className="hidden lg:flex items-center gap-2.5 shrink-0">
               <a
                 href={`tel:${contactInfo.phone}`}
-                className="flex items-center gap-2 px-5 py-2.5 border border-hairline text-ink text-sm font-semibold rounded-full hover:border-brand hover:text-brand transition-all duration-200"
+                className="flex items-center gap-2 px-4 py-2.5 border border-hairline text-ink text-sm font-semibold rounded-full hover:border-brand hover:text-brand transition-all duration-200 whitespace-nowrap"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                {contactInfo.phoneDisplay}
+                Bel ons
               </a>
               <Link
                 href="/contact/"
-                className="px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-full hover:bg-brand-deep transition-all duration-200 shadow-sm shadow-brand/20 uppercase tracking-wide"
+                className="px-5 py-2.5 bg-brand text-white text-sm font-bold rounded-full hover:bg-brand-deep transition-all duration-200 shadow-sm shadow-brand/20 uppercase tracking-wide whitespace-nowrap"
               >
                 Offerte aanvragen
               </Link>
@@ -394,22 +405,47 @@ export default function Header() {
             : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
-        <nav className="flex flex-col px-8 pt-[88px] gap-0">
+        {/* Mobile search */}
+        <div className="px-6 pt-[88px] pb-4 border-b border-hairline">
+          <div className="flex items-center border border-hairline rounded-full overflow-hidden bg-concrete">
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Zoek diensten of producten..."
+              className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
+            />
+          </div>
+        </div>
+
+        <nav className="flex flex-col px-6 gap-0">
           {navItems.map((item) => (
             <div key={item.href}>
               {item.isHash ? (
                 <div className="py-5 border-b border-hairline/60">
-                  <div className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    Diensten
-                  </div>
-                  <div className="pl-4 grid grid-cols-2 gap-2">
+                  <Link
+                    href="/aanbod/"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-lg font-bold text-ink mb-4 flex items-center justify-between"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+                      {item.label}
+                    </span>
+                    <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                  <div className="pl-4 grid grid-cols-2 gap-1.5">
                     {services.map((service) => (
                       <Link
                         key={service.title}
-                        href={`/diensten/${service.slug}`}
+                        href={`/aanbod/?dienst=${service.slug}`}
                         onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-2 rounded-lg text-sm text-muted hover:text-brand hover:bg-brand/5 transition-colors"
+                        className="flex items-center gap-2 py-2 px-2 rounded-lg text-sm text-muted hover:text-brand hover:bg-brand/5 transition-colors"
                       >
                         <span className="text-brand shrink-0">{serviceIcons[service.slug]}</span>
                         {service.title}
@@ -431,7 +467,8 @@ export default function Header() {
             </div>
           ))}
         </nav>
-        <div className="px-8 pt-8 space-y-3">
+
+        <div className="px-6 pt-6 space-y-3">
           <a
             href={`tel:${contactInfo.phone}`}
             className="flex items-center justify-center gap-2 w-full py-4 border-2 border-brand text-brand font-bold rounded-full hover:bg-brand hover:text-white transition-all"
