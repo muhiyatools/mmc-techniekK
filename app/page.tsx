@@ -157,7 +157,7 @@ export default function Home() {
                 </h2>
               </div>
               <p className="text-sm text-muted max-w-xs leading-relaxed">
-                Plus 2500+ tevreden particuliere klanten in Utrecht en omgeving.
+                Van particulier tot multinational: kwaliteit staat voorop.
               </p>
             </div>
           </Reveal>

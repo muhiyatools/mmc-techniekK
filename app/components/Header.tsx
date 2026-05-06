@@ -58,7 +58,6 @@ const serviceIcons: Record<string, React.ReactNode> = {
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -69,37 +68,23 @@ export default function Header() {
   useEffect(() => {
     setMenuOpen(false);
     setDropdownOpen(false);
-    setSearchOpen(false);
     setSearchQuery("");
     document.body.style.overflow = "";
   }, [pathname]);
 
-  // Click-outside to close dropdown + search
+  // Click-outside to close dropdown + clear search
   useEffect(() => {
     const onMousedown = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSearchOpen(false);
         setSearchQuery("");
       }
     };
     document.addEventListener("mousedown", onMousedown);
     return () => document.removeEventListener("mousedown", onMousedown);
   }, []);
-
-  // Focus input when search opens
-  useEffect(() => {
-    if (searchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 50);
-    }
-  }, [searchOpen]);
-
-  const closeSearch = () => {
-    setSearchOpen(false);
-    setSearchQuery("");
-  };
 
   const normalize = (p: string) => p.replace(/\/$/, "") || "/";
   const isActive = (href: string) => {
@@ -110,7 +95,7 @@ export default function Header() {
 
   // Search results
   const searchTerm = searchQuery.toLowerCase().trim();
-  const showResults = searchOpen && searchTerm.length >= 2;
+  const showResults = searchTerm.length >= 2;
   const matchedServices = showResults
     ? services.filter(
         (s) =>
@@ -237,39 +222,27 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* Search — expands in the flex gap between nav and CTA */}
-            <div ref={searchRef} className="hidden lg:flex items-center flex-1 justify-end mr-2 relative">
-              <div
-                className={`flex items-center border border-hairline rounded-full transition-all duration-300 overflow-hidden bg-white ${
-                  searchOpen
-                    ? "w-72 border-brand/30 shadow-md shadow-brand/5"
-                    : "w-9 hover:border-brand/30"
-                }`}
-              >
-                <button
-                  onClick={() => setSearchOpen(true)}
-                  className="w-9 h-9 flex items-center justify-center shrink-0 text-muted hover:text-brand transition-colors"
-                  aria-label="Zoeken"
-                >
+            {/* Search — always open, large */}
+            <div ref={searchRef} className="hidden lg:flex items-center flex-1 justify-end mr-4 relative max-w-md">
+              <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-white hover:border-brand/30 transition-colors duration-200">
+                <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                </button>
+                </div>
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Escape" && closeSearch()}
-                  placeholder="Zoeken..."
-                  className={`text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none transition-all duration-300 ${
-                    searchOpen ? "w-full" : "w-0 p-0"
-                  }`}
+                  onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
+                  placeholder="Zoek diensten of producten..."
+                  className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-3"
                 />
-                {searchOpen && searchQuery && (
+                {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="shrink-0 mr-2.5 text-muted hover:text-ink transition-colors"
+                    className="shrink-0 mr-3 text-muted hover:text-ink transition-colors"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -280,7 +253,7 @@ export default function Header() {
 
               {/* Search results dropdown */}
               {showResults && (
-                <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden z-50">
+                <div className="absolute top-full right-0 mt-2 w-96 max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden z-50">
                   <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
 
                   {!hasResults && (
@@ -301,7 +274,7 @@ export default function Header() {
                         <Link
                           key={service.slug}
                           href={`/diensten/${service.slug}`}
-                          onClick={closeSearch}
+                          onClick={() => setSearchQuery("")}
                           className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
                         >
                           <div className="shrink-0 w-7 h-7 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand">
@@ -329,7 +302,7 @@ export default function Header() {
                         <Link
                           key={product.name}
                           href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
-                          onClick={closeSearch}
+                          onClick={() => setSearchQuery("")}
                           className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
                         >
                           <div className="shrink-0 w-7 h-7 rounded bg-concrete border border-hairline flex items-center justify-center">
@@ -357,7 +330,7 @@ export default function Header() {
                     </span>
                     <Link
                       href="/producten/"
-                      onClick={closeSearch}
+                      onClick={() => setSearchQuery("")}
                       className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
                     >
                       Alle producten →

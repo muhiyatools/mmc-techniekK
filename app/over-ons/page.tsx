@@ -249,7 +249,7 @@ export default function AboutPage() {
 
           <Reveal delay={250}>
             <p className="text-sm text-muted mt-8 text-center">
-              Plus 2500+ tevreden particuliere klanten in de regio Utrecht, Woerden, Bodegraven en omgeving.
+              Van particulier tot multinational: voor elk project leveren wij hetzelfde vakmanschap.
             </p>
           </Reveal>
         </div>
