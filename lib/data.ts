@@ -26,31 +26,37 @@ export const services = [
     summary: "Hybride of all-electric, afgestemd op uw woning.",
     image: "/images/services/warmtepompen.webp",
     popular: true,
+    caption: "Moderne warmtepomp installatie voor optimaal comfort en energiebesparing",
   },
   {
     title: "Zonnepanelen",
     summary: "Hoogrendementspanelen met monitoring.",
     image: "/images/services/zonnepanelen.webp",
+    caption: "Hoogwaardige zonnepanelen voor maximale energieopbrengst",
   },
   {
     title: "Airconditioning",
     summary: "Stille systemen voor koelen en verwarmen.",
     image: "/images/services/airco.jpg",
+    caption: "Stille en energiezuinige airco voor elk seizoen",
   },
   {
     title: "Batterijopslag",
     summary: "Bewaar uw eigen stroom voor de avond.",
     image: "/images/services/batterijopslag.webp",
+    caption: "Slimme energieopslag voor dag en nacht",
   },
   {
     title: "Vloerverwarming",
     summary: "Ingregeld voor lage aanvoertemperatuur.",
     image: "/images/services/vloerverwarming.webp",
+    caption: "Comfortabele vloerverwarming met lage temperatuur",
   },
   {
     title: "Meterkast & Liften",
     summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.",
     image: "/images/services/meterkast.webp",
+    caption: "Professionele meterkast uitbreiding en liften",
   },
 ];
 

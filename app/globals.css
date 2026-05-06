@@ -12,9 +12,9 @@
   --color-ink:         #0f172a; /* 14% 0.014 240 - Primary buttons, headlines */
   
   /* Brand blue - carries 30-50% of surface */
-  --color-brand:       #5A9EFF; /* 60% 0.18 250 - Logo blue */
-  --color-brand-deep:  #1A6FFF; /* 38% 0.18 250 - Hover, footer block */
-  --color-brand-hover: #3D86FF; /* Brand hover state */
+  --color-brand:       #42a8f2; /* 60% 0.18 250 - Logo blue */
+  --color-brand-deep:  #1a7bc1; /* 38% 0.18 250 - Hover, footer block */
+  --color-brand-hover: #2b8ed4; /* Brand hover state */
   
   /* Iridescent accents */
   --color-aurora-1:    #e0f2fe; /* 78% 0.10 220 - Cool cyan-blue */

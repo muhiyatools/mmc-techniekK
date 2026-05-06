@@ -77,10 +77,10 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative text-lg font-medium transition-colors duration-300 py-2 ${
+                className={`relative text-lg font-semibold transition-colors duration-300 py-2 ${
                   isActive(item.href)
                     ? "text-brand"
-                    : "text-muted hover:text-ink"
+                    : "text-ink hover:text-brand"
                 }`}
               >
                 {item.label}
