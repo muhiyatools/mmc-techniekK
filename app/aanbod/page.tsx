@@ -157,7 +157,7 @@ function Sidebar({
                   {serviceIcons[service.slug]}
                 </span>
                 <span className="flex-1 leading-tight">{service.title}</span>
-                {service.products.length > 0 && (
+                {service.products && service.products.length > 0 && (
                   <span className={`text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full tabular-nums shrink-0 ${activeSlug === service.slug ? "bg-brand/15 text-brand" : "bg-concrete text-muted"}`}>
                     {service.products.length}
                   </span>
@@ -258,13 +258,18 @@ function AanbodContent() {
 
   const filteredProducts = useMemo(() => {
     if (!activeService) return [];
+    if (!activeService.products || activeService.products.length === 0) return [];
     return activeService.products.filter((p) => {
-      if (selectedBrands.length > 0 && !selectedBrands.includes(p.brand)) return false;
-      // Price filter: null-price products always shown
+      if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
       if (p.price) {
-        const numStr = p.price.replace(/[^\d]/g, "");
-        const priceVal = parseInt(numStr, 10);
-        if (!isNaN(priceVal) && priceVal > priceRange[1]) return false;
+        const match = String(p.price).match(/[\d.,]+/);
+        if (match) {
+          const numStr = match[0].replace(/[.,]/g, "");
+          const priceVal = parseInt(numStr, 10);
+          if (!isNaN(priceVal) && priceVal !== 0) {
+            if (priceVal < priceRange[0] || priceVal > priceRange[1]) return false;
+          }
+        }
       }
       return true;
     });
@@ -397,11 +402,11 @@ function AanbodContent() {
                               <div className="shrink-0 w-7 h-7 rounded-lg bg-brand/20 border border-brand/30 flex items-center justify-center text-white/80 group-hover:bg-brand group-hover:border-brand group-hover:text-white transition-all duration-200">
                                 {serviceIcons[service.slug] ?? <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
                               </div>
-                              {service.products.length > 0 && (
-                                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">
-                                  {service.products.length} product{service.products.length !== 1 ? "en" : ""}
-                                </span>
-                              )}
+{service.products && service.products.length > 0 && (
+                                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">
+                                    {service.products.length} product{service.products.length !== 1 ? "en" : ""}
+                                  </span>
+                                )}
                             </div>
                             <h3 className="text-lg font-bold text-white leading-tight mb-1 group-hover:text-brand transition-colors duration-300">{service.title}</h3>
                             <p className="text-xs text-white/60 leading-relaxed line-clamp-2">{service.summary}</p>
@@ -463,7 +468,13 @@ function AanbodContent() {
                             <Reveal key={`${activeService.slug}-${product.name}-${i}`} delay={i * 50}>
                               <div className="group bg-surface border border-hairline hover:border-brand/30 hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 overflow-hidden flex flex-col h-full rounded-2xl">
                                 <div className="relative aspect-[4/3] overflow-hidden bg-concrete shrink-0">
-                                  <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" />
+                                  {product.image && product.image.startsWith("http") ? (
+                                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" />
+                                  ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                      <span className="text-xs text-muted font-semibold">{product.name}</span>
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="p-5 flex flex-col flex-1">
                                   <div className="mb-2.5 h-5 flex items-center">
