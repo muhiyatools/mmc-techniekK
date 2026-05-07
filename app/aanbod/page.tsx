@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { services, brandImages, type PriceTier } from "@/lib/data";
+import { services as baseServices, brandImages as baseBrandImages, type Service, type Product } from "@/lib/data";
+import { fetchAdminStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
 import Reveal from "../components/Reveal";
 import BrandLogo from "../components/BrandLogo";
 
-// Per-service icons
+// ── Service icons ──
 const serviceIcons: Record<string, React.ReactNode> = {
   airconditioning: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,61 +54,196 @@ const serviceIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-const PRICE_TIERS: { value: PriceTier; label: string; desc: string }[] = [
-  { value: "economy", label: "Economy", desc: "Beste prijs-kwaliteitsverhouding" },
-  { value: "medium", label: "Medium", desc: "Uitgebalanceerde kwaliteit" },
-  { value: "premium", label: "Premium", desc: "Topkwaliteit, maximaal comfort" },
-];
+const SLIDER_MIN = 0;
+const SLIDER_MAX = 15000;
+const SLIDER_STEP = 500;
 
+// ── Dual-thumb price slider ──
+function PriceRangeSlider({
+  value,
+  onChange,
+}: {
+  value: [number, number];
+  onChange: (v: [number, number]) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<"min" | "max" | null>(null);
+
+  const getPct = (v: number) => ((v - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
+  const getValueFromClientX = useCallback((clientX: number) => {
+    if (!trackRef.current) return SLIDER_MIN;
+    const rect = trackRef.current.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const raw = SLIDER_MIN + pct * (SLIDER_MAX - SLIDER_MIN);
+    return Math.round(raw / SLIDER_STEP) * SLIDER_STEP;
+  }, []);
+
+  useEffect(() => {
+    if (!dragging) return;
+    const handleMove = (e: MouseEvent) => {
+      const raw = getValueFromClientX(e.clientX);
+      onChange(
+        dragging === "min"
+          ? [Math.min(raw, value[1] - SLIDER_STEP), value[1]]
+          : [value[0], Math.max(raw, value[0] + SLIDER_STEP)]
+      );
+    };
+    const handleUp = () => setDragging(null);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
+    };
+  }, [dragging, value, onChange, getValueFromClientX]);
+
+  const formatPrice = (n: number) =>
+    n >= 1000 ? `€${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k` : `€${n}`;
+
+  return (
+    <div className="select-none">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-bold text-ink tabular-nums">{formatPrice(value[0])}</span>
+        <span className="text-xs font-bold text-ink tabular-nums">{formatPrice(value[1])}</span>
+      </div>
+      <div ref={trackRef} className="relative h-2 bg-hairline rounded-full cursor-pointer">
+        {/* Active range */}
+        <div
+          className="absolute top-0 h-full bg-brand rounded-full"
+          style={{
+            left: `${getPct(value[0])}%`,
+            right: `${100 - getPct(value[1])}%`,
+          }}
+        />
+        {/* Min thumb */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-brand border-2 border-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
+          style={{ left: `${getPct(value[0])}%` }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setDragging("min");
+          }}
+        />
+        {/* Max thumb */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-brand border-2 border-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
+          style={{ left: `${getPct(value[1])}%` }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setDragging("max");
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Brand filter ──
+function BrandFilter({
+  brands,
+  brandImages,
+  selected,
+  onToggle,
+}: {
+  brands: string[];
+  brandImages: Record<string, string>;
+  selected: string[];
+  onToggle: (brand: string) => void;
+}) {
+  if (brands.length === 0) return null;
+  return (
+    <div className="space-y-2">
+      {brands.map((brand) => {
+        const active = selected.includes(brand);
+        const logo = brandImages[brand];
+        return (
+          <button
+            key={brand}
+            onClick={() => onToggle(brand)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all duration-200 ${
+              active
+                ? "bg-brand/8 border-brand/20"
+                : "border-hairline hover:border-brand/20 hover:bg-concrete"
+            }`}
+          >
+            <div
+              className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+                active ? "bg-brand border-brand" : "border-muted/40"
+              }`}
+            >
+              {active && (
+                <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+            <div className="min-w-0 flex items-center gap-2">
+              {logo ? (
+                <BrandLogo brand={brand} imageSrc={logo} height={18} />
+              ) : (
+                <span className="text-sm font-semibold text-ink">{brand}</span>
+              )}
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Sidebar ──
 interface SidebarProps {
   activeSlug: string | null;
-  selectedTiers: PriceTier[];
+  priceRange: [number, number];
+  selectedBrands: string[];
+  brands: string[];
+  brandImages: Record<string, string>;
   onCategorySelect: (slug: string) => void;
-  onTierToggle: (tier: PriceTier) => void;
-  onResetTiers: () => void;
-  showPriceFilter: boolean;
+  onPriceChange: (v: [number, number]) => void;
+  onBrandToggle: (brand: string) => void;
+  onResetFilters: () => void;
+  showFilters: boolean;
 }
 
 function Sidebar({
   activeSlug,
-  selectedTiers,
+  priceRange,
+  selectedBrands,
+  brands,
+  brandImages,
   onCategorySelect,
-  onTierToggle,
-  onResetTiers,
-  showPriceFilter,
+  onPriceChange,
+  onBrandToggle,
+  onResetFilters,
+  showFilters,
 }: SidebarProps) {
+  const hasFilters = selectedBrands.length > 0 || priceRange[0] > SLIDER_MIN || priceRange[1] < SLIDER_MAX;
   return (
     <div>
-      {/* Category list */}
+      {/* Categories */}
       <div className="mb-6">
         <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">
           Categorieën
         </p>
         <ul className="space-y-0.5">
-          {services.map((service) => (
+          {baseServices.map((service) => (
             <li key={service.slug}>
               <button
                 onClick={() => onCategorySelect(service.slug)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm rounded-lg border transition-all duration-200 ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm rounded-xl border transition-all duration-200 ${
                   activeSlug === service.slug
                     ? "bg-brand/8 text-brand font-semibold border-brand/20"
                     : "text-ink font-medium border-transparent hover:bg-concrete"
                 }`}
               >
-                <span
-                  className={`shrink-0 ${
-                    activeSlug === service.slug ? "text-brand" : "text-muted"
-                  }`}
-                >
+                <span className={`shrink-0 ${activeSlug === service.slug ? "text-brand" : "text-muted"}`}>
                   {serviceIcons[service.slug]}
                 </span>
                 <span className="flex-1 leading-tight">{service.title}</span>
                 {service.products.length > 0 && (
                   <span
                     className={`text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full tabular-nums shrink-0 ${
-                      activeSlug === service.slug
-                        ? "bg-brand/15 text-brand"
-                        : "bg-concrete text-muted"
+                      activeSlug === service.slug ? "bg-brand/15 text-brand" : "bg-concrete text-muted"
                     }`}
                   >
                     {service.products.length}
@@ -119,122 +255,105 @@ function Sidebar({
         </ul>
       </div>
 
-      {/* Price tier filter */}
-      {showPriceFilter && (
+      {/* Filters */}
+      {showFilters && (
         <>
           <div className="h-px bg-hairline mb-6" />
-          <div>
+
+          {/* Price */}
+          <div className="mb-6">
             <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">
-              Prijsklasse
+              Prijsrange
             </p>
-            <div className="space-y-2">
-              {PRICE_TIERS.map((tier) => {
-                const active = selectedTiers.includes(tier.value);
-                return (
-                  <button
-                    key={tier.value}
-                    onClick={() => onTierToggle(tier.value)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-left transition-all duration-200 ${
-                      active
-                        ? "bg-brand/8 border-brand/20"
-                        : "border-hairline hover:border-brand/20 hover:bg-concrete"
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
-                        active ? "bg-brand border-brand" : "border-muted/40"
-                      }`}
-                    >
-                      {active && (
-                        <svg
-                          className="w-2.5 h-2.5 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-ink leading-tight">
-                        {tier.label}
-                      </p>
-                      <p className="text-xs text-muted leading-snug">{tier.desc}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            {selectedTiers.length > 0 && (
-              <button
-                onClick={onResetTiers}
-                className="mt-3 text-xs font-semibold text-brand hover:text-brand-deep transition-colors"
-              >
-                Prijsfilter wissen
-              </button>
-            )}
+            <PriceRangeSlider value={priceRange} onChange={onPriceChange} />
           </div>
+
+          {/* Brands */}
+          {brands.length > 0 && (
+            <div className="mb-4">
+              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">
+                Merken
+              </p>
+              <BrandFilter
+                brands={brands}
+                brandImages={brandImages}
+                selected={selectedBrands}
+                onToggle={onBrandToggle}
+              />
+            </div>
+          )}
+
+          {hasFilters && (
+            <button
+              onClick={onResetFilters}
+              className="text-xs font-semibold text-brand hover:text-brand-deep transition-colors"
+            >
+              Filters wissen
+            </button>
+          )}
         </>
       )}
     </div>
   );
 }
 
-function TierBadge({ tier }: { tier: PriceTier }) {
-  const styles: Record<PriceTier, string> = {
-    economy: "bg-concrete/90 text-muted border-hairline",
-    medium: "bg-brand/10 text-brand border-brand/20",
-    premium: "bg-ink/90 text-base border-ink/15",
-  };
-  const labels: Record<PriceTier, string> = {
-    economy: "Economy",
-    medium: "Medium",
-    premium: "Premium",
-  };
-  return (
-    <span
-      className={`text-[0.6rem] font-bold uppercase tracking-[0.12em] px-2 py-1 border backdrop-blur-sm ${styles[tier]}`}
-    >
-      {labels[tier]}
-    </span>
-  );
-}
-
+// ── Main content ──
 function AanbodContent() {
   const searchParams = useSearchParams();
   const initialDienst = searchParams.get("dienst");
 
+  const [services, setServices] = useState<Service[]>(baseServices);
+  const [brandImages, setBrandImages] = useState<Record<string, string>>(baseBrandImages);
   const [activeSlug, setActiveSlug] = useState<string | null>(
-    services.find((s) => s.slug === initialDienst) ? initialDienst : null
+    baseServices.find((s) => s.slug === initialDienst) ? initialDienst : null
   );
-  const [selectedTiers, setSelectedTiers] = useState<PriceTier[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([SLIDER_MIN, SLIDER_MAX]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  // Load admin overrides
+  useEffect(() => {
+    fetchAdminStore().then((store) => {
+      setServices(mergeServices(store));
+      setBrandImages(mergeBrandImages(store));
+    });
+  }, []);
+
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
-  const showPriceFilter = !!(activeService && activeService.products.length > 0);
+  const showFilters = !!(activeService && activeService.products.length > 0);
+
+  const availableBrands = useMemo(() => {
+    if (!activeService) return [];
+    const set = new Set<string>();
+    activeService.products.forEach((p) => set.add(p.brand));
+    return Array.from(set).sort();
+  }, [activeService]);
 
   const filteredProducts = useMemo(() => {
     if (!activeService) return [];
-    if (selectedTiers.length === 0) return activeService.products;
-    return activeService.products.filter((p) => selectedTiers.includes(p.tier));
-  }, [activeService, selectedTiers]);
+    return activeService.products.filter((p) => {
+      // Price filter: null-price products always shown
+      const hasPrice = p.priceMin !== null && p.priceMax !== null;
+      if (hasPrice) {
+        const overlaps = p.priceMin! <= priceRange[1] && p.priceMax! >= priceRange[0];
+        if (!overlaps) return false;
+      }
+      // Brand filter
+      if (selectedBrands.length > 0 && !selectedBrands.includes(p.brand)) return false;
+      return true;
+    });
+  }, [activeService, priceRange, selectedBrands]);
 
   const handleCategorySelect = (slug: string) => {
     const next = activeSlug === slug ? null : slug;
     setActiveSlug(next);
-    setSelectedTiers([]);
+    setPriceRange([SLIDER_MIN, SLIDER_MAX]);
+    setSelectedBrands([]);
   };
 
-  const toggleTier = (tier: PriceTier) => {
-    setSelectedTiers((prev) =>
-      prev.includes(tier) ? prev.filter((t) => t !== tier) : [...prev, tier]
-    );
+  const handleResetFilters = () => {
+    setPriceRange([SLIDER_MIN, SLIDER_MAX]);
+    setSelectedBrands([]);
   };
 
   return (
@@ -245,9 +364,7 @@ function AanbodContent() {
           <Reveal>
             <div className="flex items-center gap-2.5 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                Ons aanbod
-              </span>
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">Services</span>
             </div>
           </Reveal>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -270,7 +387,7 @@ function AanbodContent() {
       <div className="bg-base">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 pt-8 pb-24 lg:pb-32">
 
-          {/* Mobile: active filter chips + filter button */}
+          {/* Mobile filter bar */}
           <div className="lg:hidden mb-5 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-wrap min-w-0">
               {activeService && (
@@ -279,7 +396,7 @@ function AanbodContent() {
                   <button
                     onClick={() => {
                       setActiveSlug(null);
-                      setSelectedTiers([]);
+                      handleResetFilters();
                     }}
                     className="ml-0.5 text-brand/60 hover:text-brand transition-colors"
                     aria-label="Verwijder categorie filter"
@@ -290,18 +407,30 @@ function AanbodContent() {
                   </button>
                 </span>
               )}
-              {selectedTiers.map((t) => (
+              {(priceRange[0] > SLIDER_MIN || priceRange[1] < SLIDER_MAX) && activeService && (
+                <span className="flex items-center gap-1.5 text-xs font-bold text-ink bg-concrete border border-hairline px-3 py-1 rounded-full">
+                  €{priceRange[0]} – €{priceRange[1]}
+                  <button
+                    onClick={() => setPriceRange([SLIDER_MIN, SLIDER_MAX])}
+                    className="ml-0.5 text-muted hover:text-ink transition-colors"
+                    aria-label="Verwijder prijsfilter"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </span>
+              )}
+              {selectedBrands.map((b) => (
                 <span
-                  key={t}
+                  key={b}
                   className="flex items-center gap-1.5 text-xs font-bold text-ink bg-concrete border border-hairline px-3 py-1 rounded-full"
                 >
-                  {PRICE_TIERS.find((pt) => pt.value === t)?.label}
+                  {b}
                   <button
-                    onClick={() =>
-                      setSelectedTiers((prev) => prev.filter((x) => x !== t))
-                    }
+                    onClick={() => setSelectedBrands((prev) => prev.filter((x) => x !== b))}
                     className="ml-0.5 text-muted hover:text-ink transition-colors"
-                    aria-label={`Verwijder ${t} filter`}
+                    aria-label={`Verwijder ${b} filter`}
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -309,7 +438,7 @@ function AanbodContent() {
                   </button>
                 </span>
               ))}
-              {!activeService && selectedTiers.length === 0 && (
+              {!activeService && (
                 <span className="text-xs text-muted">Kies een categorie</span>
               )}
             </div>
@@ -321,39 +450,46 @@ function AanbodContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               Filter
-              {(activeSlug || selectedTiers.length > 0) && (
+              {(activeSlug || selectedBrands.length > 0 || priceRange[0] > SLIDER_MIN || priceRange[1] < SLIDER_MAX) && (
                 <span className="w-2 h-2 rounded-full bg-brand shrink-0" />
               )}
             </button>
           </div>
 
           <div className="flex gap-10 lg:gap-12">
-
-            {/* Sidebar - desktop only */}
+            {/* Sidebar desktop */}
             <aside className="hidden lg:block w-56 shrink-0">
               <div className="sticky top-[130px]">
                 <Sidebar
                   activeSlug={activeSlug}
-                  selectedTiers={selectedTiers}
+                  priceRange={priceRange}
+                  selectedBrands={selectedBrands}
+                  brands={availableBrands}
+                  brandImages={brandImages}
                   onCategorySelect={handleCategorySelect}
-                  onTierToggle={toggleTier}
-                  onResetTiers={() => setSelectedTiers([])}
-                  showPriceFilter={showPriceFilter}
+                  onPriceChange={setPriceRange}
+                  onBrandToggle={(b) =>
+                    setSelectedBrands((prev) =>
+                      prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]
+                    )
+                  }
+                  onResetFilters={handleResetFilters}
+                  showFilters={showFilters}
                 />
               </div>
             </aside>
 
-            {/* Main content */}
+            {/* Main */}
             <div className="flex-1 min-w-0" id="aanbod-content">
 
-              {/* No category selected: service category grid */}
+              {/* Default: service category grid */}
               {!activeSlug && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {services.map((service, i) => (
                     <Reveal key={service.slug} delay={i * 40}>
                       <button
                         onClick={() => handleCategorySelect(service.slug)}
-                        className="group w-full text-left relative overflow-hidden bg-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand hover:shadow-xl hover:shadow-ink/20 transition-shadow duration-500"
+                        className="group w-full text-left relative overflow-hidden bg-ink rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand hover:shadow-xl hover:shadow-ink/20 transition-shadow duration-500"
                       >
                         <div className="relative aspect-video overflow-hidden">
                           <Image
@@ -367,9 +503,7 @@ function AanbodContent() {
                           {service.popular && (
                             <div className="absolute top-3 left-3 flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-                              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand">
-                                Populair
-                              </span>
+                              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand">Populair</span>
                             </div>
                           )}
                           <div className="absolute inset-x-0 bottom-0 p-5">
@@ -410,32 +544,38 @@ function AanbodContent() {
               {/* Category selected */}
               {activeSlug && activeService && (
                 <>
-                  {/* Service brief */}
+                  {/* Editorial dark service brief */}
                   <Reveal>
-                    <div className="bg-concrete border border-hairline p-5 lg:p-6 mb-7">
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                        <div className="shrink-0 w-11 h-11 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
-                          {serviceIcons[activeService.slug] ?? (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-muted mb-1">
-                            {activeService.title}
-                          </p>
-                          <h2 className="font-display font-extrabold text-xl lg:text-2xl text-ink mb-2 leading-tight tracking-tight">
-                            {activeService.caption}
-                          </h2>
-                          <p className="text-sm text-muted leading-relaxed max-w-2xl">
-                            {activeService.description}
-                          </p>
-                        </div>
-                        <div className="shrink-0">
+                    <div className="relative overflow-hidden rounded-2xl mb-7">
+                      {/* Background image */}
+                      <div className="absolute inset-0">
+                        <Image
+                          src={activeService.image}
+                          alt={activeService.title}
+                          fill
+                          className="object-cover opacity-20"
+                          sizes="1280px"
+                        />
+                        <div className="absolute inset-0 bg-ink/80" />
+                      </div>
+                      {/* Aurora hairline top */}
+                      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
+                      <div className="relative z-10 p-6 lg:p-10">
+                        <div className="flex flex-col sm:flex-row sm:items-end gap-5 sm:gap-8">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-brand mb-2">
+                              {activeService.title}
+                            </p>
+                            <h2 className="font-display font-extrabold text-2xl lg:text-3xl text-white mb-3 leading-tight tracking-tight">
+                              {activeService.caption}
+                            </h2>
+                            <p className="text-sm text-white/70 leading-relaxed max-w-2xl">
+                              {activeService.description}
+                            </p>
+                          </div>
                           <Link
                             href={`/contact?service=${activeService.slug}`}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-xs font-bold rounded-full hover:bg-brand-deep transition-colors duration-200 shadow-sm shadow-brand/20 uppercase tracking-wide whitespace-nowrap"
+                            className="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-brand text-white text-xs font-bold rounded-full hover:bg-brand-deep transition-colors duration-200 shadow-sm shadow-brand/20 uppercase tracking-wide whitespace-nowrap"
                           >
                             Offerte aanvragen
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -447,38 +587,36 @@ function AanbodContent() {
                     </div>
                   </Reveal>
 
-                  {/* Aurora hairline */}
+                  {/* Aurora divider */}
                   <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2 mb-7" />
 
-                  {/* Products or no-products CTA */}
+                  {/* Products or CTA */}
                   {activeService.products.length > 0 ? (
                     <>
                       {/* Result count */}
                       <div className="flex items-center justify-between mb-5">
                         <p className="text-sm text-muted">
-                          <span className="font-bold text-ink">{filteredProducts.length}</span>
-                          {" "}van{" "}
-                          <span className="font-bold text-ink">{activeService.products.length}</span>
-                          {" "}producten
-                          {selectedTiers.length > 0 && (
+                          <span className="font-bold text-ink">{filteredProducts.length}</span>{" "}
+                          van{" "}
+                          <span className="font-bold text-ink">{activeService.products.length}</span>{" "}
+                          producten
+                          {(priceRange[0] > SLIDER_MIN || priceRange[1] < SLIDER_MAX || selectedBrands.length > 0) && (
                             <button
-                              onClick={() => setSelectedTiers([])}
+                              onClick={handleResetFilters}
                               className="ml-2 text-brand font-semibold hover:text-brand-deep transition-colors"
                             >
                               (filter wissen)
                             </button>
                           )}
                         </p>
-                        <p className="text-xs text-muted hidden sm:block">
-                          Incl. installatie · Offerte binnen 24u
-                        </p>
+                        <p className="text-xs text-muted hidden sm:block">Incl. installatie · Offerte binnen 24u</p>
                       </div>
 
                       {filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                           {filteredProducts.map((product, i) => (
                             <Reveal key={product.name} delay={i * 50}>
-                              <div className="group bg-white border border-hairline hover:border-brand/30 hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 overflow-hidden flex flex-col h-full">
+                              <div className="group bg-surface border border-hairline hover:border-brand/30 hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 overflow-hidden flex flex-col h-full rounded-2xl">
                                 {/* Image */}
                                 <div className="relative aspect-[4/3] overflow-hidden bg-concrete shrink-0">
                                   <Image
@@ -489,9 +627,6 @@ function AanbodContent() {
                                     unoptimized
                                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                                   />
-                                  <div className="absolute top-3 right-3">
-                                    <TierBadge tier={product.tier} />
-                                  </div>
                                 </div>
 
                                 {/* Content */}
@@ -540,9 +675,7 @@ function AanbodContent() {
                                           </span>
                                         </div>
                                       ) : (
-                                        <span className="text-xs text-muted italic">
-                                          Prijs op aanvraag
-                                        </span>
+                                        <span className="text-xs text-muted italic">Prijs op aanvraag</span>
                                       )}
                                       <Link
                                         href={`/contact?service=${activeService.slug}&product=${encodeURIComponent(product.name)}`}
@@ -558,16 +691,16 @@ function AanbodContent() {
                           ))}
                         </div>
                       ) : (
-                        /* No products match the price filter */
-                        <div className="py-16 text-center border border-hairline bg-concrete">
+                        /* No products match */
+                        <div className="py-16 text-center border border-hairline bg-concrete rounded-2xl">
                           <svg className="w-8 h-8 text-muted mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                           </svg>
                           <p className="text-sm text-muted mb-3">
-                            Geen producten gevonden voor de geselecteerde prijsklasse.
+                            Geen producten gevonden voor de geselecteerde filters.
                           </p>
                           <button
-                            onClick={() => setSelectedTiers([])}
+                            onClick={handleResetFilters}
                             className="text-sm font-bold text-brand hover:text-brand-deep transition-colors"
                           >
                             Filter wissen
@@ -578,14 +711,12 @@ function AanbodContent() {
                   ) : (
                     /* Service without products */
                     <Reveal>
-                      <div className="bg-concrete border border-hairline p-8 lg:p-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                      <div className="bg-concrete border border-hairline p-8 lg:p-12 flex flex-col sm:flex-row items-start sm:items-center gap-6 rounded-2xl">
                         <div className="shrink-0 w-14 h-14 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
                           {serviceIcons[activeService.slug]}
                         </div>
                         <div className="flex-1">
-                          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted mb-2">
-                            Op maat
-                          </p>
+                          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted mb-2">Op maat</p>
                           <h3 className="text-xl font-bold text-ink mb-2">
                             Deze dienst wordt volledig op maat samengesteld
                           </h3>
@@ -636,14 +767,24 @@ function AanbodContent() {
             <div className="p-5 flex-1 overflow-y-auto">
               <Sidebar
                 activeSlug={activeSlug}
-                selectedTiers={selectedTiers}
+                priceRange={priceRange}
+                selectedBrands={selectedBrands}
+                brands={availableBrands}
+                brandImages={brandImages}
                 onCategorySelect={(slug) => {
                   handleCategorySelect(slug);
                   setMobileFilterOpen(false);
                 }}
-                onTierToggle={toggleTier}
-                onResetTiers={() => setSelectedTiers([])}
-                showPriceFilter={showPriceFilter}
+                onPriceChange={setPriceRange}
+                onBrandToggle={(b) =>
+                  setSelectedBrands((prev) =>
+                    prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]
+                  )
+                }
+                onResetFilters={() => {
+                  handleResetFilters();
+                }}
+                showFilters={showFilters}
               />
             </div>
           </div>
