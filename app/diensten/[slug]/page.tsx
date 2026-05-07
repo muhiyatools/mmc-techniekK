@@ -143,7 +143,7 @@ export default async function ServicePage({ params }: Props) {
             })()}
 
             {/* Flat product grid */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
               {service.products.map((product, i) => (
                 <Reveal key={product.name} delay={i * 80}>
                   <div className="group bg-white border border-hairline hover:border-brand/40 transition-all duration-300 overflow-hidden flex flex-col rounded-xl">
@@ -154,7 +154,7 @@ export default async function ServicePage({ params }: Props) {
                         alt={product.name}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 640px) 100vw, 50vw"
                       />
                     </div>
 

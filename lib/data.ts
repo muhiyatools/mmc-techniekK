@@ -22,7 +22,6 @@ export const heroMetrics = [
   { value: "24u", label: "offerte" },
 ];
 
-export type PriceTier = "economy" | "medium" | "premium";
 
 export interface ProductCategory {
   id: string;
@@ -33,9 +32,6 @@ export interface Product {
   name: string;
   brand: string;
   price: string | null;
-  priceMin: number | null;
-  priceMax: number | null;
-  tier: PriceTier;
   categoryId: string;
   description: string;
   techSpecs: string[];
@@ -53,17 +49,7 @@ export interface Service {
   products: Product[];
 }
 
-export const priceTierLabels: Record<PriceTier, string> = {
-  economy: "Economy",
-  medium: "Medium",
-  premium: "Premium",
-};
 
-export const priceTierColors: Record<PriceTier, string> = {
-  economy: "bg-green-500",
-  medium: "bg-yellow-500",
-  premium: "bg-red-500",
-};
 
 export const productCategories: ProductCategory[] = [
   { id: "airconditioning", label: "Airconditioning" },
@@ -103,9 +89,6 @@ export const services: Service[] = [
         name: "LG Artcool Gallery",
         brand: "LG",
         price: "€2.800 - €5.000",
-        priceMin: 2800,
-        priceMax: 5000,
-        tier: "premium",
         categoryId: "airconditioning",
         description: "Design wandmodel met ionisator en WiFi. Ultra-stil met maar 19 dB.",
         techSpecs: [
@@ -122,9 +105,6 @@ export const services: Service[] = [
         name: "LG Prestige",
         brand: "LG",
         price: "€2.200 - €3.800",
-        priceMin: 2200,
-        priceMax: 3800,
-        tier: "medium",
         categoryId: "airconditioning",
         description: "Slim wandmodel met Dual Inverter. Snel koelen en verwarmen.",
         techSpecs: [
@@ -141,9 +121,6 @@ export const services: Service[] = [
         name: "Mitsubishi Electric MSZ-AP",
         brand: "Mitsubishi Electric",
         price: "€2.500 - €4.200",
-        priceMin: 2500,
-        priceMax: 4200,
-        tier: "medium",
         categoryId: "airconditioning",
         description: "Betrouwbaar en stil. Geschikt voor alle ruimtes.",
         techSpecs: [
@@ -160,9 +137,6 @@ export const services: Service[] = [
         name: "Mitsubishi Electric MSZ-LN",
         brand: "Mitsubishi Electric",
         price: "€3.200 - €5.500",
-        priceMin: 3200,
-        priceMax: 5500,
-        tier: "premium",
         categoryId: "airconditioning",
         description: "Premium design met plasma quad filter en 3D i-See Sensor.",
         techSpecs: [
@@ -179,9 +153,6 @@ export const services: Service[] = [
         name: "Daikin Perfera",
         brand: "Daikin",
         price: "€2.800 - €4.500",
-        priceMin: 2800,
-        priceMax: 4500,
-        tier: "medium",
         categoryId: "airconditioning",
         description: "Stil en energiezuinig met Flash Streamer luchtzuivering.",
         techSpecs: [
@@ -198,9 +169,6 @@ export const services: Service[] = [
         name: "Daikin Stylish",
         brand: "Daikin",
         price: "€3.500 - €6.000",
-        priceMin: 3500,
-        priceMax: 6000,
-        tier: "premium",
         categoryId: "airconditioning",
         description: "Design wandmodel met Coanda airflow en zilver-ion filter.",
         techSpecs: [
@@ -228,9 +196,6 @@ export const services: Service[] = [
         name: "Trina Solar Vertex",
         brand: "Trina Solar",
         price: "€4.500 - €7.500",
-        priceMin: 4500,
-        priceMax: 7500,
-        tier: "economy",
         categoryId: "zonnepanelen",
         description: "Betaalbare mono-crystalline panelen met 21% rendement.",
         techSpecs: [
@@ -247,9 +212,6 @@ export const services: Service[] = [
         name: "Trina Solar Duomax",
         brand: "Trina Solar",
         price: "€5.500 - €9.000",
-        priceMin: 5500,
-        priceMax: 9000,
-        tier: "medium",
         categoryId: "zonnepanelen",
         description: "Dubbelglas panelen met 30 jaar garantie en 22% rendement.",
         techSpecs: [
@@ -266,9 +228,6 @@ export const services: Service[] = [
         name: "Jinko Solar Tiger Neo",
         brand: "Jinko",
         price: "€5.000 - €8.000",
-        priceMin: 5000,
-        priceMax: 8000,
-        tier: "economy",
         categoryId: "zonnepanelen",
         description: "Betaalbare TOPCon panelen met 22.5% rendement.",
         techSpecs: [
@@ -285,9 +244,6 @@ export const services: Service[] = [
         name: "Jinko Solar N-Type",
         brand: "Jinko",
         price: "€6.500 - €10.000",
-        priceMin: 6500,
-        priceMax: 10000,
-        tier: "medium",
         categoryId: "zonnepanelen",
         description: "Premium N-type panelen met 23% rendement en 30 jaar garantie.",
         techSpecs: [
@@ -304,9 +260,6 @@ export const services: Service[] = [
         name: "Growatt MIC",
         brand: "Growatt",
         price: null,
-        priceMin: null,
-        priceMax: null,
-        tier: "economy",
         categoryId: "zonnepanelen",
         description: "Betrouwbare string omvormer met WiFi monitoring.",
         techSpecs: [
@@ -323,9 +276,6 @@ export const services: Service[] = [
         name: "Enphase IQ8",
         brand: "Enphase",
         price: null,
-        priceMin: null,
-        priceMax: null,
-        tier: "premium",
         categoryId: "zonnepanelen",
         description: "Premium micro-omvormer met per-paneel monitoring en back-up.",
         techSpecs: [
@@ -353,9 +303,6 @@ export const services: Service[] = [
         name: "AlphaESS Smile",
         brand: "AlphaESS",
         price: "€5.500 - €8.000",
-        priceMin: 5500,
-        priceMax: 8000,
-        tier: "economy",
         categoryId: "batterijopslag",
         description: "Betaalbare thuisbatterij met 5.7 kWh capaciteit en modulair uitbreidbaar.",
         techSpecs: [
@@ -372,9 +319,6 @@ export const services: Service[] = [
         name: "AlphaESS Storion",
         brand: "AlphaESS",
         price: "€8.000 - €12.000",
-        priceMin: 8000,
-        priceMax: 12000,
-        tier: "medium",
         categoryId: "batterijopslag",
         description: "High-end thuisbatterij met 13.3 kWh en zonnepaneel integratie.",
         techSpecs: [
@@ -391,9 +335,6 @@ export const services: Service[] = [
         name: "Sigenergy SigenStor",
         brand: "Sigenergy",
         price: "€7.000 - €10.000",
-        priceMin: 7000,
-        priceMax: 10000,
-        tier: "premium",
         categoryId: "batterijopslag",
         description: "Premium batterij met AI-optimalisatie en EV-laden integratie.",
         techSpecs: [
@@ -421,9 +362,6 @@ export const services: Service[] = [
         name: "Nefit Bosch Compress 7000i",
         brand: "Nefit Bosch",
         price: "€4.500 - €7.500",
-        priceMin: 4500,
-        priceMax: 7500,
-        tier: "economy",
         categoryId: "warmtepompen",
         description: "Hybride warmtepomp met hoog rendement voor woningen met bestaande cv.",
         techSpecs: [
@@ -440,9 +378,6 @@ export const services: Service[] = [
         name: "Daikin Altherma 3",
         brand: "Daikin",
         price: "€8.000 - €12.000",
-        priceMin: 8000,
-        priceMax: 12000,
-        tier: "premium",
         categoryId: "warmtepompen",
         description: "Full-electric warmtepomp met geïntegreerde boiler en vloerverwarming.",
         techSpecs: [
@@ -470,9 +405,6 @@ export const services: Service[] = [
         name: "Uponor Tacker",
         brand: "Uponor",
         price: null,
-        priceMin: null,
-        priceMax: null,
-        tier: "medium",
         categoryId: "vloerverwarming",
         description: "Professioneel vloerverwarmingssysteem met noppenplaat en PE-RT leiding.",
         techSpecs: [
@@ -500,9 +432,6 @@ export const services: Service[] = [
         name: "Hager groepenkast",
         brand: "Hager",
         price: "€1.500 - €3.000",
-        priceMin: 1500,
-        priceMax: 3000,
-        tier: "medium",
         categoryId: "meterkast-liften",
         description: "Complete groepenkast vervanging met ruimte voor laadpaal en zonnepanelen.",
         techSpecs: [
