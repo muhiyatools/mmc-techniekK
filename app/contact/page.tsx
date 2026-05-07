@@ -57,6 +57,9 @@ function ContactForm() {
   const [error, setError] = useState("");
 
   const selectedService = services.find((s) => s.slug === form.service);
+  const selectedProduct = form.product && selectedService
+    ? selectedService.products.find((p) => p.name === form.product)
+    : null;
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -337,26 +340,26 @@ function ContactForm() {
                       </div>
                     </div>
 
-                    {/* Selected product info */}
-                    {form.product && selectedService && (
+                        {/* Selected product info */}
+                    {selectedProduct && (
                       <div className="mb-4 p-4 bg-concrete border border-hairline rounded-xl">
                         <div className="flex items-start gap-4">
-                          <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-white">
+                          <div className="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-white border border-hairline">
                             <Image
-                              src={selectedService.products.find((p) => p.name === form.product)?.image ?? ""}
-                              alt={form.product}
+                              src={selectedProduct.image}
+                              alt={selectedProduct.name}
                               fill
                               className="object-cover"
-                              unoptimized
+                              sizes="80px"
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-ink">{form.product}</p>
-                            <p className="text-xs text-muted">
-                              {selectedService.products.find((p) => p.name === form.product)?.brand}
+                            <p className="text-sm font-bold text-ink">{selectedProduct.name}</p>
+                            <p className="text-xs text-muted mt-0.5">
+                              {selectedProduct.brand}
                             </p>
                             <p className="text-xs text-brand font-bold mt-1">
-                              {selectedService.products.find((p) => p.name === form.product)?.price ?? "Prijs op aanvraag"}
+                              {selectedProduct.price ?? "Prijs op aanvraag"}
                             </p>
                           </div>
                         </div>

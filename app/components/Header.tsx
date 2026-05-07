@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems, contactInfo, services } from "@/lib/data";
+import { navItems, contactInfo, services, brandImages } from "@/lib/data";
 import TrustBar from "./TrustBar";
 
 // Flat product list for search
@@ -233,122 +233,151 @@ export default function Header() {
               </nav>
             </div>
 
-            {/* ── CENTER: Search bar (takes all flex-1 space, centered) ── */}
-            <div ref={searchRef} className="hidden lg:flex flex-1 justify-center px-6 relative">
-              <div className="w-full max-w-[640px] relative">
-                <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-white hover:border-brand/40 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all duration-200">
-                  <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
-                    placeholder="Zoek diensten of producten..."
-                    className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-3"
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="shrink-0 mr-3 text-muted hover:text-ink transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  )}
+             {/* ── CENTER: Search bar (stretches between left and right) ── */}
+            <div ref={searchRef} className="hidden lg:flex flex-1 min-w-0 justify-center mx-4 lg:mx-6 relative">
+              <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-concrete hover:bg-white hover:border-brand/50 focus-within:bg-white focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15 transition-all duration-200 shadow-inner shadow-ink/3">
+                <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
+                  <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
+                  placeholder="Zoek producten, merken of diensten..."
+                  className="flex-1 h-10 text-sm text-ink placeholder:text-muted/60 bg-transparent focus:outline-none pr-3"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="shrink-0 mr-3 text-muted hover:text-brand transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
 
-                {/* Search results dropdown */}
-                {showResults && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[420px] max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden z-50">
-                    <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
+              {/* Search results dropdown - polished with images */}
+              {showResults && (
+                <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-hairline rounded-2xl shadow-2xl shadow-ink/12 overflow-hidden z-50">
+                  <div className="h-1 bg-gradient-to-r from-aurora-1 via-brand to-aurora-2" />
 
-                    {!hasResults && (
-                      <div className="px-4 py-6 text-center">
-                        <p className="text-sm text-muted">Geen resultaten voor</p>
-                        <p className="text-sm font-bold text-ink mt-0.5">&ldquo;{searchQuery}&rdquo;</p>
+                  {!hasResults && (
+                    <div className="px-5 py-8 text-center">
+                      <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-concrete border border-hairline flex items-center justify-center">
+                        <svg className="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                       </div>
-                    )}
+                      <p className="text-sm text-muted">Geen resultaten voor</p>
+                      <p className="text-base font-bold text-ink mt-1">&ldquo;{searchQuery}&rdquo;</p>
+                    </div>
+                  )}
 
-                    {matchedServices.length > 0 && (
-                      <div>
-                        <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
-                          Diensten
-                        </div>
+                  {matchedServices.length > 0 && (
+                    <div>
+                      <div className="px-5 py-3 bg-concrete/50 border-b border-hairline">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted">Diensten</span>
+                      </div>
+                      <div className="p-2">
                         {matchedServices.slice(0, 4).map((service) => (
                           <Link
                             key={service.slug}
                             href={`/aanbod/?dienst=${service.slug}`}
                             onClick={() => setSearchQuery("")}
-                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
+                            className="flex items-center gap-4 p-3 rounded-xl hover:bg-brand/5 transition-all duration-150 group"
                           >
-                            <div className="shrink-0 w-7 h-7 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand">
+                            <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-brand/10 to-brand/5 border border-brand/20 flex items-center justify-center text-brand group-hover:from-brand group-hover:to-brand group-hover:text-white group-hover:border-brand transition-all duration-150">
                               {serviceIcons[service.slug] ?? (
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                               )}
                             </div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-ink leading-tight">{service.title}</p>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors">{service.title}</p>
                               <p className="text-xs text-muted line-clamp-1">{service.summary}</p>
                             </div>
+                            <svg className="w-4 h-4 text-muted group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
                           </Link>
                         ))}
                       </div>
-                    )}
-
-                    {matchedProducts.length > 0 && (
-                      <div className={matchedServices.length > 0 ? "border-t border-hairline" : ""}>
-                        <div className="px-4 py-2 text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted">
-                          Producten
-                        </div>
-                        {matchedProducts.slice(0, 5).map((product) => (
-                          <Link
-                            key={product.name}
-                            href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
-                            onClick={() => setSearchQuery("")}
-                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-brand/5 transition-colors duration-150"
-                          >
-                            <div className="shrink-0 w-7 h-7 rounded bg-concrete border border-hairline flex items-center justify-center">
-                              <svg className="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                              </svg>
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-semibold text-ink leading-tight">{product.name}</p>
-                              <p className="text-xs text-muted">{product.brand}</p>
-                            </div>
-                            {product.price && (
-                              <span className="text-xs font-bold text-ink tabular-nums shrink-0">
-                                {product.price.split(" - ")[0]}+
-                              </span>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="border-t border-hairline px-4 py-2.5 bg-concrete flex items-center justify-between">
-                      <span className="text-xs text-muted">
-                        {matchedServices.length + matchedProducts.length} resultaten
-                      </span>
-                      <Link
-                        href="/aanbod/"
-                        onClick={() => setSearchQuery("")}
-                        className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
-                      >
-                        Volledig aanbod →
-                      </Link>
                     </div>
+                  )}
+
+                  {matchedProducts.length > 0 && (
+                    <div className={matchedServices.length > 0 ? "border-t border-hairline" : ""}>
+                      <div className="px-5 py-3 bg-concrete/50 border-b border-hairline">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted">Producten</span>
+                      </div>
+                      <div className="p-2 grid grid-cols-1 gap-1">
+{matchedProducts.slice(0, 6).map((product) => {
+  const brandLogo = brandImages[product.brand] || null;
+  return (
+    <Link
+      key={product.name}
+      href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
+      onClick={() => setSearchQuery("")}
+      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand/5 transition-all duration-150 group"
+    >
+      <div className="shrink-0 w-14 h-14 rounded-xl bg-concrete border border-hairline overflow-hidden shadow-sm">
+        <img 
+          src={product.image} 
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
+      </div>
+      <div className="min-w-0 flex-1 pr-2 space-y-1">
+        <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-tight">{product.name}</p>
+        {brandLogo && (
+          <Image
+            src={brandLogo}
+            alt={`${product.brand} logo`}
+            width={24}
+            height={24}
+            className="object-contain"
+          />
+        )}
+        {!brandLogo && product.brand && (
+          <p className="text-xs text-muted">{product.brand}</p>
+        )}
+      </div>
+      {product.price && (
+        <span className="text-xs font-bold text-brand bg-brand/10 px-2.5 py-1 rounded-lg shrink-0">
+          {product.price.split(" - ")[0]}
+        </span>
+      )}
+    </Link>
+  );
+})}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="border-t border-hairline px-5 py-3.5 bg-gradient-to-r from-concrete to-white flex items-center justify-between">
+                    <span className="text-xs text-muted">
+                      {matchedServices.length + matchedProducts.length} resultaten
+                    </span>
+                    <Link
+                      href="/aanbod/"
+                      onClick={() => setSearchQuery("")}
+                      className="text-xs font-bold text-brand hover:text-brand-deep transition-colors flex items-center gap-1"
+                    >
+                      Bekijk alles
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* ── RIGHT: CTA buttons ── */}
