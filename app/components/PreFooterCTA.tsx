@@ -3,51 +3,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { contactInfo } from "@/lib/data";
-import Reveal from "./Reveal";
 
 export default function PreFooterCTA() {
   const pathname = usePathname();
 
-  // Hide on contact page
   if (pathname === "/contact" || pathname === "/contact/") return null;
 
   return (
-    <div className="bg-brand relative overflow-hidden">
-      {/* Subtle background texture */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-brand-deep)/40,_transparent_60%)]" />
-      <div className="relative max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24 text-center">
-        <Reveal>
-          <div className="inline-flex items-center gap-2.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/60 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
-            Klaar om te beginnen?
-          </div>
-        </Reveal>
-        <Reveal delay={80}>
-          <h2 className="font-display text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-[1.0] tracking-tight text-white mb-5">
-            Klaar voor een duurzame woning?
+    <div className="bg-ink relative py-8 border-t border-hairline before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-aurora-1 before:via-brand before:to-aurora-2">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex flex-col lg:flex-row gap-6 items-center justify-between">
+        <div className="flex items-center gap-8 text-center lg:text-left">
+          <h2 className="font-display text-4xl font-extrabold text-base leading-none uppercase">
+            BOUW MEE AAN DE TOEKOMST
           </h2>
-        </Reveal>
-        <Reveal delay={160}>
-          <p className="text-white/75 text-lg max-w-xl mx-auto mb-10">
-            Vraag vandaag nog een gratis en vrijblijvend adviesgesprek aan. Wij nemen binnen 24 uur contact op.
+          <p className="text-sm text-white/60 hidden lg:block max-w-sm">
+            Plan uw gratis verduurzamings-audit (binnen 48 uur).
           </p>
-        </Reveal>
-        <Reveal delay={240}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/contact/"
-              className="px-8 py-4 bg-white text-brand text-sm font-bold uppercase tracking-wide rounded-full hover:bg-mist transition-all duration-200 shadow-lg shadow-ink/10"
-            >
-              Offerte aanvragen
-            </Link>
-            <a
-              href={`tel:${contactInfo.phone}`}
-              className="px-8 py-4 border-2 border-white/60 text-white text-sm font-bold uppercase tracking-wide rounded-full hover:border-white hover:bg-white/10 transition-all duration-200"
-            >
-              {contactInfo.phoneDisplay}
-            </a>
-          </div>
-        </Reveal>
+        </div>
+        <div className="flex gap-4 items-center w-full lg:w-auto">
+          <Link 
+            href="/contact/" 
+            className="flex-1 lg:flex-none bg-brand text-base px-8 py-3 text-xs font-bold uppercase tracking-[0.15em] text-center hover:opacity-90 transition-opacity"
+          >
+            Offerte Aanvragen
+          </Link>
+          <a 
+            href={`tel:${contactInfo.phone}`} 
+            className="hidden sm:block text-base px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] border border-white/20 hover:border-base transition-colors"
+          >
+            Bel Direct
+          </a>
+        </div>
       </div>
     </div>
   );

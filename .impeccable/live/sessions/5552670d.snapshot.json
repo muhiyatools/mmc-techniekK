@@ -1,0 +1,29 @@
+{
+  "id": "5552670d",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\sections\\TrustStrip.tsx",
+  "expectedVariants": 3,
+  "arrivedVariants": 3,
+  "visibleVariant": 1,
+  "paramValues": {
+    "spacing": "comfortable",
+    "show-numbers": true
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 7,
+  "activeOwner": "aec0b1dd",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "carbonize_cleanup_required",
+      "file": "app\\sections\\TrustStrip.tsx",
+      "message": "Accepted variant still has carbonize markers that must be folded into source CSS."
+    }
+  ],
+  "updatedAt": "2026-05-12T15:42:56.407Z"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "6bd36b61",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\components\\TrustBar.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {
+    "opacity": 0.8
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 7,
+  "activeOwner": "eb0f0d50",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T13:07:57.076Z"
+}

@@ -10,7 +10,7 @@ export interface AdminStore {
 const ADMIN_STORE_KEY = "mmc_admin_store_v2";
 
 // ── Local storage fallback ──
-function getLocalStore(): AdminStore {
+export function getLocalStore(): AdminStore {
   if (typeof window === "undefined") return { products: {}, brandImages: {} };
   try {
     const raw = localStorage.getItem(ADMIN_STORE_KEY);

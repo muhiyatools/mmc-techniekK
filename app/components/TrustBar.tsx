@@ -48,21 +48,20 @@ export default function TrustBar() {
   ];
 
   return (
-    <div className="hidden lg:block bg-ink border-b border-white/5">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-[44px] flex items-center justify-center">
-        <div className="flex items-center">
-          {items.map((item, i) => (
-            <div key={item.label} className="flex items-center gap-2 px-5 first:pl-0 last:pr-0">
-              {i > 0 && (
-                <span className="w-px h-3.5 bg-white/10 mr-5 shrink-0" />
-              )}
+    <div className="hidden lg:block h-[48px] bg-ink/80 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-center gap-10">
+        {items.map((item) => (
+          <div key={item.label} className="relative flex items-center gap-2.5 group cursor-default transition-transform duration-300 hover:-translate-y-px">
+            <div className="p-1.5 rounded-lg bg-white/5 group-hover:bg-brand/10 transition-colors">
               {item.icon}
-              <span className="text-[0.7rem] font-semibold text-white/55 tracking-wide whitespace-nowrap uppercase">
-                {item.label}
-              </span>
             </div>
-          ))}
-        </div>
+            <span className="text-[10px] font-bold text-white/70 tracking-widest uppercase">
+              {item.label}
+            </span>
+            {/* Active indicator dot */}
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand rounded-full opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
+          </div>
+        ))}
       </div>
     </div>
   );

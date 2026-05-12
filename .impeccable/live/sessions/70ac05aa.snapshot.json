@@ -1,0 +1,22 @@
+{
+  "id": "70ac05aa",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\sections\\HeroSection.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {
+    "focus": 0.5
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 5,
+  "activeOwner": "5a8f96b8",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T12:31:49.345Z"
+}

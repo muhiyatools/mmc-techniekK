@@ -1,0 +1,29 @@
+{
+  "id": "cfb1690b",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\components\\PreFooterCTA.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {
+    "density": "standard",
+    "accent-line": true
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 6,
+  "activeOwner": "d5524e89",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "carbonize_cleanup_required",
+      "file": "app\\components\\PreFooterCTA.tsx",
+      "message": "Accepted variant still has carbonize markers that must be folded into source CSS."
+    }
+  ],
+  "updatedAt": "2026-05-12T15:49:40.567Z"
+}

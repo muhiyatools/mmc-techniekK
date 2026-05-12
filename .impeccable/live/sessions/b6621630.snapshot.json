@@ -1,0 +1,29 @@
+{
+  "id": "b6621630",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\sections\\HeroSection.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {
+    "bg-opacity": 0.4,
+    "grid": true
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 9,
+  "activeOwner": "93498062",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "carbonize_cleanup_required",
+      "file": "app\\sections\\HeroSection.tsx",
+      "message": "Accepted variant still has carbonize markers that must be folded into source CSS."
+    }
+  ],
+  "updatedAt": "2026-05-12T12:39:21.325Z"
+}

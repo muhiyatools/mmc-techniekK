@@ -1,0 +1,22 @@
+{
+  "id": "6b7cfa44",
+  "phase": "variants_ready",
+  "pageUrl": "/",
+  "sourceFile": "app\\page.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {
+    "line-weight": 1
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 4,
+  "activeOwner": "74c23fcd",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T13:14:53.110Z"
+}

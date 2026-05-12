@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
+  outputFileTracingRoot: path.resolve('.'),
   images: {
     unoptimized: true,
+    qualities: [75, 90],
   },
 };
 

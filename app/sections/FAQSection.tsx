@@ -80,7 +80,7 @@ export default function FAQSection() {
                           className="overflow-hidden transition-all duration-500 ease-out"
                           style={{ maxHeight: isOpen ? "400px" : "0px", opacity: isOpen ? 1 : 0 }}
                         >
-                          <p className="text-base leading-relaxed pb-7 px-6" style={{ color: "#334155" }}>
+                          <p className="text-copy text-base leading-relaxed pb-7 px-6">
                             {item.answer}
                           </p>
                         </div>
@@ -110,7 +110,7 @@ export default function FAQSection() {
                             opacity: isOpen ? 1 : 0,
                           }}
                         >
-                          <p className="text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10 px-2" style={{ color: "#334155" }}>
+                          <p className="text-copy text-sm lg:text-base leading-relaxed pb-6 lg:pb-7 pr-10 px-2">
                             {item.answer}
                           </p>
                         </div>

@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import WhatsAppButton from "./components/WhatsAppButton";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const barlow = Barlow({
   variable: "--font-barlow",
@@ -69,13 +70,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl-NL" className={`${barlow.variable} ${barlowCondensed.variable}`}>
-      <body className="min-h-full flex flex-col bg-base">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <ScrollToTop />
-        <WhatsAppButton />
+    <html lang="nl-NL" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-base" suppressHydrationWarning>
+        <LanguageProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <ScrollToTop />
+          <WhatsAppButton />
+        </LanguageProvider>
       </body>
     </html>
   );

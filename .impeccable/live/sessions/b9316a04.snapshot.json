@@ -1,0 +1,23 @@
+{
+  "id": "b9316a04",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app/sections/HeroSection.tsx",
+  "expectedVariants": 3,
+  "arrivedVariants": 3,
+  "visibleVariant": 1,
+  "paramValues": {
+    "density": 1,
+    "color-amount": 0.6
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 18,
+  "activeOwner": "bf677f75",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T12:31:49.484Z"
+}

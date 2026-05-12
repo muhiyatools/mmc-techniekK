@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems, contactInfo, services, brandImages } from "@/lib/data";
+import { contactInfo, services, brandImages } from "@/lib/data";
+import { getLocalStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
+import type { Service } from "@/lib/data";
 import TrustBar from "./TrustBar";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { resolveProductImage } from "@/lib/images";
 
-// Flat product list for search
-const allSearchProducts = services.flatMap((s) => s.products);
-
-// Per-service icons
 const serviceIcons: Record<string, React.ReactNode> = {
   airconditioning: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,14 +55,61 @@ const serviceIcons: Record<string, React.ReactNode> = {
   ),
 };
 
+const FlagNL = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" className="w-[18px] h-[13px] rounded-[2px] object-cover border border-black/10">
+    <rect fill="#21468B" width="9" height="6"/>
+    <rect fill="#FFF" width="9" height="4"/>
+    <rect fill="#AE1C28" width="9" height="2"/>
+  </svg>
+);
+
+const FlagEN = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-[18px] h-[13px] rounded-[2px] object-cover border border-black/10">
+    <clipPath id="t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath>
+    <path d="M0 0v30h60V0z" fill="#012169"/>
+    <path d="M0 0l60 30m0-30L0 30" stroke="#fff" strokeWidth="6"/>
+    <path d="M0 0l60 30m0-30L0 30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4"/>
+    <path d="M30 0v30M0 15h60" stroke="#fff" strokeWidth="10"/>
+    <path d="M30 0v30M0 15h60" stroke="#C8102E" strokeWidth="6"/>
+  </svg>
+);
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+  const [mergedServices, setMergedServices] = useState<Service[]>(services);
+  const [mergedBrandImages, setMergedBrandImages] = useState(brandImages);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const { language, setLanguage, t } = useLanguage();
+
+  // Load admin store on mount
+  useEffect(() => {
+    const store = getLocalStore();
+    setMergedServices(mergeServices(store));
+    setMergedBrandImages(mergeBrandImages(store));
+  }, []);
+
+  const allSearchProducts = useMemo(() => mergedServices.flatMap((s) => s.products), [mergedServices]);
+
+  const navItems = [
+    { label: t.nav.home, href: "/" },
+    { label: t.nav.aanbod, href: "/aanbod/", isHash: true },
+    { label: t.nav.projects, href: "/our-work/" },
+    { label: t.nav.about, href: "/over-ons/" },
+    { label: t.nav.faq, href: "/veelgestelde-vragen/" },
+  ];
+
+  // Scroll shadow
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Close everything on navigation
   useEffect(() => {
@@ -98,7 +145,7 @@ export default function Header() {
   const searchTerm = searchQuery.toLowerCase().trim();
   const showResults = searchTerm.length >= 2;
   const matchedServices = showResults
-    ? services.filter(
+    ? mergedServices.filter(
         (s) =>
           s.title.toLowerCase().includes(searchTerm) ||
           s.summary.toLowerCase().includes(searchTerm)
@@ -114,147 +161,94 @@ export default function Header() {
     : [];
   const hasResults = matchedServices.length > 0 || matchedProducts.length > 0;
 
+  const toggleLanguage = () => {
+    setLanguage(language === "nl" ? "en" : "nl");
+  };
+
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50">
-        {/* Main nav row — 3-zone layout */}
-        <div className="bg-white h-[70px] shadow-[0_1px_0_0_rgba(15,23,42,0.06)]">
-          <div className="w-full px-6 lg:px-10 h-full flex items-center">
+      <header className="fixed top-0 inset-x-0 z-50 pointer-events-none">
+        {/* Floating Glass Island Header */}
+        <div className="w-[95%] mx-auto mt-4 pointer-events-auto">
+          <div className="relative flex items-center justify-between h-[60px] px-5 rounded-full bg-white/80 backdrop-blur-2xl saturate-[1.8] border border-white/30 shadow-[0_4px_20px_-5px_rgba(15,23,42,0.06)]">
+            <Link href="/" className="shrink-0 w-[140px]">
+              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={160} height={45} className="h-6 lg:h-7 w-auto object-contain" priority />
+            </Link>
 
-            {/* ── LEFT: Logo + Nav ── */}
-            <div className="flex items-center gap-5 lg:gap-7 shrink-0">
-              <Link
-                href="/"
-                className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
-              >
-                <Image
-                  src="/images/logo.png"
-                  alt="MMC Techniek B.V."
-                  width={300}
-                  height={90}
-                  className="h-[38px] lg:h-[44px] w-auto object-contain"
-                  priority
-                />
-              </Link>
+            <nav className="hidden lg:flex items-center gap-0.5 bg-ink/5 p-1 rounded-full">
+              {navItems.map((item) => (
+                <div key={item.href} className="relative" ref={item.isHash ? dropdownRef : undefined}>
+                  {item.isHash ? (
+                    <button
+                      onClick={() => setDropdownOpen((p) => !p)}
+                      className={`px-3.5 py-1 text-[0.75rem] font-bold uppercase tracking-wide rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                        isActive(item.href) || dropdownOpen ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"
+                      }`}
+                    >
+                      {item.label}
+                      <svg className={`w-3.5 h-3.5 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={`px-3.5 py-1 text-[0.75rem] font-bold uppercase tracking-wide rounded-full transition-all whitespace-nowrap ${isActive(item.href) ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"}`}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
 
-              {/* Desktop nav */}
-              <nav className="hidden lg:flex items-center gap-0.5">
-                {navItems.map((item) => (
-                  <div
-                    key={item.href}
-                    className="relative"
-                    ref={item.isHash ? dropdownRef : undefined}
-                  >
-                    {item.isHash ? (
-                      <>
-                        <button
-                          onClick={() => setDropdownOpen((p) => !p)}
-                          className={`relative flex items-center gap-1.5 px-3.5 py-2 text-[0.875rem] font-semibold transition-colors duration-200 rounded-md ${
-                            isActive(item.href) || dropdownOpen
-                              ? "text-brand bg-brand/5"
-                              : "text-ink hover:text-brand hover:bg-brand/5"
-                          }`}
-                        >
-                          {item.label}
-                          <svg
-                            className={`w-3 h-3 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  {/* Dropdown adapted for island header */}
+                  {item.isHash && dropdownOpen && (
+                    <div className="absolute top-full left-0 mt-4 w-[540px] max-w-[calc(100vw-8rem)] bg-white/95 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl overflow-hidden animate-dropdown-in z-50">
+                      <div className="p-5 grid grid-cols-2 gap-2">
+                        {mergedServices.map((service) => (
+                          <Link
+                            key={service.slug}
+                            href={`/aanbod/?dienst=${service.slug}`}
+                            onClick={() => setDropdownOpen(false)}
+                            className="group flex items-start gap-4 p-4 rounded-2xl hover:bg-brand/10 transition-all"
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-
-                        {/* Aanbod dropdown */}
-                        {dropdownOpen && (
-                          <div className="absolute top-full left-0 mt-2 w-[540px] max-w-[calc(100vw-4rem)] bg-white border border-hairline shadow-xl shadow-ink/10 overflow-hidden">
-                            <div className="h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
-                            <div className="p-4 grid grid-cols-2 gap-1">
-                              {services.map((service) => (
-                                <Link
-                                  key={service.slug}
-                                  href={`/aanbod/?dienst=${service.slug}`}
-                                  onClick={() => setDropdownOpen(false)}
-                                  className="group flex items-start gap-3 p-3 rounded-lg hover:bg-brand/5 transition-colors duration-150"
-                                >
-                                  <div className="shrink-0 w-9 h-9 rounded-lg bg-brand/8 border border-brand/15 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-all duration-150">
-                                    {serviceIcons[service.slug] ?? (
-                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                      </svg>
-                                    )}
-                                  </div>
-                                  <div className="min-w-0 pt-0.5">
-                                    <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-tight mb-0.5">
-                                      {service.title}
-                                    </p>
-                                    <p className="text-xs text-muted leading-relaxed line-clamp-1">
-                                      {service.summary}
-                                    </p>
-                                  </div>
-                                </Link>
-                              ))}
+                            <div className="shrink-0 w-10 h-10 rounded-xl bg-brand/5 border border-brand/10 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-all">
+                              {serviceIcons[service.slug] || <div className="w-5 h-5 bg-current rounded-full" />}
                             </div>
-                            <div className="border-t border-hairline px-4 py-3 bg-concrete flex items-center justify-between">
-                              <Link
-                                href="/aanbod/"
-                                onClick={() => setDropdownOpen(false)}
-                                className="text-xs font-bold text-muted hover:text-ink transition-colors"
-                              >
-                                Bekijk volledig aanbod
-                              </Link>
-                              <Link
-                                href="/contact/"
-                                onClick={() => setDropdownOpen(false)}
-                                className="text-xs font-bold text-brand hover:text-brand-deep transition-colors uppercase tracking-wide"
-                              >
-                                Offerte aanvragen →
-                              </Link>
+                            <div className="min-w-0 pt-0.5">
+                              <p className="text-sm font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{service.title}</p>
+                              <p className="text-xs text-muted line-clamp-1 opacity-70">{service.summary}</p>
                             </div>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        className={`relative flex items-center px-3.5 py-2 text-[0.875rem] font-semibold transition-colors duration-200 rounded-md ${
-                          isActive(item.href)
-                            ? "text-brand bg-brand/5"
-                            : "text-ink hover:text-brand hover:bg-brand/5"
-                        }`}
-                      >
-                        {item.label}
-                        {isActive(item.href) && (
-                          <span className="absolute bottom-1 left-3.5 right-3.5 h-[2px] bg-brand rounded-full" />
-                        )}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </nav>
-            </div>
-
-             {/* ── CENTER: Search bar (stretches between left and right) ── */}
-            <div ref={searchRef} className="hidden lg:flex flex-1 min-w-0 justify-center mx-4 lg:mx-6 relative">
-              <div className="flex items-center w-full border border-hairline rounded-full overflow-hidden bg-concrete hover:bg-white hover:border-brand/50 focus-within:bg-white focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15 transition-all duration-200 shadow-inner shadow-ink/3">
-                <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
-                  <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="bg-ink/5 px-6 py-4 flex items-center justify-between">
+                        <Link href="/aanbod/" onClick={() => setDropdownOpen(false)} className="text-xs font-black uppercase tracking-widest text-muted hover:text-brand transition-colors">
+                          {t.nav.aanbod}
+                        </Link>
+                        <Link href="/contact/" onClick={() => setDropdownOpen(false)} className="text-xs font-black uppercase tracking-widest text-brand hover:text-brand-deep transition-colors">
+                          {t.nav.requestQuote} →
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              ))}
+            </nav>
+
+            <div className="hidden lg:flex flex-1 justify-center px-6" ref={searchRef}>
+              <div className="flex items-center bg-transparent border-b border-ink/10 px-2 h-9 w-full max-w-[480px] group focus-within:border-brand transition-all">
+                <svg className="w-3.5 h-3.5 text-muted group-focus-within:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <input
                   ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
-                  placeholder="Zoek producten, merken of diensten..."
-                  className="flex-1 h-10 text-sm text-ink placeholder:text-muted/60 bg-transparent focus:outline-none pr-3"
+                  placeholder={language === "nl" ? "Zoeken..." : "Search..."}
+                  className="bg-transparent border-none text-[0.8125rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/60"
                 />
                 {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="shrink-0 mr-3 text-muted hover:text-brand transition-colors"
-                  >
+                  <button onClick={() => setSearchQuery("")} className="text-muted hover:text-brand">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -262,145 +256,34 @@ export default function Header() {
                 )}
               </div>
 
-              {/* Search results dropdown - polished with images */}
+              {/* Search Results */}
               {showResults && (
-                <div className="absolute top-full left-0 right-0 mt-3 bg-white border border-hairline rounded-2xl shadow-2xl shadow-ink/12 overflow-hidden z-50">
-                  <div className="h-1 bg-gradient-to-r from-aurora-1 via-brand to-aurora-2" />
-
-                  {!hasResults && (
-                    <div className="px-5 py-8 text-center">
-                      <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-concrete border border-hairline flex items-center justify-center">
-                        <svg className="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <p className="text-sm text-muted">Geen resultaten voor</p>
-                      <p className="text-base font-bold text-ink mt-1">&ldquo;{searchQuery}&rdquo;</p>
-                    </div>
-                  )}
-
-                  {matchedServices.length > 0 && (
-                    <div>
-                      <div className="px-5 py-3 bg-concrete/50 border-b border-hairline">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted">Diensten</span>
-                      </div>
-                      <div className="p-2">
-                        {matchedServices.slice(0, 4).map((service) => (
-                          <Link
-                            key={service.slug}
-                            href={`/aanbod/?dienst=${service.slug}`}
-                            onClick={() => setSearchQuery("")}
-                            className="flex items-center gap-4 p-3 rounded-xl hover:bg-brand/5 transition-all duration-150 group"
-                          >
-                            <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-brand/10 to-brand/5 border border-brand/20 flex items-center justify-center text-brand group-hover:from-brand group-hover:to-brand group-hover:text-white group-hover:border-brand transition-all duration-150">
-                              {serviceIcons[service.slug] ?? (
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors">{service.title}</p>
-                              <p className="text-xs text-muted line-clamp-1">{service.summary}</p>
-                            </div>
-                            <svg className="w-4 h-4 text-muted group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                <div className="absolute top-full right-0 mt-4 w-[400px] bg-white/95 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl overflow-hidden z-50">
+                  <div className="p-4 max-h-[480px] overflow-y-auto">
+                    {!hasResults ? (
+                      <div className="p-8 text-center text-muted">Geen resultaten gevonden.</div>
+                    ) : (
+                      <div className="space-y-1">
+                        {matchedServices.map(s => (
+                          <Link key={s.slug} href={`/aanbod/?dienst=${s.slug}`} onClick={() => setSearchQuery("")} className="flex items-center gap-3 p-3 rounded-xl hover:bg-brand/5 transition-all group">
+                            <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand">{serviceIcons[s.slug]}</div>
+                            <span className="text-sm font-bold text-ink group-hover:text-brand transition-colors">{s.title}</span>
                           </Link>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  {matchedProducts.length > 0 && (
-                    <div className={matchedServices.length > 0 ? "border-t border-hairline" : ""}>
-                      <div className="px-5 py-3 bg-concrete/50 border-b border-hairline">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted">Producten</span>
-                      </div>
-                      <div className="p-2 grid grid-cols-1 gap-1">
-{matchedProducts.slice(0, 6).map((product) => {
-  const brandLogo = brandImages[product.brand] || null;
-  return (
-    <Link
-      key={product.name}
-      href={`/contact?service=${product.categoryId}&product=${encodeURIComponent(product.name)}`}
-      onClick={() => setSearchQuery("")}
-      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-brand/5 transition-all duration-150 group"
-    >
-      <div className="shrink-0 w-14 h-14 rounded-xl bg-concrete border border-hairline overflow-hidden shadow-sm">
-        <img 
-          src={product.image} 
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-        />
-      </div>
-      <div className="min-w-0 flex-1 pr-2 space-y-1">
-        <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors leading-tight">{product.name}</p>
-        {brandLogo && (
-          <Image
-            src={brandLogo}
-            alt={`${product.brand} logo`}
-            width={24}
-            height={24}
-            className="object-contain"
-          />
-        )}
-        {!brandLogo && product.brand && (
-          <p className="text-xs text-muted">{product.brand}</p>
-        )}
-      </div>
-      {product.price && (
-        <span className="text-xs font-bold text-brand bg-brand/10 px-2.5 py-1 rounded-lg shrink-0">
-          {product.price.split(" - ")[0]}
-        </span>
-      )}
-    </Link>
-  );
-})}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="border-t border-hairline px-5 py-3.5 bg-gradient-to-r from-concrete to-white flex items-center justify-between">
-                    <span className="text-xs text-muted">
-                      {matchedServices.length + matchedProducts.length} resultaten
-                    </span>
-                    <Link
-                      href="/aanbod/"
-                      onClick={() => setSearchQuery("")}
-                      className="text-xs font-bold text-brand hover:text-brand-deep transition-colors flex items-center gap-1"
-                    >
-                      Bekijk alles
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
+                    )}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* ── RIGHT: CTA buttons ── */}
-            <div className="hidden lg:flex items-center gap-2.5 shrink-0">
-              <a
-                href={`tel:${contactInfo.phone}`}
-                className="flex items-center gap-2 px-4 py-2.5 border border-hairline text-ink text-sm font-semibold rounded-full hover:border-brand hover:text-brand transition-all duration-200 whitespace-nowrap"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                Bel ons
-              </a>
-              <Link
-                href="/contact/"
-                className="px-5 py-2.5 bg-brand text-white text-sm font-bold rounded-full hover:bg-brand-deep transition-all duration-200 shadow-sm shadow-brand/20 uppercase tracking-wide whitespace-nowrap"
-              >
-                Offerte aanvragen
+            <div className="flex items-center gap-2 ml-auto lg:ml-0">
+              <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-8 h-8 rounded-full hover:bg-ink/5 transition-colors">
+                {language === "nl" ? <FlagEN /> : <FlagNL />}
+              </button>
+              <Link href="/contact/" className="h-9 px-5 bg-ink text-white text-[0.6875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
+                {t.nav.requestQuote}
               </Link>
-            </div>
-
-            {/* Mobile hamburger */}
-            <div className="lg:hidden ml-auto">
               <button
                 onClick={() => {
                   setMenuOpen((p) => {
@@ -409,21 +292,18 @@ export default function Header() {
                     return next;
                   });
                 }}
-                className="w-10 h-10 flex items-center justify-center text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-                aria-label={menuOpen ? "Sluit menu" : "Open menu"}
+                className="lg:hidden w-9 h-9 flex items-center justify-center text-ink bg-ink/5 rounded-full"
+                aria-label="Menu"
               >
-                <div className="relative flex flex-col justify-between w-6 h-4">
-                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-                  <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+                <div className="relative flex flex-col justify-between w-4 h-2.5">
+                  <span className={`block h-[1.5px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[4px]" : ""}`} />
+                  <span className={`block h-[1.5px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+                  <span className={`block h-[1.5px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[4px]" : ""}`} />
                 </div>
               </button>
             </div>
           </div>
         </div>
-
-        {/* Trust strip */}
-        <TrustBar />
       </header>
 
       {/* Mobile overlay */}
@@ -444,7 +324,7 @@ export default function Header() {
             </div>
             <input
               type="text"
-              placeholder="Zoek diensten of producten..."
+              placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
               className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
             />
           </div>
@@ -469,7 +349,7 @@ export default function Header() {
                     </svg>
                   </Link>
                   <div className="pl-4 grid grid-cols-2 gap-1.5">
-                    {services.map((service) => (
+                    {mergedServices.map((service) => (
                       <Link
                         key={service.title}
                         href={`/aanbod/?dienst=${service.slug}`}
@@ -512,7 +392,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="flex items-center justify-center w-full py-4 bg-brand text-white font-bold rounded-full hover:bg-brand-deep transition-colors"
           >
-            Offerte aanvragen
+            {t.nav.requestQuote}
           </Link>
         </div>
       </div>

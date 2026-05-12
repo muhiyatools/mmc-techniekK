@@ -1,0 +1,23 @@
+{
+  "id": "fe73e09a",
+  "phase": "discarded",
+  "pageUrl": "/",
+  "sourceFile": "app/components/Header.tsx",
+  "expectedVariants": 3,
+  "arrivedVariants": 3,
+  "visibleVariant": 2,
+  "paramValues": {
+    "glow": 0.8,
+    "shelf-tint": 0.1
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 22,
+  "activeOwner": "daefbca0",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T12:47:02.668Z"
+}

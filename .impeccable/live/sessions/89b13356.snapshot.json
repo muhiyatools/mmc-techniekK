@@ -1,0 +1,27 @@
+{
+  "id": "89b13356",
+  "phase": "discarded",
+  "pageUrl": "/",
+  "sourceFile": "app/sections/Services.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 3,
+  "visibleVariant": 2,
+  "paramValues": {
+    "blueprint-intensity": 0.5
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 5,
+  "activeOwner": "d3042108",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "agent_error",
+      "message": "Markers not found"
+    }
+  ],
+  "updatedAt": "2026-05-12T13:01:31.227Z"
+}

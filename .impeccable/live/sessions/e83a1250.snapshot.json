@@ -1,0 +1,22 @@
+{
+  "id": "e83a1250",
+  "phase": "completed",
+  "pageUrl": "/",
+  "sourceFile": "app\\components\\Header.tsx",
+  "expectedVariants": 3,
+  "arrivedVariants": 3,
+  "visibleVariant": 1,
+  "paramValues": {
+    "island-width": 95
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 7,
+  "activeOwner": "abf0fb8b",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-12T13:11:32.666Z"
+}
