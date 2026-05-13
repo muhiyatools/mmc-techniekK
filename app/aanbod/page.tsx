@@ -274,13 +274,12 @@ function AanbodContent() {
     return activeService.products.filter((p) => {
       if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
       if (p.price) {
-        const match = String(p.price).match(/[\d.,]+/);
-        if (match) {
-          const numStr = match[0].replace(/[.,]/g, "");
-          const priceVal = parseInt(numStr, 10);
-          if (!isNaN(priceVal) && priceVal !== 0) {
-            if (priceVal < priceRange[0] || priceVal > priceRange[1]) return false;
-          }
+        const matches = String(p.price).match(/[\d.,]+/g);
+        if (matches) {
+          const nums = matches.map(m => parseInt(m.replace(/[.,]/g, ""), 10)).filter(n => !isNaN(n) && n !== 0);
+          const minPrice = nums[0];
+          const maxPrice = nums.length > 1 ? nums[nums.length - 1] : minPrice;
+          if (minPrice < priceRange[0] || maxPrice > priceRange[1]) return false;
         }
       }
       return true;
@@ -350,13 +349,16 @@ function AanbodContent() {
 
               <div className="mb-10">
                 <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">{t.pages.aanbod.sidebar.budgetRange}</p>
-                <div className="flex items-center gap-4 text-xs font-bold text-ink mb-2">
-                  <span>€0</span>
-                  <div className="flex-1 h-px bg-hairline relative">
-                    <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
+                {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
+                {!showFilters && (
+                  <div className="flex items-center gap-4 text-xs font-bold text-ink mb-2">
+                    <span>€0</span>
+                    <div className="flex-1 h-px bg-hairline relative">
+                      <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
+                    </div>
+                    <span>€20k</span>
                   </div>
-                  <span>€20k</span>
-                </div>
+                )}
               </div>
 
               {availableBrands.length > 0 && (
@@ -386,15 +388,9 @@ function AanbodContent() {
                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-16 -mt-16 blur-3xl" />
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand">{t.pages.aanbod.serviceFocus}</span>
-                        <div className="w-1 h-1 rounded-full bg-brand" />
-                        <span className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted">{serviceTitleMap[activeService.slug]}</span>
-                      </div>
+                      <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-1">{serviceTitleMap[activeService.slug]}</p>
                       <h2 className="font-display font-bold text-3xl lg:text-4xl text-ink leading-tight tracking-tight uppercase">
-                        {serviceCaptionMap[activeService.slug].split(' ').map((word, i) => (
-                          <span key={i} className={i % 2 === 1 ? 'text-brand' : ''}>{word} </span>
-                        ))}
+                        {serviceCaptionMap[activeService.slug]}
                       </h2>
                     </div>
                     <Link href={`/contact?service=${activeService.slug}`} className="px-6 py-3 bg-ink text-base text-[0.6875rem] font-bold uppercase tracking-[0.18em] rounded-full hover:bg-brand transition-colors text-center">
@@ -420,41 +416,55 @@ function AanbodContent() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredProducts.map((product, i) => (
-                    <div key={i} className="product-card-v1 rounded-lg overflow-hidden group">
+                    <Link
+                      key={i}
+                      href={`/contact?product=${encodeURIComponent(product.name)}&service=${activeService.slug}`}
+                      className="product-card-v1 rounded-lg overflow-hidden group cursor-pointer block"
+                    >
                       <div className="relative aspect-[16/10] bg-concrete">
-                        <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover" />
-                        <div className="absolute top-4 left-4">
-                          <div className="bg-surface px-2 py-1 rounded border border-hairline">
-                            <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={14} />
+                        <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute top-4 left-4 pointer-events-none">
+                          <div className="bg-surface/90 px-2.5 py-1.5 rounded-lg border border-hairline shadow-sm">
+                            <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={16} />
                           </div>
                         </div>
                       </div>
                       <div className="p-6">
-                        <h4 className="font-display font-bold text-lg text-ink uppercase tracking-tight mb-2 group-hover:text-brand transition-colors">
-                          {product.name}
-                        </h4>
-                        <p className="text-xs text-muted leading-relaxed mb-6 line-clamp-2">{product.description}</p>
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <h4 className="font-display font-bold text-lg text-ink uppercase tracking-tight group-hover:text-brand transition-colors">
+                            {product.name}
+                          </h4>
+                          <span className="shrink-0 text-base font-bold text-ink tabular-nums leading-none pt-0.5">
+                            {product.price || 'P.O.A.'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted leading-relaxed mb-5 line-clamp-2">{product.description}</p>
 
-                        <div className="grid grid-cols-2 gap-y-3 mb-6">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-6 pb-6 border-b border-hairline">
                           {product.techSpecs.slice(0, 4).map((spec, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <div className="w-1 h-1 rounded-full bg-brand/40" />
-                              <span className="text-[10px] font-bold text-ink uppercase tracking-wider truncate">{spec}</span>
+                            <div key={idx} className="flex items-center gap-2.5">
+                              <div className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                                <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <span className="text-[11px] font-semibold text-ink leading-tight">{spec}</span>
                             </div>
                           ))}
                         </div>
 
-                        <div className="pt-4 border-t border-hairline flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="text-[0.625rem] font-bold text-muted uppercase tracking-widest">{t.pages.aanbod.fromPrice}</span>
-                            <span className="text-xl font-black text-ink">{product.price || 'P.O.A.'}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-brand uppercase tracking-wider">
+                            <span>{t.pages.aanbod.requestQuote}</span>
+                            <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                           </div>
-                          <div className="w-8 h-8 rounded-full border border-hairline flex items-center justify-center group-hover:bg-brand group-hover:border-brand group-hover:text-white transition-all">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                          </div>
+                          <span className="text-[9px] font-bold text-muted/60 uppercase tracking-wider">{t.pages.aanbod.todayQuote}</span>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </>

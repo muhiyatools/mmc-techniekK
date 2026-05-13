@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { contactInfo, services, brandImages } from "@/lib/data";
+import { contactInfo, services, brandImages, certifications } from "@/lib/data";
 import { getLocalStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
 import type { Service } from "@/lib/data";
 import TrustBar from "./TrustBar";
@@ -56,22 +56,26 @@ const serviceIcons: Record<string, React.ReactNode> = {
 };
 
 const FlagNL = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" className="w-[22px] h-[16px] rounded-[3px] object-cover border border-black/10">
-    <rect fill="#21468B" width="9" height="6"/>
-    <rect fill="#FFF" width="9" height="4"/>
-    <rect fill="#AE1C28" width="9" height="2"/>
-  </svg>
+  <span className="block w-[22px] h-[16px] rounded-full overflow-hidden shrink-0 border border-black/10">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" className="w-full h-full object-cover">
+      <rect fill="#21468B" width="9" height="6"/>
+      <rect fill="#FFF" width="9" height="4"/>
+      <rect fill="#AE1C28" width="9" height="2"/>
+    </svg>
+  </span>
 );
 
 const FlagEN = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-[22px] h-[16px] rounded-[3px] object-cover border border-black/10">
-    <clipPath id="t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath>
-    <path d="M0 0v30h60V0z" fill="#012169"/>
-    <path d="M0 0l60 30m0-30L0 30" stroke="#fff" strokeWidth="6"/>
-    <path d="M0 0l60 30m0-30L0 30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4"/>
-    <path d="M30 0v30M0 15h60" stroke="#fff" strokeWidth="10"/>
-    <path d="M30 0v30M0 15h60" stroke="#C8102E" strokeWidth="6"/>
-  </svg>
+  <span className="block w-[22px] h-[16px] rounded-full overflow-hidden shrink-0 border border-black/10">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-full h-full object-cover">
+      <clipPath id="t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath>
+      <path d="M0 0v30h60V0z" fill="#012169"/>
+      <path d="M0 0l60 30m0-30L0 30" stroke="#fff" strokeWidth="6"/>
+      <path d="M0 0l60 30m0-30L0 30" clipPath="url(#t)" stroke="#C8102E" strokeWidth="4"/>
+      <path d="M30 0v30M0 15h60" stroke="#fff" strokeWidth="10"/>
+      <path d="M30 0v30M0 15h60" stroke="#C8102E" strokeWidth="6"/>
+    </svg>
+  </span>
 );
 
 export default function Header() {
@@ -218,13 +222,13 @@ export default function Header() {
                             </div>
                             <div className="min-w-0 pt-0.5">
                               <p className="text-sm xl:text-base font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{serviceTitleMap[service.slug]}</p>
-                              <p className="text-xs xl:text-sm text-muted line-clamp-1 opacity-70">{service.summary}</p>
+                              <p className="text-xs xl:text-sm text-muted">{service.summary}</p>
                             </div>
                           </Link>
                         ))}
                       </div>
                       <div className="bg-ink/5 px-6 xl:px-8 py-4 xl:py-5 flex items-center justify-between">
-                        <Link href="/aanbod/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-muted hover:text-brand transition-colors">
+                        <Link href="/aanbod/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-ink hover:text-brand transition-colors">
                           {t.nav.aanbod}
                         </Link>
                         <Link href="/contact/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-brand hover:text-brand-deep transition-colors">
@@ -237,9 +241,9 @@ export default function Header() {
               ))}
             </nav>
 
-            <div className="hidden lg:flex flex-1 justify-center px-4 xl:px-6" ref={searchRef}>
-              <div className="flex items-center bg-surface border border-hairline px-5 h-12 max-w-[480px] xl:max-w-[520px] w-full rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
-                <svg className="w-[18px] h-[18px] text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-1 justify-center px-4 xl:px-6" ref={searchRef}>
+              <div className="flex items-center bg-surface border border-hairline px-4 h-11 max-w-[380px] xl:max-w-[420px] w-full rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
+                <svg className="w-[16px] h-[16px] text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -248,20 +252,55 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={language === "nl" ? "Zoeken..." : "Search..."}
-                  className="bg-transparent border-none text-[0.9375rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/40"
+                  className="bg-transparent border-none text-[0.8125rem] px-2.5 focus:ring-0 w-full text-ink placeholder:text-muted/40"
                 />
                 {searchQuery && (
                   <button onClick={() => setSearchQuery("")} className="text-muted hover:text-brand shrink-0">
-                    <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 )}
               </div>
 
+              <div className="flex items-center gap-4">
+                {certifications.map((c) => (
+                  <div key={c.name} className="flex items-center gap-1.5 group cursor-default">
+                    <div className="relative w-5 h-5">
+                      <Image
+                        src={c.src}
+                        alt={c.name}
+                        fill
+                        className="object-contain brightness-0 opacity-50 group-hover:opacity-80 transition-opacity"
+                      />
+                    </div>
+                    <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide">
+                      {c.name}
+                    </span>
+                  </div>
+                ))}
+                <div className="w-px h-5 bg-hairline" />
+                <div className="flex items-center gap-1.5 group cursor-default">
+                  <svg className="w-[18px] h-[18px] text-muted/50 group-hover:text-brand/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                  <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide whitespace-nowrap">
+                    {language === "nl" ? "Gratis Advies" : "Free Advice"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 group cursor-default">
+                  <svg className="w-[18px] h-[18px] text-muted/50 group-hover:text-brand/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20.25 3.75v4.5m0-4.5h-4.5m4.5 0l-6 6m3 12c-8.284 0-15-6.716-15-15V4.5A2.25 2.25 0 014.5 2.25h1.372c.516 0 .966.351 1.091.852l1.106 4.423c.11.44-.054.902-.417 1.173l-1.293.97a1.062 1.062 0 00-.38 1.21 12.035 12.035 0 007.143 7.143c.441.162.928-.004 1.21-.38l.97-1.293a1.125 1.125 0 011.173-.417l4.423 1.106c.5.125.852.575.852 1.091V19.5a2.25 2.25 0 01-2.25 2.25h-2.25z" />
+                  </svg>
+                  <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide whitespace-nowrap">
+                    24/7
+                  </span>
+                </div>
+              </div>
+
               {/* Search Results */}
               {showResults && (
-                <div className="absolute top-full right-0 mt-4 w-[440px] xl:w-[480px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] xl:w-[560px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
                   <div className="p-5 max-h-[520px] overflow-y-auto">
                     {!hasResults ? (
                       <div className="p-8 text-center text-muted">Geen resultaten gevonden.</div>
@@ -319,19 +358,40 @@ export default function Header() {
       >
         {/* Mobile search */}
         <div className="px-6 pt-[88px] pb-4 border-b border-hairline">
-          <div className="flex items-center border border-hairline rounded-full overflow-hidden bg-concrete">
-            <div className="w-12 h-12 flex items-center justify-center shrink-0 text-muted">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          <div className="relative">
+            <div className="flex items-center border border-hairline rounded-full overflow-hidden bg-concrete">
+              <div className="w-12 h-12 flex items-center justify-center shrink-0 text-muted">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
+                className="flex-1 h-12 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
+              />
             </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
-              className="flex-1 h-12 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
-            />
+
+            {showResults && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-hairline rounded-2xl shadow-xl overflow-hidden z-50">
+                <div className="p-3 max-h-[360px] overflow-y-auto">
+                  {!hasResults ? (
+                    <div className="p-5 text-center text-sm text-muted">{language === "nl" ? "Geen resultaten" : "No results"}</div>
+                  ) : (
+                    <div className="space-y-0.5">
+                      {matchedServices.map(s => (
+                        <Link key={s.slug} href={`/aanbod/?dienst=${s.slug}`} onClick={() => { setSearchQuery(""); setMenuOpen(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-brand/5 transition-all group">
+                          <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand shrink-0">{serviceIcons[s.slug]}</div>
+                          <span className="text-sm font-bold text-ink group-hover:text-brand transition-colors">{s.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
