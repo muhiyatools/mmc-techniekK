@@ -29,24 +29,19 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          {/* Mobile: vertical timeline */}
-          <div className="md:hidden flex flex-col gap-0">
+          {/* Mobile: clean step cards */}
+          <div className="md:hidden flex flex-col gap-4">
             {t.pages.home.process.steps.map((step, i) => (
               <Reveal key={i} delay={i * 80}>
-                <div className="relative flex items-start gap-5 pb-10 last:pb-0">
-                  {/* Timeline spine */}
-                  {i < t.pages.home.process.steps.length - 1 && (
-                    <div className="absolute left-[9px] top-6 bottom-0 w-px bg-hairline" aria-hidden="true" />
-                  )}
-                  {/* Dot */}
-                  <div className="relative z-10 shrink-0 w-5 h-5 mt-0.5 bg-brand rounded-full shadow-[0_0_0_4px_var(--color-bg),0_0_0_5px_var(--color-hairline)]" />
-                  {/* Content */}
-                  <div>
-                    <p className="text-micro text-brand mb-0.5">0{i + 1}</p>
-                    <h3 className="font-display text-lg font-bold text-ink uppercase italic tracking-wide mb-1">
+                <div className="flex items-start gap-4 bg-surface border border-hairline rounded-xl p-4">
+                  <span className="shrink-0 w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-xs font-extrabold text-brand leading-none">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-bold text-ink leading-snug mb-1">
                       {step.title}
                     </h3>
-                    <p className="text-xs text-muted font-bold uppercase tracking-widest opacity-70">
+                    <p className="text-xs text-muted leading-relaxed">
                       {step.description}
                     </p>
                   </div>

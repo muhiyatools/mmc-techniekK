@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { projectImages } from "@/lib/data";
 import Reveal from "../_ui/Reveal";
-import SwipeCarousel from "../_ui/SwipeCarousel";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function TrustStrip() {
@@ -64,28 +63,32 @@ export default function TrustStrip() {
 
           {/* Project photos */}
           <div className="lg:col-span-6">
-            {/* Mobile: swipeable photo strip */}
-            <div className="md:hidden -mx-5">
-              <SwipeCarousel slideWidth="80vw" gap={10} showDots>
-                {featured.map((project) => (
-                  <div key={project.src} className="group relative aspect-[4/3] overflow-hidden border border-hairline">
+            {/* Mobile: gallery grid */}
+            <div className="md:hidden grid grid-cols-2 gap-2">
+              {featured.map((project, i) => {
+                const large = i === 0;
+                return (
+                  <div
+                    key={project.src}
+                    className={`group relative overflow-hidden border border-hairline bg-concrete ${large ? "col-span-2 aspect-[16/7]" : "aspect-square"}`}
+                  >
                     <Image
                       src={project.src}
                       alt={project.label}
                       fill
-                      className="object-cover"
-                      sizes="80vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      sizes={large ? "100vw" : "50vw"}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent opacity-60" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
                       <span className="text-[9px] font-bold text-white/50 uppercase tracking-widest block mb-0.5">
                         {project.category}
                       </span>
-                      <h3 className="text-sm font-bold text-white">{project.label}</h3>
+                      <h3 className="text-xs font-bold text-white leading-tight">{project.label}</h3>
                     </div>
                   </div>
-                ))}
-              </SwipeCarousel>
+                );
+              })}
             </div>
 
             {/* Desktop: 2-col grid */}
