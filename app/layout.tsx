@@ -5,6 +5,7 @@ import Header from "./_ui/Header";
 import Footer from "./_ui/Footer";
 import ScrollToTop from "./_ui/ScrollToTop";
 import WhatsAppButton from "./_ui/WhatsAppButton";
+import CursorFollower from "./_ui/CursorFollower";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const barlow = Barlow({
@@ -81,6 +82,7 @@ export default function RootLayout({
           <Footer />
           <ScrollToTop />
           <WhatsAppButton />
+          <CursorFollower />
         </LanguageProvider>
       {process.env.NODE_ENV === "development" && (
         <script src="http://localhost:8400/live.js" />

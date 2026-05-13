@@ -257,7 +257,7 @@ export const translations = {
       ],
       preFooter: {
         title: "BOUW MEE AAN DE TOEKOMST",
-        description: "Plan uw gratis verduurzamings-audit (binnen 48 uur).",
+        description: "Plan uw gratis verduurzamings-audit (binnen 24 uur).",
         requestQuote: "Offerte Aanvragen",
         callDirect: "Bel Direct",
       },
@@ -565,7 +565,7 @@ export const translations = {
       ],
       preFooter: {
         title: "BUILD FOR THE FUTURE",
-        description: "Plan your free sustainability audit (within 48 hours).",
+        description: "Plan your free sustainability audit (within 24 hours).",
         requestQuote: "Request a Quote",
         callDirect: "Call Direct",
       },
