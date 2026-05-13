@@ -17,15 +17,15 @@ export default function Footer() {
       {!isContactPage && (
         <div className="bg-brand">
           <div className="h-[2px] bg-gradient-to-r from-aurora-1 via-white/40 to-aurora-2" />
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-10 lg:py-14">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-8 lg:py-14">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <Reveal>
                 <div className="max-w-xl">
                   <p className="text-label text-white/50 mb-3 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-white/40 rounded-full" />
                     {language === "nl" ? "OFFERTE" : "QUOTE"}
                   </p>
-                  <h2 className="font-display text-4xl lg:text-5xl font-extrabold text-white leading-none uppercase tracking-tight mb-3">
+                  <h2 className="font-display text-3xl lg:text-5xl font-extrabold text-white leading-none uppercase tracking-tight mb-3">
                     {t.components.preFooter.title}
                   </h2>
                   <p className="text-white/60 text-sm max-w-md">
@@ -35,16 +35,16 @@ export default function Footer() {
               </Reveal>
 
               <Reveal delay={150}>
-                <div className="flex gap-4 items-center shrink-0">
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shrink-0">
                   <Link
                     href="/contact/"
-                    className="bg-white text-brand px-8 py-3.5 text-xs font-bold uppercase tracking-[0.15em] hover:opacity-85 transition-all duration-300"
+                    className="bg-white text-brand px-8 py-4 text-xs font-bold uppercase tracking-[0.15em] hover:opacity-85 transition-all duration-300 text-center"
                   >
                     {t.components.preFooter.requestQuote}
                   </Link>
                   <a
                     href={`tel:${contactInfo.phone}`}
-                    className="text-white/70 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.15em] border border-white/25 hover:border-white/60 hover:text-white transition-all duration-300"
+                    className="text-white/70 px-6 py-4 text-xs font-bold uppercase tracking-[0.15em] border border-white/25 hover:border-white/60 hover:text-white transition-all duration-300 text-center"
                   >
                     {t.components.preFooter.callDirect}
                   </a>
@@ -56,8 +56,8 @@ export default function Footer() {
       )}
 
       <div className="bg-brand-deep">
-        <div className={`max-w-[1280px] mx-auto px-6 lg:px-10 ${isContactPage ? "pt-20" : "pt-6"}`}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 pt-16 lg:pt-20">
+        <div className={`max-w-[1280px] mx-auto px-6 lg:px-10 ${isContactPage ? "pt-12 lg:pt-20" : "pt-4"}`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 pt-10 lg:pt-20">
             <div className="lg:col-span-5">
               <Reveal>
                 <div className="mb-10">

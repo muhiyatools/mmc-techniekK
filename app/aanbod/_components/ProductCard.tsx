@@ -24,47 +24,74 @@ export default function ProductCard({
       href={`/contact?product=${encodeURIComponent(product.name)}&service=${serviceSlug}`}
       className="product-card-v1 rounded-lg overflow-hidden group cursor-pointer block"
     >
-      <div className="relative aspect-[16/10] bg-concrete">
-        <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="absolute top-4 left-4 pointer-events-none">
-          <div className="bg-surface/90 px-2.5 py-1.5 rounded-lg border border-hairline shadow-sm">
-            <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={16} />
+      {/* Mobile: horizontal card */}
+      <div className="flex sm:hidden gap-3 p-4">
+        <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-concrete border border-hairline">
+          <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover" sizes="80px" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-0.5">
+            {product.brand}
+          </p>
+          <h4 className="font-display font-bold text-sm text-ink uppercase tracking-tight leading-snug group-hover:text-brand transition-colors line-clamp-2 mb-1">
+            {product.name}
+          </h4>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-brand">{product.price || "P.O.A."}</span>
+            <span className="text-[10px] font-bold text-brand uppercase tracking-wider flex items-center gap-1">
+              {requestQuoteLabel}
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
           </div>
         </div>
       </div>
-      <div className="p-6">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <h4 className="font-display font-bold text-lg text-ink uppercase tracking-tight group-hover:text-brand transition-colors">
-            {product.name}
-          </h4>
-          <span className="shrink-0 text-base font-bold text-ink tabular-nums leading-none pt-0.5">
-            {product.price || "P.O.A."}
-          </span>
-        </div>
-        <p className="text-xs text-muted leading-relaxed mb-5 line-clamp-2">{product.description}</p>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-6 pb-6 border-b border-hairline">
-          {product.techSpecs.slice(0, 4).map((spec, idx) => (
-            <div key={idx} className="flex items-center gap-2.5">
-              <div className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
-                <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-[11px] font-semibold text-ink leading-tight">{spec}</span>
+      {/* Desktop: vertical card */}
+      <div className="hidden sm:block">
+        <div className="relative aspect-[16/10] bg-concrete">
+          <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-4 left-4 pointer-events-none">
+            <div className="bg-surface/90 px-2.5 py-1.5 rounded-lg border border-hairline shadow-sm">
+              <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={16} />
             </div>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[10px] font-bold text-brand uppercase tracking-wider">
-            <span>{requestQuoteLabel}</span>
-            <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
           </div>
-          <span className="text-[9px] font-bold text-muted/60 uppercase tracking-wider">{todayQuoteLabel}</span>
+        </div>
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <h4 className="font-display font-bold text-lg text-ink uppercase tracking-tight group-hover:text-brand transition-colors">
+              {product.name}
+            </h4>
+            <span className="shrink-0 text-base font-bold text-ink tabular-nums leading-none pt-0.5">
+              {product.price || "P.O.A."}
+            </span>
+          </div>
+          <p className="text-xs text-muted leading-relaxed mb-5 line-clamp-2">{product.description}</p>
+
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-6 pb-6 border-b border-hairline">
+            {product.techSpecs.slice(0, 4).map((spec, idx) => (
+              <div key={idx} className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                  <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="text-[11px] font-semibold text-ink leading-tight">{spec}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[10px] font-bold text-brand uppercase tracking-wider">
+              <span>{requestQuoteLabel}</span>
+              <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+            <span className="text-[9px] font-bold text-muted/60 uppercase tracking-wider">{todayQuoteLabel}</span>
+          </div>
         </div>
       </div>
     </Link>

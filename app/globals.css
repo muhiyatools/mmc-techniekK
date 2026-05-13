@@ -535,19 +535,18 @@ section {
   flex-shrink: 0;
 }
 
-/* Sticky CTA bar (service detail pages) */
+/* Sticky CTA bar (service detail pages) — sits above bottom nav */
 .sticky-cta-bar {
   position: fixed;
-  bottom: 0;
+  bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
   left: 0;
   right: 0;
-  padding: 12px 16px;
-  padding-bottom: calc(12px + var(--safe-bottom));
+  padding: 10px 16px;
   background: var(--color-surface);
   border-top: 1px solid var(--color-hairline);
   display: flex;
   gap: 10px;
-  z-index: 50;
+  z-index: 49;
 }
 
 /* Bottom nav bar */

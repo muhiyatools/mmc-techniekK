@@ -11,6 +11,7 @@ export default function OurProjectsPage() {
   const localized = t.sections.projects.items;
   const [lightbox, setLightbox] = useState<(typeof projectImages)[0] | null>(null);
   const lightboxRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     if (!lightbox) return;
@@ -97,22 +98,33 @@ export default function OurProjectsPage() {
           tabIndex={-1}
           className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-ink/95 cursor-zoom-out animate-[fadeIn_200ms_ease-out]"
           onClick={() => setLightbox(null)}
+          onTouchStart={(e) => { touchStartY.current = e.touches[0].clientY; }}
+          onTouchEnd={(e) => {
+            const delta = e.changedTouches[0].clientY - touchStartY.current;
+            if (delta > 80) setLightbox(null);
+          }}
           role="dialog"
           aria-modal="true"
           aria-label={lightbox.label}
         >
+          {/* Close button — larger on mobile */}
           <button
-            className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
+            className="absolute top-5 right-5 z-10 w-12 h-12 md:w-11 md:h-11 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
             onClick={(e) => {
               e.stopPropagation();
               setLightbox(null);
             }}
             aria-label={t.pages.ourWork.close}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+          {/* Swipe hint on mobile */}
+          <div className="absolute top-5 left-1/2 -translate-x-1/2 md:hidden flex flex-col items-center gap-1 pointer-events-none">
+            <div className="w-8 h-1 rounded-full bg-white/30" />
+            <span className="text-white/40 text-[10px] uppercase tracking-widest">Veeg omlaag om te sluiten</span>
+          </div>
           <div className="animate-[scaleIn_200ms_ease-out]">
             <Image
               src={lightbox.src}

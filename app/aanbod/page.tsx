@@ -58,6 +58,7 @@ const serviceIcons: Record<string, React.ReactNode> = {
 
 import PriceRangeSlider, { SLIDER_MIN, SLIDER_MAX, SLIDER_STEP } from "./_components/PriceRangeSlider";
 import ProductCard from "./_components/ProductCard";
+import MobileSheet from "../_ui/MobileSheet";
 
 // ── Sidebar ──
 function Sidebar({
@@ -272,6 +273,28 @@ function AanbodContent() {
       </section>
 
       <div className="bg-bg">
+        {/* Mobile category chip scroll */}
+        <div className="lg:hidden border-b border-hairline overflow-x-auto scrollbar-none">
+          <div className="flex gap-2 px-4 py-3 w-max min-w-full">
+            <button
+              onClick={() => { setActiveSlug(null); setSelectedBrands([]); setPriceRange([SLIDER_MIN, SLIDER_MAX]); }}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap touch-target ${!activeSlug ? "bg-brand text-white border-brand" : "border-hairline text-muted bg-surface"}`}
+            >
+              Alles
+            </button>
+            {services.map((service) => (
+              <button
+                key={`chip-${service.slug}`}
+                onClick={() => handleCategorySelect(service.slug)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap touch-target ${activeSlug === service.slug ? "bg-brand text-white border-brand" : "border-hairline text-muted bg-surface"}`}
+              >
+                <span className="w-3.5 h-3.5 shrink-0">{serviceIcons[service.slug]}</span>
+                {serviceTitleMap[service.slug]}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 instrument-layout">
           {/* Refined Sidebar */}
           <aside className="hidden lg:block">
@@ -404,34 +427,27 @@ function AanbodContent() {
         </div>
       </div>
 
-      {/* Mobile filter drawer */}
-      {mobileFilterOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <button className="absolute inset-0 bg-ink/60" onClick={() => setMobileFilterOpen(false)} aria-label={t.pages.aanbod.close} />
-          <div className="relative ml-auto w-72 bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
-            <div className="sticky top-0 bg-white border-b border-hairline px-5 py-4 flex items-center justify-between shrink-0">
-              <p className="font-bold text-ink text-sm">{t.pages.aanbod.filterTitle}</p>
-              <button onClick={() => setMobileFilterOpen(false)} className="text-muted hover:text-ink transition-colors" aria-label={t.pages.aanbod.close}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
-            <div className="p-5 flex-1 overflow-y-auto">
-              <Sidebar
-                activeSlug={activeSlug}
-                priceRange={priceRange}
-                selectedBrands={selectedBrands}
-                brands={availableBrands}
-                brandImages={brandImages}
-                onCategorySelect={(slug) => { handleCategorySelect(slug); setMobileFilterOpen(false); }}
-                onPriceChange={setPriceRange}
-                onBrandToggle={(b) => setSelectedBrands((prev) => prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b])}
-                onResetFilters={handleResetFilters}
-                showFilters={showFilters}
-              />
-            </div>
-          </div>
+      {/* Mobile filter bottom sheet */}
+      <MobileSheet
+        open={mobileFilterOpen}
+        onClose={() => setMobileFilterOpen(false)}
+        title={t.pages.aanbod.filterTitle}
+      >
+        <div className="overflow-y-auto max-h-[60vh] pb-4">
+          <Sidebar
+            activeSlug={activeSlug}
+            priceRange={priceRange}
+            selectedBrands={selectedBrands}
+            brands={availableBrands}
+            brandImages={brandImages}
+            onCategorySelect={(slug) => { handleCategorySelect(slug); setMobileFilterOpen(false); }}
+            onPriceChange={setPriceRange}
+            onBrandToggle={(b) => setSelectedBrands((prev) => prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b])}
+            onResetFilters={handleResetFilters}
+            showFilters={showFilters}
+          />
         </div>
-      )}
+      </MobileSheet>
     </>
   );
 }

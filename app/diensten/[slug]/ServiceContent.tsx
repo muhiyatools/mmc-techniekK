@@ -5,6 +5,7 @@ import Link from "next/link";
 import { services, contactInfo, brandImages } from "@/lib/data";
 import Reveal from "../../_ui/Reveal";
 import BrandLogo from "../../_ui/BrandLogo";
+import StickyCTA from "../../_ui/StickyCTA";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function ServiceContent({ slug }: { slug: string }) {
@@ -15,6 +16,14 @@ export default function ServiceContent({ slug }: { slug: string }) {
 
   return (
     <>
+      {/* Mobile sticky CTA — sits above bottom nav */}
+      <StickyCTA
+        quoteHref={`/contact/?service=${service.slug}`}
+        phone={contactInfo.phone}
+        quoteLabel={t.pages.diensten.requestQuote}
+        callLabel={t.pages.diensten.callUs}
+      />
+
       <section className="relative pt-[70px] pb-16 lg:pt-[114px] lg:pb-20 overflow-hidden">
         <div className="absolute inset-0">
           <Image src={service.image} alt={service.title} fill className="object-cover" priority />

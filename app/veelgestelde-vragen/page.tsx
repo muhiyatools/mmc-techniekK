@@ -76,7 +76,7 @@ export default function FAQPage() {
                     <div key={i} className="border border-hairline rounded-lg overflow-hidden transition-colors duration-200" style={{ borderColor: isOpen ? "#42a8f240" : undefined, background: isOpen ? "#f8fafc" : undefined }}>
                       <button
                         onClick={() => setOpenIndex(isOpen ? null : i)}
-                        className="w-full flex items-start justify-between gap-4 px-5 py-4 text-left group"
+                        className="w-full flex items-start justify-between gap-4 px-5 py-5 text-left group min-h-[52px]"
                       >
                         <span className="text-sm font-bold leading-snug transition-colors duration-200" style={{ color: isOpen ? "#42a8f2" : "#0f172a" }}>
                           {item.question}
@@ -104,7 +104,7 @@ export default function FAQPage() {
             )}
 
             <div className="mt-12 p-6 lg:p-8 border border-hairline rounded-lg bg-concrete">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
                 <div>
                   <p className="text-sm font-bold mb-1" style={{ color: "#0f172a" }}>
                     {t.pages.faqPage.contact.title}
@@ -113,10 +113,10 @@ export default function FAQPage() {
                     {t.pages.faqPage.contact.description}
                   </p>
                 </div>
-                <div className="flex gap-3 shrink-0">
+                <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                   <a
                     href={`tel:${contactInfo.phone}`}
-                    className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
+                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center"
                     style={{ background: "#0f172a", color: "#fff" }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "#42a8f2" }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a" }}
@@ -125,7 +125,7 @@ export default function FAQPage() {
                   </a>
                   <Link
                     href="/contact/"
-                    className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
+                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center"
                     style={{ border: "1px solid #0f172a", color: "#0f172a" }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#42a8f2"; e.currentTarget.style.color = "#42a8f2" }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#0f172a"; e.currentTarget.style.color = "#0f172a" }}

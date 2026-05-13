@@ -43,6 +43,7 @@ function useParallax(speed = 0.3) {
     }
   }, [speed]);
   useEffect(() => {
+    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const onScroll = () => requestAnimationFrame(handleScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -65,6 +66,7 @@ export default function AboutPage() {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const el = timelineRef.current;
     if (!el) return;
