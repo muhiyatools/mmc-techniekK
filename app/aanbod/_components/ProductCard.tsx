@@ -24,32 +24,36 @@ export default function ProductCard({
       href={`/contact?product=${encodeURIComponent(product.name)}&service=${serviceSlug}`}
       className="product-card-v1 rounded-lg overflow-hidden group cursor-pointer block"
     >
-      {/* Mobile: horizontal card */}
-      <div className="flex sm:hidden gap-3 p-4">
-        <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-concrete border border-hairline">
-          <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover" sizes="80px" />
+      {/* Mobile: compact vertical card (2-col grid) */}
+      <div className="flex md:hidden flex-col bg-white border border-hairline overflow-hidden group flex-1">
+        <div className="relative aspect-[4/3] bg-concrete overflow-hidden">
+          <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="50vw" />
+          <span className="absolute top-2.5 left-2.5 bg-white/95 border border-hairline/50 px-1.5 py-1 rounded shadow-xs">
+            <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={14} />
+          </span>
+          {product.price && (
+            <span className="absolute bottom-2.5 right-2.5 bg-brand text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm">
+              {product.price}
+            </span>
+          )}
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-0.5">
-            {product.brand}
-          </p>
-          <h4 className="font-display font-bold text-sm text-ink uppercase tracking-tight leading-snug group-hover:text-brand transition-colors line-clamp-2 mb-1">
+        <div className="p-2.5 flex flex-col gap-1 flex-1">
+          <h4 className="text-[11px] font-bold text-ink leading-snug line-clamp-2 min-h-[2.2em]">
             {product.name}
           </h4>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-brand">{product.price || "P.O.A."}</span>
-            <span className="text-[10px] font-bold text-brand uppercase tracking-wider flex items-center gap-1">
+          <div className="mt-auto pt-1.5 border-t border-hairline/50 flex items-center justify-between">
+            <span className="text-[9px] font-bold text-brand uppercase tracking-wider">
               {requestQuoteLabel}
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
             </span>
+            <svg className="w-3 h-3 text-muted/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </div>
         </div>
       </div>
 
       {/* Desktop: vertical card */}
-      <div className="hidden sm:block">
+      <div className="hidden md:block">
         <div className="relative aspect-[16/10] bg-concrete">
           <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

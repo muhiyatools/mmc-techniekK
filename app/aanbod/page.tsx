@@ -188,9 +188,7 @@ function AanbodContent() {
 
   const [services, setServices] = useState<Service[]>(baseServices);
   const [brandImages, setBrandImages] = useState<Record<string, string>>(baseBrandImages);
-  const [activeSlug, setActiveSlug] = useState<string | null>(
-    baseServices.find((s) => s.slug === initialDienst) ? initialDienst : null
-  );
+  const [activeSlug, setActiveSlug] = useState<string | null>(initialDienst || null);
   const [priceRange, setPriceRange] = useState<[number, number]>([SLIDER_MIN, SLIDER_MAX]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -205,6 +203,15 @@ function AanbodContent() {
         // Supabase not configured, use base data
       });
   }, []);
+
+  // Auto-select first service on mobile when nothing selected
+  useEffect(() => {
+    if (activeSlug !== null || services.length === 0) return;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (isMobile) {
+      setActiveSlug(services[0].slug);
+    }
+  }, [activeSlug, services]);
 
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
   const showFilters = !!(activeService && activeService.products.length > 0);
@@ -235,6 +242,8 @@ function AanbodContent() {
   }, [activeService, selectedBrands, priceRange]);
 
   const handleCategorySelect = (slug: string) => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (isMobile && activeSlug === slug) return;
     const next = activeSlug === slug ? null : slug;
     setActiveSlug(next);
     setSelectedBrands([]);
@@ -250,21 +259,21 @@ function AanbodContent() {
     <>
       {/* Hero */}
       <section className="pt-[70px] lg:pt-[114px] bg-bg border-b border-hairline">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-8 lg:py-10">
+        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 py-6 lg:py-10">
           <Reveal>
-            <div className="flex items-center gap-2.5 mb-3">
+            <div className="flex items-center gap-2 mb-2 md:mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
               <span className="text-label text-muted">{t.pages.aanbod.label}</span>
             </div>
           </Reveal>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 md:gap-4">
             <Reveal delay={60}>
-              <h1 className="font-display font-extrabold text-[clamp(1.75rem,3.5vw,3rem)] leading-[0.95] tracking-tight text-ink"
+              <h1 className="font-display font-extrabold text-[clamp(1.5rem,3.5vw,3rem)] leading-[0.95] tracking-tight text-ink"
                 dangerouslySetInnerHTML={{ __html: t.pages.aanbod.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
               />
             </Reveal>
             <Reveal delay={120}>
-              <p className="text-sm text-muted leading-relaxed max-w-xs sm:text-right">
+              <p className="text-xs md:text-sm text-muted leading-relaxed max-w-xs sm:text-right">
                 {t.pages.aanbod.description}
               </p>
             </Reveal>
@@ -273,29 +282,33 @@ function AanbodContent() {
       </section>
 
       <div className="bg-bg">
-        {/* Mobile category chip scroll */}
-        <div className="lg:hidden border-b border-hairline overflow-x-auto scrollbar-none">
-          <div className="flex gap-2 px-4 py-3 w-max min-w-full">
-            <button
-              onClick={() => { setActiveSlug(null); setSelectedBrands([]); setPriceRange([SLIDER_MIN, SLIDER_MAX]); }}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap touch-target ${!activeSlug ? "bg-brand text-white border-brand" : "border-hairline text-muted bg-surface"}`}
-            >
-              Alles
-            </button>
-            {services.map((service) => (
-              <button
-                key={`chip-${service.slug}`}
-                onClick={() => handleCategorySelect(service.slug)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap touch-target ${activeSlug === service.slug ? "bg-brand text-white border-brand" : "border-hairline text-muted bg-surface"}`}
-              >
-                <span className="w-3.5 h-3.5 shrink-0">{serviceIcons[service.slug]}</span>
-                {serviceTitleMap[service.slug]}
-              </button>
-            ))}
+        {/* Mobile category tabs */}
+        <div className="lg:hidden border-b border-hairline bg-surface">
+          <div className="flex gap-1 px-4 py-2.5 overflow-x-auto scrollbar-none" role="tablist">
+            <div className="flex gap-1 mx-auto">
+              {services.map((service, i) => (
+                <button
+                  key={`tab-${service.slug}`}
+                  role="tab"
+                  aria-selected={activeSlug === service.slug}
+                  onClick={() => handleCategorySelect(service.slug)}
+                  className={`relative flex items-center gap-2 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap touch-target transition-all shrink-0 rounded-lg ${
+                    activeSlug === service.slug
+                      ? "bg-brand text-white shadow-sm"
+                      : "text-muted hover:text-ink hover:bg-concrete"
+                  }`}
+                >
+                  <span className={`w-3.5 h-3.5 shrink-0 ${activeSlug === service.slug ? "" : "opacity-60"}`}>
+                    {serviceIcons[service.slug]}
+                  </span>
+                  <span>{serviceTitleMap[service.slug]}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 instrument-layout">
+        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 instrument-layout">
           {/* Refined Sidebar */}
           <aside className="hidden lg:block">
             <div className="sidebar-panel">
@@ -355,48 +368,43 @@ function AanbodContent() {
             {activeSlug && activeService ? (
               <>
                 <div className="compact-service-header">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-16 -mt-16 blur-3xl hidden md:block" />
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
                     <div>
-                      <p className="text-micro text-muted mb-1">{serviceTitleMap[activeService.slug]}</p>
-                      <h2 className="font-display font-bold text-3xl lg:text-4xl text-ink leading-tight tracking-tight uppercase">
+                      <p className="text-micro text-muted mb-0.5 md:mb-1">{serviceTitleMap[activeService.slug]}</p>
+                      <h2 className="font-display font-bold text-lg md:text-3xl lg:text-4xl text-ink leading-tight tracking-tight uppercase">
                         {serviceCaptionMap[activeService.slug]}
                       </h2>
                     </div>
-                    <Link href={`/contact?service=${activeService.slug}`} className="px-6 py-3 bg-ink text-label text-white rounded-full hover:bg-brand transition-colors text-center">
+                    <Link href={`/contact?service=${activeService.slug}`} className="px-5 py-2.5 md:px-6 md:py-3 bg-ink text-label text-white rounded-full hover:bg-brand transition-colors text-center text-xs md:text-sm">
                       {t.pages.aanbod.requestQuote}
                     </Link>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-8 border-b border-hairline pb-4">
-                  <div className="flex items-center gap-4">
-                    <p className="text-xs font-bold text-ink uppercase tracking-widest">
+                <div className="flex items-center justify-between mb-4 md:mb-8 border-b border-hairline pb-3 md:pb-4">
+                  <div className="flex items-center gap-3">
+                    <p className="shrink-0 whitespace-nowrap text-[11px] md:text-xs font-bold text-ink uppercase tracking-wider ml-2">
                       {filteredProducts.length} {t.pages.aanbod.results}
                     </p>
-                    <div className="h-4 w-px bg-hairline" />
-                    <p className="text-[10px] text-muted uppercase tracking-wider">
-                      {t.pages.aanbod.selectedCriteria}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
+                    <div className="h-3 md:h-4 w-px bg-hairline shrink-0" />
                     <button
                       onClick={() => setMobileFilterOpen(true)}
-                      className="lg:hidden flex items-center gap-1.5 px-3.5 py-2.5 border border-hairline rounded-full text-[10px] font-bold text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors"
+                      className="lg:hidden flex items-center gap-1 px-2.5 py-1.5 border border-hairline rounded-full text-[9px] font-bold text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
                       aria-label={t.pages.aanbod.filterTitle}
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                       </svg>
                       {t.pages.aanbod.filterTitle}
                     </button>
-                    <p className="text-[10px] text-muted font-medium hidden sm:block">
+                    <p className="hidden lg:block text-[9px] text-muted font-medium">
                       {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-2 md:gap-6">
                   {filteredProducts.map((product, i) => (
                     <ProductCard
                       key={i}
@@ -410,7 +418,7 @@ function AanbodContent() {
                 </div>
               </>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {services.map((service, i) => (
                   <button key={service.slug} onClick={() => handleCategorySelect(service.slug)} className="group relative aspect-video rounded-xl overflow-hidden bg-ink">
                     <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />

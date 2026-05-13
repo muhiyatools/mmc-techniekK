@@ -283,7 +283,7 @@ export default function Footer() {
           </div>
 
           {/* Bottom bar */}
-          <div className="border-t border-white/10 pt-4 flex flex-col gap-1.5">
+          <div className="border-t border-white/10 pt-4 pb-nav flex flex-col gap-1.5">
             <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.15em]">
               &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
             </p>
