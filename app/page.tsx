@@ -1,13 +1,16 @@
+"use client";
+
 import Services from "./sections/Services";
 import ProjectsPreview from "./sections/ProjectsPreview";
 import TrustStrip from "./sections/TrustStrip";
 import FAQSection from "./sections/FAQSection";
 import HeroSection from "./sections/HeroSection";
-import { processSteps } from "@/lib/data";
 import Reveal from "./components/Reveal";
 import HairlineDivider from "./components/HairlineDivider";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Home() {
+  const { t } = useLanguage();
   return (
     <>
       {/* Hero */}
@@ -26,18 +29,13 @@ export default function Home() {
           <Reveal>
             <div className="flex items-center gap-3 mb-16 justify-center">
               <div className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-ink">Onze Werkwijze</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-ink">{t.pages.home.process.label}</span>
               <div className="w-1.5 h-1.5 rounded-full bg-brand" />
             </div>
           </Reveal>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-0">
-            {[
-              { t: "Advies", d: "Persoonlijk & op maat" },
-              { t: "Offerte", d: "Binnen 24 uur gereed" },
-              { t: "Installatie", d: "Vakkundig uitgevoerd" },
-              { t: "Nazorg", d: "Altijd bereikbaar" }
-            ].map((step, i) => (
+              {t.pages.home.process.steps.map((step, i) => (
               <Reveal key={i} delay={i * 100}>
                 <div className="relative text-center group">
                   {/* Connecting Line (Desktop) */}
@@ -49,10 +47,10 @@ export default function Home() {
                   <div className="relative z-10 w-3 h-3 bg-brand rounded-full mx-auto mb-6 shadow-[0_0_0_4px_var(--color-base),0_0_0_5px_var(--color-hairline)] group-hover:scale-125 transition-transform duration-300" />
                   
                   <h3 className="font-display text-xl font-bold text-ink mb-2 uppercase italic tracking-wide group-hover:text-brand transition-colors">
-                    {step.t}
+                    {step.title}
                   </h3>
                   <p className="text-[11px] text-muted font-bold uppercase tracking-widest opacity-60">
-                    {step.d}
+                    {step.description}
                   </p>
                 </div>
               </Reveal>

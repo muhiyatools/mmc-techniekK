@@ -70,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl-NL" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
+    <html lang="nl-NL" dir="ltr" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-base" suppressHydrationWarning>
         <LanguageProvider>
           <Header />

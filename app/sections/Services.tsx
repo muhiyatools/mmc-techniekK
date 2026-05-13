@@ -1,9 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { services } from "@/lib/data";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Services() {
+  const { t } = useLanguage();
+  const items = t.sections.services.items;
   return (
     <section id="diensten" className="relative py-24 lg:py-32 bg-concrete">
       {/* Top hairline */}
@@ -17,15 +22,15 @@ export default function Services() {
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                  Onze diensten
+                  {t.sections.services.label}
                 </span>
               </div>
-              <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.0] tracking-tight text-ink max-w-xl">
-                Alles voor een <span className="text-brand">energiezuinige woning</span>
-              </h2>
+              <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.0] tracking-tight text-ink max-w-xl"
+                dangerouslySetInnerHTML={{ __html: t.sections.services.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </div>
             <p className="text-base text-muted max-w-sm lg:text-right">
-              Eigen monteurs, 16+ jaar ervaring. Van ontwerp tot oplevering.
+              {t.sections.services.subtitle}
             </p>
           </div>
         </Reveal>
@@ -72,7 +77,7 @@ export default function Services() {
                       <div className="flex items-center gap-1.5 mb-2.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand">
-                          Populair
+                          {t.sections.services.popular}
                         </span>
                       </div>
                     )}
@@ -82,15 +87,15 @@ export default function Services() {
                         i === 0 ? "text-2xl lg:text-3xl" : "text-lg"
                       }`}
                     >
-                      {service.title}
+                      {items[i]?.title || service.title}
                     </h3>
                     <p className={`text-white/65 leading-relaxed ${i === 0 ? "text-sm lg:text-base max-w-md" : "text-sm"}`}>
-                      {service.summary}
+                      {items[i]?.summary || service.summary}
                     </p>
 
                     {/* CTA arrow */}
                     <div className="mt-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand/80 group-hover:text-brand group-hover:gap-3 transition-all duration-300">
-                      <span>Meer info</span>
+                      <span>{t.sections.services.moreInfo}</span>
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
@@ -106,13 +111,13 @@ export default function Services() {
         <Reveal delay={300}>
           <div className="mt-12 lg:mt-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8 border-t border-hairline">
             <p className="text-base text-muted max-w-md">
-              Klaar voor een duurzame toekomst? Laat u adviseren door onze experts.
+              {t.sections.services.cta}
             </p>
             <Link
               href="/contact/"
               className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-brand text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand-deep transition-colors duration-200 shrink-0"
             >
-              Offerte aanvragen
+              {t.sections.services.ctaButton}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

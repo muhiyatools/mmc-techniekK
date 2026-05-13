@@ -1,11 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { projectImages } from "@/lib/data";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const featured = projectImages.slice(0, 4);
 
 export default function ProjectsPreview() {
+  const { t } = useLanguage();
   return (
     <section id="projecten" className="relative py-24 lg:py-36 bg-base overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
@@ -15,20 +19,20 @@ export default function ProjectsPreview() {
             <div className="max-w-2xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-px bg-brand" />
-                <span className="text-label text-brand">Project Portfolio</span>
+                <span className="text-label text-brand">{t.sections.projects.label}</span>
               </div>
-              <h2 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[0.85] tracking-tight text-ink mb-6">
-                Vakmanschap in <span className="text-brand">Beeld</span>.
-              </h2>
+              <h2 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[0.85] tracking-tight text-ink mb-6"
+                dangerouslySetInnerHTML={{ __html: t.sections.projects.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
               <p className="text-lg text-muted leading-relaxed max-w-lg">
-                Een selectie van recente installaties waar we trots op zijn. Van particuliere woningen tot commerciële projecten.
+                {t.sections.projects.description}
               </p>
             </div>
             <Link
               href="/our-work/"
               className="group relative px-8 py-4 bg-ink text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-full overflow-hidden transition-all duration-300"
             >
-              <span className="relative z-10">Bekijk Alles</span>
+              <span className="relative z-10">{t.sections.projects.cta}</span>
               <div className="absolute inset-0 bg-brand translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </Link>
           </div>
@@ -60,9 +64,9 @@ export default function ProjectsPreview() {
                 <h3 className="text-2xl lg:text-3xl font-extrabold text-white mb-2">
                   {featured[0].label}
                 </h3>
-                <div className="text-[9px] font-bold text-brand uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-                    Bekijk installatie &rarr;
-                  </div>
+                <div className="text-[9px] font-bold text-brand uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0"
+                  dangerouslySetInnerHTML={{ __html: t.sections.projects.viewInstallation }}
+                />
               </div>
 
               {/* Technical Dot decoration */}

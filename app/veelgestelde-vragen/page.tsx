@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { faqItems, contactInfo } from "@/lib/data";
+import { contactInfo } from "@/lib/data";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function FAQPage() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -18,14 +20,14 @@ export default function FAQPage() {
             <div className="flex items-center gap-3 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                Klantenservice
+                {t.pages.faqPage.label}
               </span>
             </div>
-            <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-extrabold leading-[0.95] tracking-tight text-ink mb-5">
-              Veelgestelde <span className="text-brand">vragen</span>
-            </h1>
+            <h1 className="font-display text-[clamp(2.5rem,5vw,4rem)] font-extrabold leading-[0.95] tracking-tight text-ink mb-5"
+              dangerouslySetInnerHTML={{ __html: t.pages.faqPage.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+            />
             <p className="text-base text-muted max-w-lg leading-relaxed">
-              Antwoorden op de meest gestelde vragen over onze diensten, offertes en werkwijze.
+              {t.pages.faqPage.description}
             </p>
           </Reveal>
         </div>
@@ -36,7 +38,7 @@ export default function FAQPage() {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="max-w-3xl">
             <div className="space-y-0">
-              {faqItems.map((item, i) => {
+              {t.sections.faq.items.map((item, i) => {
                 const isOpen = openIndex === i;
                 const isFirst = i === 0;
                 return (
@@ -113,23 +115,23 @@ export default function FAQPage() {
               <div className="mt-14 lg:mt-16 p-8 lg:p-10 bg-mist border border-hairline rounded-xl relative">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/50 to-aurora-2" />
                 <h3 className="text-xl font-bold text-ink mb-3">
-                  Staat uw vraag er niet bij?
+                  {t.pages.faqPage.contact.title}
                 </h3>
                 <p className="text-sm text-muted leading-relaxed mb-6 max-w-md">
-                  Neem gerust contact met ons op. We reageren binnen één werkdag en denken graag met u mee.
+                  {t.pages.faqPage.contact.description}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <a
                     href={`tel:${contactInfo.phone}`}
                     className="px-6 py-3 bg-ink text-white text-sm font-bold uppercase tracking-wide rounded-full hover:bg-brand transition-colors duration-200"
                   >
-                    Bel ons
+                    {t.pages.faqPage.contact.call}
                   </a>
                   <Link
                     href="/contact/"
                     className="px-6 py-3 border border-ink text-ink text-sm font-bold uppercase tracking-wide rounded-full hover:border-brand hover:text-brand transition-colors duration-200"
                   >
-                    Stuur een bericht
+                    {t.pages.faqPage.contact.message}
                   </Link>
                 </div>
               </div>

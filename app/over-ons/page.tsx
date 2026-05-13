@@ -1,15 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { whyChooseUs, companyStats, certifications, clientLogos, testimonials } from "@/lib/data";
+import { companyStats, clientLogos, testimonials } from "@/lib/data";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const milestones = [
-  { year: "2008", text: "MMC Techniek opgericht vanuit Oudewater als eenmanszaak" },
-  { year: "2012", text: "Eerste 500 projecten opgeleverd in de regio Utrecht" },
-  { year: "2016", text: "Uitbreiding van het dienstenpakket met zonnepanelen en warmtepompen" },
-  { year: "2020", text: "Gegroeid naar een vast team van eigen vakmensen" },
-  { year: "2024", text: "2500+ projecten, NEN-3140 en VCA gecertificeerd" },
-];
+export default function AboutPage() {
+  const { t } = useLanguage();
+  const milestones = t.pages.overOns.milestones;
 
 const workPhotos = [
   { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Warmtepomp installatie", location: "Oudewater" },
@@ -19,14 +18,6 @@ const workPhotos = [
   { src: "/images/projects/PHOTO-2024-12-08-15-12-08.jpg", label: "Installatie", location: "Bodegraven" },
   { src: "/images/projects/PHOTO-2024-12-03-12-54-08.jpg", label: "Service oplevering", location: "Oudewater" },
 ];
-
-export const metadata = {
-  title: "Over ons | MMC Techniek B.V.",
-  description:
-    "Leer MMC Techniek B.V. kennen. Sinds 2008 uw specialist in warmtepompen, zonnepanelen, airco en verduurzaming uit Oudewater.",
-};
-
-export default function AboutPage() {
   return (
     <>
       {/* Hero — full-bleed project photo, left-aligned copy */}
@@ -48,20 +39,18 @@ export default function AboutPage() {
               <div className="flex items-center gap-2.5 mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-brand">
-                  Over ons
+                  {t.pages.overOns.label}
                 </span>
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <h1 className="font-display text-[clamp(2.75rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-white mb-7">
-                Vakmanschap<br />
-                <span className="text-brand">uit Oudewater</span>
-              </h1>
+              <h1 className="font-display text-[clamp(2.75rem,6vw,5rem)] font-extrabold leading-[0.9] tracking-tight text-white mb-7"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </Reveal>
             <Reveal delay={200}>
               <p className="text-lg lg:text-xl text-white/65 leading-relaxed max-w-xl">
-                Sinds 2008 installeren wij duurzame systemen met vakmanschap dat u kunt zien en voelen.
-                Een vast team van eigen mensen, geen onderaannemers, en een commitment dat niet ophoudt na oplevering.
+                {t.pages.overOns.description}
               </p>
             </Reveal>
           </div>
@@ -73,13 +62,13 @@ export default function AboutPage() {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-12 lg:py-16">
           <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-hairline">
             {companyStats.map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 80}>
+              <Reveal key={i} delay={i * 80}>
                 <div className="py-6 lg:py-0 lg:px-10 first:lg:pl-0 last:lg:pr-0 text-center lg:text-left">
                   <div className="text-4xl lg:text-5xl font-extrabold text-brand tabular mb-1.5">
                     {stat.value}
                   </div>
                   <div className="text-xs font-bold uppercase tracking-[0.14em] text-muted">
-                    {stat.label}
+                    {t.pages.overOns.stats[i]?.label || stat.label}
                   </div>
                 </div>
               </Reveal>
@@ -97,21 +86,19 @@ export default function AboutPage() {
               <Reveal>
                 <div className="flex items-center gap-2.5 mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                    Ons verhaal
-                  </span>
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                  {t.pages.overOns.story.label}
+                </span>
                 </div>
               </Reveal>
               <Reveal delay={100}>
-                <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-6">
-                  Van één idee<br />
-                  <span className="text-brand">naar 16 vakmensen</span>
-                </h2>
+                <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-6"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.story.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
               </Reveal>
               <Reveal delay={200}>
                 <p className="text-base text-muted leading-relaxed max-w-sm">
-                  Wat begon als een eenmanszaak in Oudewater groeide uit tot een team van gedreven vakmensen.
-                  Dezelfde waarden staan nog steeds centraal: vakmanschap, betrouwbaarheid, en nazorg die verder gaat dan de oplevering.
+                  {t.pages.overOns.story.description}
                 </p>
               </Reveal>
             </div>
@@ -151,20 +138,18 @@ export default function AboutPage() {
               <div className="flex items-center gap-2.5 mb-5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                  Ons werk
+                  {t.pages.overOns.work.label}
                 </span>
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-5">
-                Het werk spreekt<br />
-                <span className="text-brand">voor zichzelf</span>
-              </h2>
+              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-5"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.work.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </Reveal>
             <Reveal delay={160}>
               <p className="text-base text-muted leading-relaxed">
-                16 eigen vakmensen, geen onderaannemers. Elk project wordt door ons eigen team ontworpen,
-                geïnstalleerd en opgeleverd.
+                {t.pages.overOns.work.description}
               </p>
             </Reveal>
           </div>
@@ -197,7 +182,7 @@ export default function AboutPage() {
                 href="/our-work/"
                 className="inline-flex items-center gap-2 px-8 py-3.5 border border-ink text-ink text-sm font-bold uppercase tracking-wide rounded-full hover:border-brand hover:text-brand transition-colors duration-200"
               >
-                Bekijk alle projecten
+                {t.pages.overOns.work.cta}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -215,15 +200,14 @@ export default function AboutPage() {
               <div className="flex items-center gap-2.5 mb-5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                  Onze klanten
+                  {t.pages.overOns.clients.label}
                 </span>
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink">
-                Zowel particulier<br />
-                <span className="text-brand">als zakelijk</span>
-              </h2>
+              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.clients.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </Reveal>
           </div>
 
@@ -249,7 +233,7 @@ export default function AboutPage() {
 
           <Reveal delay={250}>
             <p className="text-sm text-muted mt-8 text-center">
-              Van particulier tot multinational: voor elk project leveren wij hetzelfde vakmanschap.
+              {t.pages.overOns.clients.description}
             </p>
           </Reveal>
         </div>
@@ -263,21 +247,20 @@ export default function AboutPage() {
               <div className="flex items-center gap-2.5 mb-5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                  Waarom MMC
+                  {t.pages.overOns.values.label}
                 </span>
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink">
-                Het verschil zit in<br />
-                <span className="text-brand">de details</span>
-              </h2>
+              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.values.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </Reveal>
           </div>
 
           {/* Editorial numbered rows */}
           <div>
-            {whyChooseUs.map((item, i) => (
+            {t.pages.overOns.values.reasons.map((item, i) => (
               <Reveal key={item.title} delay={i * 80}>
                 <div className="grid lg:grid-cols-[72px_1fr_1fr] gap-6 lg:gap-12 py-8 lg:py-10 border-t border-hairline last:border-b last:border-hairline items-baseline">
                   <span className="font-display text-[2.5rem] lg:text-[3rem] font-extrabold text-brand/20 tabular leading-none">
@@ -306,9 +289,9 @@ export default function AboutPage() {
               <Reveal>
                 <div className="flex items-center gap-2.5 mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                    Wat klanten zeggen
-                  </span>
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                  {t.pages.overOns.testimonials.label}
+                </span>
                 </div>
               </Reveal>
               <div className="space-y-6">
@@ -339,24 +322,23 @@ export default function AboutPage() {
               <Reveal>
                 <div className="flex items-center gap-2.5 mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                    Gecertificeerd vakmanschap
-                  </span>
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                  {t.pages.overOns.certifications.label}
+                </span>
                 </div>
               </Reveal>
               <Reveal delay={80}>
-                <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-10">
-                  Erkend door de<br />
-                  <span className="text-brand">industrie</span>
-                </h2>
+                <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-10"
+                dangerouslySetInnerHTML={{ __html: t.pages.overOns.certifications.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
               </Reveal>
               <div className="space-y-5">
-                {certifications.map((cert, i) => (
+                {t.components.footer.certifications.map((cert, i) => (
                   <Reveal key={cert.name} delay={i * 100}>
                     <div className="flex items-center gap-6 p-6 lg:p-8 bg-surface border border-hairline">
                       <div className="shrink-0 w-[72px] h-[72px] bg-base border border-hairline flex items-center justify-center p-2">
                         <Image
-                          src={cert.src}
+                          src={cert.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"}
                           alt={cert.name}
                           width={56}
                           height={56}

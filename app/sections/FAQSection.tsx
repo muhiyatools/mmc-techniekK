@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { faqItems } from "@/lib/data";
 import Reveal from "../components/Reveal";
-
-const previewFaq = faqItems.slice(0, 4);
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function FAQSection() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const previewFaq = t.sections.faq.items.slice(0, 4);
 
   return (
     <section className="relative py-24 lg:py-32 bg-concrete">
@@ -24,20 +24,20 @@ export default function FAQSection() {
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                   <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
-                    Veelgestelde vragen
+                    {t.sections.faq.label}
                   </span>
                 </div>
-                <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-5">
-                  Antwoorden op uw <span className="text-brand">vragen</span>
-                </h2>
+                <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[1.0] tracking-tight text-ink mb-5"
+                  dangerouslySetInnerHTML={{ __html: t.sections.faq.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+                />
                 <p className="text-base text-muted leading-relaxed mb-8 max-w-sm">
-                  Hier vindt u de meest gestelde vragen over onze diensten, offertes en werkwijze.
+                  {t.sections.faq.description}
                 </p>
                 <Link
                   href="/veelgestelde-vragen/"
                   className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink hover:text-brand transition-colors duration-200"
                 >
-                  Bekijk alle vragen
+                  {t.sections.faq.cta}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>

@@ -9,6 +9,7 @@ import { fetchAdminStore, mergeServices, mergeBrandImages } from "@/lib/adminSto
 import Reveal from "../components/Reveal";
 import BrandLogo from "../components/BrandLogo";
 import { resolveProductImage } from "@/lib/images";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 // ── Service icons ──
 const serviceIcons: Record<string, React.ReactNode> = {
@@ -135,11 +136,12 @@ function Sidebar({
   onResetFilters: () => void;
   showFilters: boolean;
 }) {
+  const { t } = useLanguage();
   const hasFilters = selectedBrands.length > 0 || priceRange[0] > SLIDER_MIN || priceRange[1] < SLIDER_MAX;
   return (
     <div>
       <div className="mb-6">
-        <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">Categorieën</p>
+        <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.sidebar.categories}</p>
         <ul className="space-y-0.5">
           {baseServices.map((service) => (
             <li key={service.slug}>
@@ -170,15 +172,14 @@ function Sidebar({
         <>
           <div className="h-px bg-hairline mb-6" />
 
-          {/* Price slider */}
           <div className="mb-6">
-            <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">Prijsrange</p>
+            <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.priceRange}</p>
             <PriceRangeSlider value={priceRange} onChange={onPriceChange} />
           </div>
 
           {brands.length > 0 && (
             <div className="mb-4">
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">Merken</p>
+              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.sidebar.manufacturer}</p>
               <div className="space-y-2">
                 {brands.map((brand) => {
                   const active = selectedBrands.includes(brand);
@@ -210,7 +211,7 @@ function Sidebar({
 
           {hasFilters && (
             <button onClick={onResetFilters} className="mt-3 text-xs font-semibold text-brand hover:text-brand-deep transition-colors">
-              Filters wissen
+              {t.pages.aanbod.clearFilters}
             </button>
           )}
         </>
@@ -221,6 +222,7 @@ function Sidebar({
 
 // ── Main content ──
 function AanbodContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const initialDienst = searchParams.get("dienst");
 
@@ -293,18 +295,18 @@ function AanbodContent() {
           <Reveal>
             <div className="flex items-center gap-2.5 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">Services</span>
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">{t.pages.aanbod.label}</span>
             </div>
           </Reveal>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <Reveal delay={60}>
-              <h1 className="font-display font-extrabold text-[clamp(1.75rem,3.5vw,3rem)] leading-[0.95] tracking-tight text-ink">
-                Diensten en producten voor een <span className="text-brand">duurzaam thuis</span>
-              </h1>
+              <h1 className="font-display font-extrabold text-[clamp(1.75rem,3.5vw,3rem)] leading-[0.95] tracking-tight text-ink"
+                dangerouslySetInnerHTML={{ __html: t.pages.aanbod.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+              />
             </Reveal>
             <Reveal delay={120}>
               <p className="text-sm text-muted leading-relaxed max-w-xs sm:text-right">
-                Kies een dienst om producten en installaties te ontdekken.
+                {t.pages.aanbod.description}
               </p>
             </Reveal>
           </div>
@@ -317,7 +319,7 @@ function AanbodContent() {
           <aside className="hidden lg:block">
             <div className="sidebar-panel">
               <div className="mb-10">
-                <h3 className="text-xl font-display font-bold text-ink uppercase tracking-tight mb-6">Catalog</h3>
+                <h3 className="text-xl font-display font-bold text-ink uppercase tracking-tight mb-6">{t.pages.aanbod.sidebar.catalog}</h3>
                 <div className="minimal-list space-y-2">
                   {services.map(s => (
                     <button 
@@ -335,7 +337,7 @@ function AanbodContent() {
               <div className="h-px bg-hairline mb-10" />
 
               <div className="mb-10">
-                <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">Budget Range</p>
+                <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">{t.pages.aanbod.sidebar.budgetRange}</p>
                 <div className="flex items-center gap-4 text-xs font-bold text-ink mb-2">
                   <span>€0</span>
                   <div className="flex-1 h-px bg-hairline relative">
@@ -347,7 +349,7 @@ function AanbodContent() {
 
               {availableBrands.length > 0 && (
                 <div>
-                  <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">Manufacturer</p>
+                  <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">{t.pages.aanbod.sidebar.manufacturer}</p>
                   <div className="flex flex-wrap gap-2">
                     {availableBrands.map(brand => (
                       <button 
@@ -373,7 +375,7 @@ function AanbodContent() {
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand">Service focus</span>
+                        <span className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand">{t.pages.aanbod.serviceFocus}</span>
                         <div className="w-1 h-1 rounded-full bg-brand" />
                         <span className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted">{activeService.title}</span>
                       </div>
@@ -384,7 +386,7 @@ function AanbodContent() {
                       </h2>
                     </div>
                     <Link href={`/contact?service=${activeService.slug}`} className="px-6 py-3 bg-ink text-base text-[0.6875rem] font-bold uppercase tracking-[0.18em] rounded-full hover:bg-brand transition-colors text-center">
-                      Offerte aanvragen
+                      {t.pages.aanbod.requestQuote}
                     </Link>
                   </div>
                 </div>
@@ -392,15 +394,15 @@ function AanbodContent() {
                 <div className="flex items-center justify-between mb-8 border-b border-hairline pb-4">
                   <div className="flex items-center gap-4">
                     <p className="text-xs font-bold text-ink uppercase tracking-widest">
-                      {filteredProducts.length} Resultaten
+                      {filteredProducts.length} {t.pages.aanbod.results}
                     </p>
                     <div className="h-4 w-px bg-hairline" />
                     <p className="text-[10px] text-muted uppercase tracking-wider">
-                      Geselecteerde criteria
+                      {t.pages.aanbod.selectedCriteria}
                     </p>
                   </div>
                   <p className="text-[10px] text-muted font-medium hidden sm:block">
-                    Gecertificeerde installatie · <span className="text-brand">Vandaag offerte</span>
+                    {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
                   </p>
                 </div>
 
@@ -432,7 +434,7 @@ function AanbodContent() {
 
                         <div className="pt-4 border-t border-hairline flex items-center justify-between">
                           <div className="flex flex-col">
-                            <span className="text-[0.625rem] font-bold text-muted uppercase tracking-widest">Vanaf prijs</span>
+                            <span className="text-[0.625rem] font-bold text-muted uppercase tracking-widest">{t.pages.aanbod.fromPrice}</span>
                             <span className="text-xl font-black text-ink">{product.price || 'P.O.A.'}</span>
                           </div>
                           <div className="w-8 h-8 rounded-full border border-hairline flex items-center justify-center group-hover:bg-brand group-hover:border-brand group-hover:text-white transition-all">
@@ -451,7 +453,7 @@ function AanbodContent() {
                     <Image src={service.image} alt={service.title} fill className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink/90 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-6">
-                      <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand mb-1">Dienst</p>
+                      <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand mb-1">{t.pages.aanbod.dienst}</p>
                       <h3 className="font-display font-bold text-xl text-white uppercase tracking-tight">{service.title}</h3>
                     </div>
                   </button>
@@ -465,11 +467,11 @@ function AanbodContent() {
       {/* Mobile filter drawer */}
       {mobileFilterOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          <button className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} aria-label="Sluit filter" />
+          <button className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} aria-label={t.pages.aanbod.close} />
           <div className="relative ml-auto w-72 bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
             <div className="sticky top-0 bg-white border-b border-hairline px-5 py-4 flex items-center justify-between shrink-0">
-              <p className="font-bold text-ink text-sm">Filteren</p>
-              <button onClick={() => setMobileFilterOpen(false)} className="text-muted hover:text-ink transition-colors" aria-label="Sluit">
+              <p className="font-bold text-ink text-sm">{t.pages.aanbod.filterTitle}</p>
+              <button onClick={() => setMobileFilterOpen(false)} className="text-muted hover:text-ink transition-colors" aria-label={t.pages.aanbod.close}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>

@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { contactInfo } from "@/lib/data";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function PreFooterCTA() {
+  const { t } = useLanguage();
   const pathname = usePathname();
 
   if (pathname === "/contact" || pathname === "/contact/") return null;
@@ -14,10 +16,10 @@ export default function PreFooterCTA() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex flex-col lg:flex-row gap-6 items-center justify-between">
         <div className="flex items-center gap-8 text-center lg:text-left">
           <h2 className="font-display text-4xl font-extrabold text-base leading-none uppercase">
-            BOUW MEE AAN DE TOEKOMST
+            {t.components.preFooter.title}
           </h2>
           <p className="text-sm text-white/60 hidden lg:block max-w-sm">
-            Plan uw gratis verduurzamings-audit (binnen 48 uur).
+            {t.components.preFooter.description}
           </p>
         </div>
         <div className="flex gap-4 items-center w-full lg:w-auto">
@@ -25,13 +27,13 @@ export default function PreFooterCTA() {
             href="/contact/" 
             className="flex-1 lg:flex-none bg-brand text-base px-8 py-3 text-xs font-bold uppercase tracking-[0.15em] text-center hover:opacity-90 transition-opacity"
           >
-            Offerte Aanvragen
+            {t.components.preFooter.requestQuote}
           </Link>
           <a 
             href={`tel:${contactInfo.phone}`} 
             className="hidden sm:block text-base px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] border border-white/20 hover:border-base transition-colors"
           >
-            Bel Direct
+            {t.components.preFooter.callDirect}
           </a>
         </div>
       </div>

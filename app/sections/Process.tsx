@@ -1,8 +1,12 @@
-import { processSteps } from "@/lib/data";
+"use client";
+
 import Reveal from "../components/Reveal";
 import HairlineDivider from "../components/HairlineDivider";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Process() {
+  const { t } = useLanguage();
+  const steps = t.sections.process.steps;
   return (
     <section id="werkwijze" className="relative py-24 lg:py-36 bg-base overflow-hidden">
       {/* Blueprint Grid Background (Faint) */}
@@ -19,13 +23,13 @@ export default function Process() {
           <div className="mb-20 lg:mb-28 max-w-2xl">
               <div className="flex items-center gap-3 mb-6">
               <div className="w-2 h-2 bg-brand" />
-              <span className="text-label text-brand">Werkwijze</span>
+              <span className="text-label text-brand">{t.sections.process.label}</span>
             </div>
-            <h2 className="font-display text-[clamp(2rem,5vw,4rem)] font-extrabold leading-[0.9] tracking-tight text-ink mb-6">
-              Geoptimaliseerd voor <span className="text-brand">Resultaat</span>.
-            </h2>
+            <h2 className="font-display text-[clamp(2rem,5vw,4rem)] font-extrabold leading-[0.9] tracking-tight text-ink mb-6"
+              dangerouslySetInnerHTML={{ __html: t.sections.process.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+            />
             <p className="text-lg text-muted leading-relaxed max-w-lg">
-              Onze vier-stappen methodiek garandeert precisie van de eerste meting tot de uiteindelijke oplevering.
+              {t.sections.process.description}
             </p>
           </div>
         </Reveal>
@@ -35,8 +39,8 @@ export default function Process() {
           {/* Connecting Line Desktop */}
           <div className="hidden lg:block absolute top-[60px] left-0 right-0 h-px bg-hairline" />
 
-          {processSteps.map((step, i) => (
-            <Reveal key={step.step} delay={i * 100} className="relative group">
+          {steps.map((step, i) => (
+            <Reveal key={i} delay={i * 100} className="relative group">
               {/* Vertical Connector Desktop */}
               <div className="hidden lg:block absolute top-[60px] left-1/2 -translate-x-1/2 w-px h-12 bg-hairline group-hover:bg-brand transition-colors duration-500" />
               
@@ -85,7 +89,7 @@ export default function Process() {
                   ))}
                 </div>
                 <p className="text-sm font-bold text-ink">
-                  Begeleid door ervaren projectleiders
+                  {t.sections.process.guidedBy}
                 </p>
               </div>
           </div>

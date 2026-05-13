@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { contactInfo, certifications } from "@/lib/data";
+import { contactInfo } from "@/lib/data";
 import Reveal from "./Reveal";
 import PreFooterCTA from "./PreFooterCTA";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -31,15 +31,15 @@ export default function Footer() {
                     style={{ filter: "brightness(0) invert(1) sepia(0.5) saturate(5) hue-rotate(195deg)" }}
                   />
                   <p className="text-white/40 text-sm leading-relaxed max-w-sm mb-8">
-                    {t.footer.tagline}
+                    {t.components.footer.tagline}
                   </p>
 
                   {/* Certification badges */}
                   <div className="flex items-center gap-4">
-                    {certifications.map((c) => (
+                    {t.components.footer.certifications.map((c) => (
                       <div key={c.name} className="flex items-center gap-2">
                         <div className="relative w-8 h-8">
-                          <Image src={c.src} alt={c.name} fill className="object-contain brightness-0 invert" />
+                          <Image src={c.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"} alt={c.name} fill className="object-contain brightness-0 invert" />
                         </div>
                         <div>
                           <span className="text-xs font-bold text-white/40">{c.name}</span>
@@ -59,7 +59,7 @@ export default function Footer() {
                 <div>
                   <h4 className="text-label text-brand mb-8 flex items-center gap-2">
                     <span className="w-1 h-1 bg-brand" />
-                    {t.footer.services}
+                    {t.components.footer.services}
                   </h4>
                   <ul className="space-y-4">
                     {[
@@ -83,7 +83,7 @@ export default function Footer() {
                 <div>
                   <h4 className="text-label text-brand mb-8 flex items-center gap-2">
                     <span className="w-1 h-1 bg-brand" />
-                    {t.footer.navigation}
+                    {t.components.footer.navigation}
                   </h4>
                   <ul className="space-y-4">
                     {[
@@ -107,7 +107,7 @@ export default function Footer() {
                 <div className="col-span-2 md:col-span-1">
                   <h4 className="text-label text-brand mb-8 flex items-center gap-2">
                     <span className="w-1 h-1 bg-brand" />
-                    {t.footer.contact}
+                    {t.components.footer.contact}
                   </h4>
                   <div className="text-white/40 text-sm space-y-4">
                     <p className="leading-relaxed">
@@ -129,7 +129,7 @@ export default function Footer() {
           <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-8">
               <p className="text-[10px] font-bold text-white/10 uppercase tracking-[0.2em]">
-                &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.footer.allRightsReserved}
+                &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
               </p>
               <div className="hidden sm:flex items-center gap-4 text-[10px] font-bold text-white/10 uppercase tracking-[0.2em]">
                 <span>KvK: {contactInfo.kvk}</span>

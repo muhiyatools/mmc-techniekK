@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { projectImages } from "@/lib/data";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function OurProjectsPage() {
+  const { t } = useLanguage();
   const [lightbox, setLightbox] = useState<(typeof projectImages)[0] | null>(null);
 
   useEffect(() => {
@@ -30,17 +32,17 @@ export default function OurProjectsPage() {
             <Reveal>
               <span className="inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                Projecten
+                {t.pages.ourWork.label}
               </span>
             </Reveal>
             <Reveal delay={100}>
               <h1 className="font-display text-[2.75rem] sm:text-[3.5rem] lg:text-[4.5rem] font-extrabold leading-[1.02] tracking-tight text-ink mb-8">
-                Onze Projecten
+                {t.pages.ourWork.title}
               </h1>
             </Reveal>
             <Reveal delay={200}>
               <p className="text-xl text-muted leading-relaxed max-w-2xl">
-                Van warmtepompen tot complete renovaties. Elk project verdient dezelfde precisie en aandacht.
+                {t.pages.ourWork.description}
               </p>
             </Reveal>
           </div>
@@ -97,7 +99,7 @@ export default function OurProjectsPage() {
               e.stopPropagation();
               setLightbox(null);
             }}
-            aria-label="Sluiten"
+            aria-label={t.pages.ourWork.close}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />

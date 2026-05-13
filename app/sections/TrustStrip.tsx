@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "../components/Reveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function TrustStrip() {
+  const { t } = useLanguage();
+  const reasons = t.sections.trust.reasons;
   return (
     <section className="relative py-32 bg-base overflow-hidden">
       <div className="grid gap-20 items-start max-w-[1280px] mx-auto px-6 lg:grid-cols-12 lg:px-10">
@@ -10,49 +15,25 @@ export default function TrustStrip() {
           <Reveal>
             <div className="flex items-center gap-3 mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-brand"></span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">Expertise & Vakmanschap</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">{t.sections.trust.label}</span>
             </div>
             <h2 className="font-display text-[clamp(3rem,7vw,6rem)] font-extrabold leading-[0.82] tracking-[-0.03em] text-ink mb-12">
-              HET VERSCHIL ZIT IN DE DETAILS
+              {t.sections.trust.title}
             </h2>
           </Reveal>
 
           <div className="border-t border-hairline">
-            <Reveal delay={0}>
-              <div className="flex gap-8 py-8 border-b border-hairline">
-                <span className="font-display text-base font-bold text-brand tracking-[0.1em]">01</span>
-                <div>
-                  <h3 className="text-xl font-bold mb-2 text-ink">BEWEZEN ERVARING</h3>
-                  <p className="text-[15px] text-muted max-w-[40ch] leading-relaxed">
-                    Sinds 2008 uw vertrouwde partner voor duurzame renovaties en technische installaties in Oudewater.
-                  </p>
+            {reasons.map((reason, i) => (
+              <Reveal key={i} delay={i * 90}>
+                <div className="flex gap-8 py-8 border-b border-hairline">
+                  <span className="font-display text-base font-bold text-brand tracking-[0.1em]">{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2 text-ink">{reason.title}</h3>
+                    <p className="text-[15px] text-muted max-w-[40ch] leading-relaxed">{reason.description}</p>
+                  </div>
                 </div>
-              </div>
-            </Reveal>
-            
-            <Reveal delay={90}>
-              <div className="flex gap-8 py-8 border-b border-hairline">
-                <span className="font-display text-base font-bold text-brand tracking-[0.1em]">02</span>
-                <div>
-                  <h3 className="text-xl font-bold mb-2 text-ink">GECERTIFICEERD TEAM</h3>
-                  <p className="text-[15px] text-muted max-w-[40ch] leading-relaxed">
-                    Onze eigen monteurs borgen de kwaliteit van elke installatie, van warmtepomp tot meterkast.
-                  </p>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={180}>
-              <div className="flex gap-8 py-8 border-b border-hairline">
-                <span className="font-display text-base font-bold text-brand tracking-[0.1em]">03</span>
-                <div>
-                  <h3 className="text-xl font-bold mb-2 text-ink">OPTIMALE SERVICE</h3>
-                  <p className="text-[15px] text-muted max-w-[40ch] leading-relaxed">
-                    Wij bouwen aan langdurige relaties door middel van hoogwaardige nazorg en technische precisie.
-                  </p>
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            ))}
           </div>
         </div>
         
