@@ -56,7 +56,7 @@ const serviceIcons: Record<string, React.ReactNode> = {
 };
 
 const FlagNL = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" className="w-[18px] h-[13px] rounded-[2px] object-cover border border-black/10">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" className="w-[22px] h-[16px] rounded-[3px] object-cover border border-black/10">
     <rect fill="#21468B" width="9" height="6"/>
     <rect fill="#FFF" width="9" height="4"/>
     <rect fill="#AE1C28" width="9" height="2"/>
@@ -64,7 +64,7 @@ const FlagNL = () => (
 );
 
 const FlagEN = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-[18px] h-[13px] rounded-[2px] object-cover border border-black/10">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="w-[22px] h-[16px] rounded-[3px] object-cover border border-black/10">
     <clipPath id="t"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath>
     <path d="M0 0v30h60V0z" fill="#012169"/>
     <path d="M0 0l60 30m0-30L0 30" stroke="#fff" strokeWidth="6"/>
@@ -172,7 +172,7 @@ export default function Header() {
         <div className="w-[95%] mx-auto mt-4 pointer-events-auto">
           <div className="relative flex items-center justify-between h-[60px] px-5 rounded-full bg-white/80 backdrop-blur-2xl saturate-[1.8] border border-white/30 shadow-[0_4px_20px_-5px_rgba(15,23,42,0.06)]">
             <Link href="/" className="shrink-0 w-[140px]">
-              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={160} height={45} className="h-6 lg:h-7 w-auto object-contain" priority />
+              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={180} height={55} className="h-7 lg:h-9 w-auto object-contain" priority />
             </Link>
 
             <nav className="hidden lg:flex items-center gap-0.5 bg-ink/5 p-1 rounded-full">
@@ -235,8 +235,8 @@ export default function Header() {
             </nav>
 
             <div className="hidden lg:flex flex-1 justify-center px-6" ref={searchRef}>
-              <div className="flex items-center bg-transparent border-b border-ink/10 px-2 h-9 w-full max-w-[480px] group focus-within:border-brand transition-all">
-                <svg className="w-3.5 h-3.5 text-muted group-focus-within:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center bg-white/80 backdrop-blur-sm border border-hairline px-5 h-11 w-full max-w-[480px] rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
+                <svg className="w-4 h-4 text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -245,10 +245,10 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={language === "nl" ? "Zoeken..." : "Search..."}
-                  className="bg-transparent border-none text-[0.8125rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/60"
+                  className="bg-transparent border-none text-[0.875rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/40"
                 />
                 {searchQuery && (
-                  <button onClick={() => setSearchQuery("")} className="text-muted hover:text-brand">
+                  <button onClick={() => setSearchQuery("")} className="text-muted hover:text-brand shrink-0">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -278,7 +278,7 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-2 ml-auto lg:ml-0">
-              <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-8 h-8 rounded-full hover:bg-ink/5 transition-colors">
+              <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-10 h-10 rounded-full hover:bg-ink/5 transition-colors">
                 {language === "nl" ? <FlagEN /> : <FlagNL />}
               </button>
               <Link href="/contact/" className="h-9 px-5 bg-ink text-white text-[0.6875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
@@ -317,15 +317,17 @@ export default function Header() {
         {/* Mobile search */}
         <div className="px-6 pt-[88px] pb-4 border-b border-hairline">
           <div className="flex items-center border border-hairline rounded-full overflow-hidden bg-concrete">
-            <div className="w-10 h-10 flex items-center justify-center shrink-0 text-muted">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 flex items-center justify-center shrink-0 text-muted">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
-              className="flex-1 h-10 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
+              className="flex-1 h-12 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
             />
           </div>
         </div>
@@ -394,6 +396,13 @@ export default function Header() {
           >
             {t.nav.requestQuote}
           </Link>
+          <button
+            onClick={() => { toggleLanguage(); setMenuOpen(false); }}
+            className="flex items-center justify-center gap-3 w-full py-4 border border-hairline text-ink font-bold rounded-full hover:bg-concrete transition-all text-sm"
+          >
+            {language === "nl" ? <FlagEN /> : <FlagNL />}
+            <span>{language === "nl" ? "EN" : "NL"}</span>
+          </button>
         </div>
       </div>
     </>
