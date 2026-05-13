@@ -23,11 +23,25 @@ export default function HeroSection() {
       <div className="relative z-10 w-full min-h-[85vh] flex items-center">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 w-full">
           <div className="hero-content">
-            <h1 className="hero-title">
-              <span className="block">{t.hero.titleParts[0]}</span>
-              <span className="inline">{t.hero.titleParts[1]}</span>
-              <span className="hero-brand">{t.hero.titleParts[2]}</span>
-            </h1>
+{/* impeccable-variants-start d0733398 */}
+            <div data-impeccable-variants="d0733398" data-impeccable-variant-count="2" style={{ display: 'contents' }}>
+              <style>{`
+                @scope ([data-impeccable-variant="d0733398-1"]) {
+                  .v1-ht { font-size:clamp(4rem,16vw,15rem); font-family:var(--font-barlow-condensed); font-weight:800; line-height:0.78; letter-spacing:-0.03em; color:var(--color-brand); margin:0; text-wrap:balance; text-shadow:0 2px 30px color-mix(in oklch,var(--color-brand) 30%,transparent); }
+                }
+                @scope ([data-impeccable-variant="d0733398-2"]) {
+                  .v2-ht { font-size:clamp(4rem,16vw,15rem); font-family:var(--font-barlow-condensed); font-weight:800; line-height:0.78; letter-spacing:-0.03em; color:var(--color-brand); margin:0; text-wrap:balance; position:relative; display:inline-block; }
+                  .v2-ht::after { content:''; position:absolute; bottom:0.1em; left:0; right:0; height:0.06em; background:linear-gradient(90deg,var(--color-aurora-1),var(--color-brand),var(--color-aurora-2)); border-radius:999px; }
+                }
+              `}</style>
+              <h1 data-impeccable-variant="d0733398-1">
+                <span className="v1-ht">{t.hero.titleParts[0]} {t.hero.titleParts[1]} {t.hero.titleParts[2]}</span>
+              </h1>
+              <h1 data-impeccable-variant="d0733398-2" style={{ display: 'none' }}>
+                <span className="v2-ht"><span>{t.hero.titleParts[0]} </span><span>{t.hero.titleParts[1]} </span><span>{t.hero.titleParts[2]}</span></span>
+              </h1>
+            </div>
+            {/* end */}
             <div className="hero-body">
               <p className="hero-desc">{t.hero.description}</p>
             </div>

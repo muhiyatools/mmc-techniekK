@@ -1,62 +1,20 @@
 {
   "id": "d0733398",
-  "phase": "generate_requested",
+  "phase": "cycling",
   "pageUrl": "/",
-  "sourceFile": null,
+  "sourceFile": "app/sections/HeroSection.tsx",
   "expectedVariants": 2,
-  "arrivedVariants": 0,
-  "visibleVariant": 0,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
   "paramValues": {},
-  "pendingEventSeq": 2,
-  "pendingEvent": {
-    "type": "generate",
-    "id": "d0733398",
-    "action": "impeccable",
-    "freeformPrompt": "add a button and try to make texta bit more related to company activity and also be to make text readsable cause backgohrund image is having also a black so it would be nicer if all of it a blue colored text",
-    "count": 2,
-    "pageUrl": "/",
-    "element": {
-      "tagName": "h1",
-      "id": null,
-      "classes": [
-        "jsx-34a2f1d67eb2ea71",
-        "hero-title"
-      ],
-      "textContent": "Precisionin Sustainability.",
-      "outerHTML": "<h1 class=\"jsx-34a2f1d67eb2ea71 hero-title\"><span class=\"jsx-34a2f1d67eb2ea71 block\">Precision</span><span class=\"jsx-34a2f1d67eb2ea71 inline\">in </span><span class=\"jsx-34a2f1d67eb2ea71 hero-brand\">Sustainability.</span></h1>",
-      "computedStyles": {
-        "font-family": "\"Barlow Condensed\", \"Barlow Condensed Fallback\"",
-        "font-size": "240px",
-        "font-weight": "800",
-        "line-height": "187.2px",
-        "color": "rgb(15, 23, 42)",
-        "background": "rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box",
-        "background-color": "rgba(0, 0, 0, 0)",
-        "padding": "0px",
-        "margin": "0px",
-        "display": "block",
-        "position": "static",
-        "gap": "normal",
-        "border-radius": "0px",
-        "box-shadow": "none"
-      },
-      "cssCustomProperties": {
-        "--font-barlow": "'Barlow', 'Barlow Fallback'",
-        "--font-barlow-condensed": "'Barlow Condensed', 'Barlow Condensed Fallback'"
-      },
-      "parentContext": "<div class=\"jsx-34a2f1d67eb2ea71 hero-content\">",
-      "boundingRect": {
-        "width": 1344,
-        "height": 562
-      }
-    }
-  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
   "deliveryLease": null,
-  "checkpointRevision": 17,
+  "checkpointRevision": 20,
   "activeOwner": "3b933f2e",
   "sourceMarkers": {},
   "fallbackMode": null,
   "annotationArtifacts": [],
   "diagnostics": [],
-  "updatedAt": "2026-05-13T02:13:28.755Z"
+  "updatedAt": "2026-05-13T02:13:57.801Z"
 }
