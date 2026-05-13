@@ -424,7 +424,7 @@ function AanbodContent() {
                       <div className="relative aspect-[16/10] bg-concrete">
                         <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover" />
                         <div className="absolute top-4 left-4">
-                          <div className="bg-white/90 backdrop-blur px-2 py-1 rounded border border-hairline">
+                          <div className="bg-surface px-2 py-1 rounded border border-hairline">
                             <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={14} />
                           </div>
                         </div>
@@ -479,7 +479,7 @@ function AanbodContent() {
       {/* Mobile filter drawer */}
       {mobileFilterOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          <button className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} aria-label={t.pages.aanbod.close} />
+          <button className="absolute inset-0 bg-ink/60" onClick={() => setMobileFilterOpen(false)} aria-label={t.pages.aanbod.close} />
           <div className="relative ml-auto w-72 bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
             <div className="sticky top-0 bg-white border-b border-hairline px-5 py-4 flex items-center justify-between shrink-0">
               <p className="font-bold text-ink text-sm">{t.pages.aanbod.filterTitle}</p>

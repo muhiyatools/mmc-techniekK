@@ -175,7 +175,7 @@ function Drawer({ open, onClose, title, children }: { open: boolean; onClose: ()
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[60] flex">
-      <button className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={onClose} aria-label="Sluit" />
+      <button className="absolute inset-0 bg-ink/60" onClick={onClose} aria-label="Sluit" />
       <div className="relative ml-auto w-full max-w-lg bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
         <div className="sticky top-0 bg-white border-b border-hairline px-6 py-4 flex items-center justify-between shrink-0 z-10">
           <h2 className="font-display font-bold text-lg text-ink">{title}</h2>

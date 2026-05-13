@@ -73,9 +73,9 @@ export default function OurProjectsPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
-                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-3">
+                    <span className="inline-block px-3 py-1 bg-ink/60 text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-3">
                       {proj.category}
                     </span>
                     <p className="text-white font-semibold text-xl">{proj.label}</p>
@@ -119,7 +119,7 @@ export default function OurProjectsPage() {
             />
           </div>
           <div className="absolute bottom-6 inset-x-0 text-center">
-            <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-2">
+            <span className="inline-block px-3 py-1 bg-ink/60 text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-2">
               {lightbox.category}
             </span>
             <p className="text-white font-semibold text-base mt-1">

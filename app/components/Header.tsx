@@ -173,63 +173,61 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-50 pointer-events-none">
-        {/* Floating Glass Island Header */}
-        <div className="w-[95%] mx-auto mt-4 pointer-events-auto">
-          <div className="relative flex items-center justify-between h-[60px] px-5 rounded-full bg-white/80 backdrop-blur-2xl saturate-[1.8] border border-white/30 shadow-[0_4px_20px_-5px_rgba(15,23,42,0.06)]">
-            <Link href="/" className="shrink-0 w-[170px]">
-              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={200} height={60} className="h-8 lg:h-[42px] w-auto object-contain" priority />
+        <div className="w-[95%] lg:w-[92%] xl:w-[90%] mx-auto mt-4 lg:mt-5 pointer-events-auto">
+          <div className="relative flex items-center justify-between h-[60px] lg:h-[76px] px-4 lg:px-6 xl:px-8 rounded-full bg-surface border border-hairline shadow-[0_4px_24px_-6px_rgba(15,23,42,0.08)]">
+            <Link href="/" className="shrink-0 w-[160px] lg:w-[200px] xl:w-[220px]">
+              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={240} height={72} className="h-8 lg:h-[46px] xl:h-[52px] w-auto object-contain" priority />
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-0.5 bg-ink/5 p-1 rounded-full">
+            <nav className="hidden lg:flex items-center gap-1 bg-ink/5 p-1.5 rounded-full">
               {navItems.map((item) => (
                 <div key={item.href} className="relative" ref={item.isHash ? dropdownRef : undefined}>
                   {item.isHash ? (
                     <button
                       onClick={() => setDropdownOpen((p) => !p)}
-                      className={`px-3.5 py-1 text-[0.75rem] font-bold uppercase tracking-wide rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                      className={`px-4 xl:px-5 py-1.5 xl:py-2 text-[0.8125rem] xl:text-[0.875rem] font-bold uppercase tracking-wide rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
                         isActive(item.href) || dropdownOpen ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"
                       }`}
                     >
                       {item.label}
-                      <svg className={`w-3.5 h-3.5 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                   ) : (
                     <Link
                       href={item.href}
-                      className={`px-3.5 py-1 text-[0.75rem] font-bold uppercase tracking-wide rounded-full transition-all whitespace-nowrap ${isActive(item.href) ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"}`}
+                      className={`px-4 xl:px-5 py-1.5 xl:py-2 text-[0.8125rem] xl:text-[0.875rem] font-bold uppercase tracking-wide rounded-full transition-all whitespace-nowrap ${isActive(item.href) ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"}`}
                     >
                       {item.label}
                     </Link>
                   )}
 
-                  {/* Dropdown adapted for island header */}
                   {item.isHash && dropdownOpen && (
-                    <div className="absolute top-full left-0 mt-4 w-[540px] max-w-[calc(100vw-8rem)] bg-white/95 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl overflow-hidden animate-dropdown-in z-50">
-                      <div className="p-5 grid grid-cols-2 gap-2">
+                    <div className="absolute top-full left-0 mt-4 w-[580px] xl:w-[620px] max-w-[calc(100vw-8rem)] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden animate-dropdown-in z-50">
+                      <div className="p-6 grid grid-cols-2 gap-2">
                         {mergedServices.map((service) => (
                           <Link
                             key={service.slug}
                             href={`/aanbod/?dienst=${service.slug}`}
                             onClick={() => setDropdownOpen(false)}
-                            className="group flex items-start gap-4 p-4 rounded-2xl hover:bg-brand/10 transition-all"
+                            className="group flex items-start gap-4 p-4 xl:p-5 rounded-2xl hover:bg-brand/10 transition-all"
                           >
-                            <div className="shrink-0 w-10 h-10 rounded-xl bg-brand/5 border border-brand/10 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-all">
+                            <div className="shrink-0 w-11 h-11 xl:w-12 xl:h-12 rounded-xl bg-brand/5 border border-brand/10 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-all">
                               {serviceIcons[service.slug] || <div className="w-5 h-5 bg-current rounded-full" />}
                             </div>
                             <div className="min-w-0 pt-0.5">
-                              <p className="text-sm font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{serviceTitleMap[service.slug]}</p>
-                              <p className="text-xs text-muted line-clamp-1 opacity-70">{service.summary}</p>
+                              <p className="text-sm xl:text-base font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{serviceTitleMap[service.slug]}</p>
+                              <p className="text-xs xl:text-sm text-muted line-clamp-1 opacity-70">{service.summary}</p>
                             </div>
                           </Link>
                         ))}
                       </div>
-                      <div className="bg-ink/5 px-6 py-4 flex items-center justify-between">
-                        <Link href="/aanbod/" onClick={() => setDropdownOpen(false)} className="text-xs font-black uppercase tracking-widest text-muted hover:text-brand transition-colors">
+                      <div className="bg-ink/5 px-6 xl:px-8 py-4 xl:py-5 flex items-center justify-between">
+                        <Link href="/aanbod/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-muted hover:text-brand transition-colors">
                           {t.nav.aanbod}
                         </Link>
-                        <Link href="/contact/" onClick={() => setDropdownOpen(false)} className="text-xs font-black uppercase tracking-widest text-brand hover:text-brand-deep transition-colors">
+                        <Link href="/contact/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-brand hover:text-brand-deep transition-colors">
                           {t.nav.requestQuote} →
                         </Link>
                       </div>
@@ -239,9 +237,9 @@ export default function Header() {
               ))}
             </nav>
 
-            <div className="hidden lg:flex flex-1 justify-center px-6" ref={searchRef}>
-              <div className="flex items-center bg-white/80 backdrop-blur-sm border border-hairline px-5 h-11 w-full max-w-[580px] rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
-                <svg className="w-4 h-4 text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="hidden lg:flex flex-1 justify-center px-4 xl:px-6" ref={searchRef}>
+              <div className="flex items-center bg-surface border border-hairline px-5 h-12 max-w-[480px] xl:max-w-[520px] w-full rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
+                <svg className="w-[18px] h-[18px] text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -250,11 +248,11 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={language === "nl" ? "Zoeken..." : "Search..."}
-                  className="bg-transparent border-none text-[0.875rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/40"
+                  className="bg-transparent border-none text-[0.9375rem] px-3 focus:ring-0 w-full text-ink placeholder:text-muted/40"
                 />
                 {searchQuery && (
                   <button onClick={() => setSearchQuery("")} className="text-muted hover:text-brand shrink-0">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -263,16 +261,16 @@ export default function Header() {
 
               {/* Search Results */}
               {showResults && (
-                <div className="absolute top-full right-0 mt-4 w-[400px] bg-white/95 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl overflow-hidden z-50">
-                  <div className="p-4 max-h-[480px] overflow-y-auto">
+                <div className="absolute top-full right-0 mt-4 w-[440px] xl:w-[480px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
+                  <div className="p-5 max-h-[520px] overflow-y-auto">
                     {!hasResults ? (
                       <div className="p-8 text-center text-muted">Geen resultaten gevonden.</div>
                     ) : (
                       <div className="space-y-1">
                         {matchedServices.map(s => (
-                          <Link key={s.slug} href={`/aanbod/?dienst=${s.slug}`} onClick={() => setSearchQuery("")} className="flex items-center gap-3 p-3 rounded-xl hover:bg-brand/5 transition-all group">
-                            <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand">{serviceIcons[s.slug]}</div>
-                            <span className="text-sm font-bold text-ink group-hover:text-brand transition-colors">{s.title}</span>
+                          <Link key={s.slug} href={`/aanbod/?dienst=${s.slug}`} onClick={() => setSearchQuery("")} className="flex items-center gap-3 p-3.5 rounded-xl hover:bg-brand/5 transition-all group">
+                            <div className="w-9 h-9 rounded-lg bg-brand/10 flex items-center justify-center text-brand">{serviceIcons[s.slug]}</div>
+                            <span className="text-sm xl:text-base font-bold text-ink group-hover:text-brand transition-colors">{s.title}</span>
                           </Link>
                         ))}
                       </div>
@@ -282,11 +280,11 @@ export default function Header() {
               )}
             </div>
 
-            <div className="flex items-center gap-2 ml-auto lg:ml-0">
-              <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-10 h-10 rounded-full hover:bg-ink/5 transition-colors">
+            <div className="flex items-center gap-2.5 lg:gap-3 ml-auto lg:ml-0">
+              <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-11 h-11 rounded-full hover:bg-ink/5 transition-colors">
                 {language === "nl" ? <FlagEN /> : <FlagNL />}
               </button>
-              <Link href="/contact/" className="h-9 px-5 bg-ink text-white text-[0.6875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
+              <Link href="/contact/" className="h-10 xl:h-11 px-5 xl:px-6 bg-ink text-white text-[0.8125rem] xl:text-[0.875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
                 {t.nav.requestQuote}
               </Link>
               <button
@@ -297,13 +295,13 @@ export default function Header() {
                     return next;
                   });
                 }}
-                className="lg:hidden w-9 h-9 flex items-center justify-center text-ink bg-ink/5 rounded-full"
+                className="lg:hidden w-10 h-10 flex items-center justify-center text-ink bg-ink/5 rounded-full"
                 aria-label="Menu"
               >
-                <div className="relative flex flex-col justify-between w-4 h-2.5">
-                  <span className={`block h-[1.5px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[4px]" : ""}`} />
-                  <span className={`block h-[1.5px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-                  <span className={`block h-[1.5px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[4px]" : ""}`} />
+                <div className="relative flex flex-col justify-between w-[18px] h-[14px]">
+                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
+                  <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
                 </div>
               </button>
             </div>

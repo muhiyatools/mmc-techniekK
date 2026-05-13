@@ -1,0 +1,20 @@
+{
+  "id": "7dfc24d7",
+  "phase": "variants_ready",
+  "pageUrl": "/",
+  "sourceFile": "app\\sections\\HeroSection.tsx",
+  "expectedVariants": 2,
+  "arrivedVariants": 2,
+  "visibleVariant": 1,
+  "paramValues": {},
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 22,
+  "activeOwner": "3b933f2e",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-13T02:15:48.645Z"
+}

@@ -48,7 +48,7 @@ export default function TrustBar() {
   ];
 
   return (
-    <div className="hidden lg:block h-[48px] bg-ink/80 backdrop-blur-md border-b border-white/10">
+    <div className="hidden lg:block h-[48px] bg-ink border-b border-white/10">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex items-center justify-center gap-10">
         {items.map((item) => (
           <div key={item.label} className="relative flex items-center gap-2.5 group cursor-default transition-transform duration-300 hover:-translate-y-px">

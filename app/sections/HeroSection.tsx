@@ -5,117 +5,47 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   return (
-    <section className="relative h-screen min-h-[700px] flex flex-col justify-center overflow-hidden bg-base">
+    <section className="relative h-screen min-h-[700px] flex flex-col overflow-hidden bg-base">
       <div className="absolute inset-0 z-0">
         <Image 
           src="/images/background.avif" 
           alt="MMC Techniek" 
           fill 
-          className="bg-image object-cover scale-105 grayscale-[0.2]" 
+          className="object-cover scale-105 grayscale-[0.2] opacity-40" 
           priority 
         />
-        <div className="hero-overlay" />
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(135deg, color-mix(in oklch, var(--color-aurora-1) 12%, transparent) 0%, color-mix(in oklch, var(--color-brand) 20%, transparent) 40%, color-mix(in oklch, var(--color-aurora-2) 10%, transparent) 70%, transparent 100%)",
+            backgroundSize: "200% 200%",
+            animation: "aurora-sweep 14s linear infinite",
+          }}
+        />
       </div>
 
-      <div className="relative z-10 w-full min-h-[85vh] flex items-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-[76px] lg:pt-[80px]">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 w-full">
-          <div className="hero-content">
-{/* impeccable-variants-start d0733398 */}
-            <div data-impeccable-variants="d0733398" data-impeccable-variant-count="2" style={{ display: 'contents' }}>
-              <style>{`
-                @scope ([data-impeccable-variant="d0733398-1"]) {
-                  .v1-ht { font-size:clamp(4rem,16vw,15rem); font-family:var(--font-barlow-condensed); font-weight:800; line-height:0.78; letter-spacing:-0.03em; color:var(--color-brand); margin:0; text-wrap:balance; text-shadow:0 2px 30px color-mix(in oklch,var(--color-brand) 30%,transparent); }
-                }
-                @scope ([data-impeccable-variant="d0733398-2"]) {
-                  .v2-ht { font-size:clamp(4rem,16vw,15rem); font-family:var(--font-barlow-condensed); font-weight:800; line-height:0.78; letter-spacing:-0.03em; color:var(--color-brand); margin:0; text-wrap:balance; position:relative; display:inline-block; }
-                  .v2-ht::after { content:''; position:absolute; bottom:0.1em; left:0; right:0; height:0.06em; background:linear-gradient(90deg,var(--color-aurora-1),var(--color-brand),var(--color-aurora-2)); border-radius:999px; }
-                }
-              `}</style>
-              <h1 data-impeccable-variant="d0733398-1">
-                <span className="v1-ht">{t.hero.titleParts[0]} {t.hero.titleParts[1]} {t.hero.titleParts[2]}</span>
-              </h1>
-              <h1 data-impeccable-variant="d0733398-2" style={{ display: 'none' }}>
-                <span className="v2-ht"><span>{t.hero.titleParts[0]} </span><span>{t.hero.titleParts[1]} </span><span>{t.hero.titleParts[2]}</span></span>
-              </h1>
-            </div>
-            {/* end */}
-            <div className="hero-body">
-              <p className="hero-desc">{t.hero.description}</p>
-            </div>
-            <Link href="/contact/" className="hero-cta">
+          <div className="flex flex-col items-center text-center gap-8">
+            <h1 
+              className="font-display font-extrabold leading-[0.82] tracking-[-0.02em] text-brand m-0"
+              style={{ fontSize: "clamp(3.5rem, 14vw, 12rem)" }}
+            >
+              <span>{t.hero.titleParts[0]} {t.hero.titleParts[1]} {t.hero.titleParts[2]}</span>
+            </h1>
+            <Link 
+              href="/contact/" 
+              className="inline-flex items-center gap-3 px-11 py-4 bg-brand text-base text-xs font-bold uppercase tracking-[0.18em] rounded-full no-underline hover:bg-brand-deep hover:-translate-y-0.5 transition-all duration-300"
+            >
               <span>{t.hero.ctaStart}</span>
               <span>→</span>
             </Link>
           </div>
         </div>
       </div>
-
-
-
-      <style jsx>{`
-        .bg-image { 
-          opacity: 0.4; 
-          transition: opacity 0.3s ease; 
-        }
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, color-mix(in oklch, var(--color-aurora-1) 12%, transparent) 0%, color-mix(in oklch, var(--color-brand) 20%, transparent) 40%, color-mix(in oklch, var(--color-aurora-2) 10%, transparent) 70%, transparent 100%);
-          background-size: 200% 200%;
-          animation: aurora-sweep 14s linear infinite;
-        }
-        @keyframes aurora-sweep {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        .hero-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          gap: 2.5rem;
-        }
-        .hero-title {
-          font-size: clamp(4rem, 16vw, 15rem);
-          font-family: var(--font-barlow-condensed);
-          font-weight: 800;
-          line-height: 0.78;
-          letter-spacing: -0.03em;
-          color: var(--color-ink);
-          margin: 0;
-          text-wrap: balance;
-        }
-        .hero-brand { color: var(--color-brand); }
-        .hero-body { max-width: 55ch; }
-        .hero-desc {
-          font-size: 1.25rem;
-          line-height: 1.7;
-          color: var(--color-muted);
-          margin: 0;
-        }
-        .hero-cta {
-          display: inline-flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1.125rem 3rem;
-          background: var(--color-ink);
-          color: var(--color-base);
-          font-size: 0.75rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.2em;
-          border-radius: 999px;
-          transition: all 0.3s ease;
-        }
-        .hero-cta:hover {
-          background: var(--color-brand);
-          transform: scale(1.05);
-        }
-      `}</style>
     </section>
   );
 }

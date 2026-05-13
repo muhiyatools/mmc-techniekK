@@ -245,6 +245,13 @@ body::before {
   50%       { opacity: 0.9; }
 }
 
+/* ── Aurora sweep (hero overlay) ── */
+@keyframes aurora-sweep {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ── Aurora drift (header top stripe) ── */
 @keyframes aurora-drift {
   0%   { background-position: 0% center; }

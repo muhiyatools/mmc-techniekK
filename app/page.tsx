@@ -1,9 +1,7 @@
 "use client";
 
 import Services from "./sections/Services";
-import ProjectsPreview from "./sections/ProjectsPreview";
 import TrustStrip from "./sections/TrustStrip";
-import FAQSection from "./sections/FAQSection";
 import HeroSection from "./sections/HeroSection";
 import Reveal from "./components/Reveal";
 import HairlineDivider from "./components/HairlineDivider";
@@ -13,17 +11,14 @@ export default function Home() {
   const { t } = useLanguage();
   return (
     <>
-      {/* Hero */}
       <HeroSection />
 
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <HairlineDivider draw aurora delay={100} />
       </div>
 
-      {/* Services */}
       <Services />
 
-      {/* Process Section */}
       <section className="relative bg-base border-t border-hairline overflow-hidden py-24 lg:py-32">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
@@ -38,12 +33,10 @@ export default function Home() {
               {t.pages.home.process.steps.map((step, i) => (
               <Reveal key={i} delay={i * 100}>
                 <div className="relative text-center group">
-                  {/* Connecting Line (Desktop) */}
                   {i < 3 && (
                     <div className="hidden md:block absolute top-1.5 left-[calc(50%+12px)] w-[calc(100%-24px)] h-px bg-hairline z-0" />
                   )}
                   
-                  {/* Step Dot */}
                   <div className="relative z-10 w-3 h-3 bg-brand rounded-full mx-auto mb-6 shadow-[0_0_0_4px_var(--color-base),0_0_0_5px_var(--color-hairline)] group-hover:scale-125 transition-transform duration-300" />
                   
                   <h3 className="font-display text-xl font-bold text-ink mb-2 uppercase italic tracking-wide group-hover:text-brand transition-colors">
@@ -59,18 +52,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects */}
-      <ProjectsPreview />
-
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <HairlineDivider draw delay={100} />
-      </div>
-
-      {/* Trust + Why us + Client logos */}
       <TrustStrip />
-
-      {/* FAQ */}
-      <FAQSection />
     </>
   );
 }
