@@ -66,13 +66,20 @@ export default function HeroSection() {
               <span aria-hidden="true">&#x2192;</span>
             </Link>
 
-            {/* Trust pills */}
-            <div className="flex items-center gap-3 flex-wrap justify-center mt-1">
-              {(["NEN-3140", "VCA", "16+ jaar"] as const).map((badge) => (
-                <span key={badge} className="text-micro text-muted/60 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full border border-hairline/50">
-                  {badge}
-                </span>
-              ))}
+            {/* Trust badges — images on mobile */}
+            <div className="flex items-center gap-2.5 flex-wrap justify-center mt-1">
+              <span className="relative w-[44px] h-[30px]">
+                <Image src="/images/certifications/nen-3140.png" alt="NEN-3140" fill className="object-contain" sizes="44px" />
+              </span>
+              <span className="relative w-[28px] h-[30px]">
+                <Image src="/images/certifications/vca.png" alt="VCA" fill className="object-contain" sizes="28px" />
+              </span>
+              <span className="relative w-7 h-7 flex items-center justify-center" aria-label="16+ jaar ervaring">
+                <svg viewBox="0 0 28 28" fill="none" className="w-full h-full">
+                  <path d="M14 2L17.09 8.26L24 9.27L19 14.14L20.18 21.02L14 17.77L7.82 21.02L9 14.14L4 9.27L10.91 8.26L14 2Z" fill="currentColor" className="text-brand" opacity="0.7" />
+                  <text x="14" y="18" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="system-ui">16</text>
+                </svg>
+              </span>
             </div>
           </div>
 

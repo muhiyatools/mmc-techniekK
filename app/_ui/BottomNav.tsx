@@ -46,7 +46,7 @@ export default function BottomNav({ onMoreClick }: BottomNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="bottom-nav md:hidden" aria-label="Mobiele navigatie">
+    <nav className="bottom-nav" aria-label="Mobiele navigatie">
       {NAV_ITEMS.map((item) => {
         const { label, href, Icon } = item;
         const cta = "cta" in item && item.cta;
