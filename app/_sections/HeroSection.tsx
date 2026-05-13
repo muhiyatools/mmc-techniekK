@@ -74,10 +74,14 @@ export default function HeroSection() {
               <span className="relative w-[28px] h-[30px]">
                 <Image src="/images/certifications/vca.png" alt="VCA" fill className="object-contain" sizes="28px" />
               </span>
-              <span className="relative w-7 h-7 flex items-center justify-center" aria-label="16+ jaar ervaring">
-                <svg viewBox="0 0 28 28" fill="none" className="w-full h-full">
-                  <path d="M14 2L17.09 8.26L24 9.27L19 14.14L20.18 21.02L14 17.77L7.82 21.02L9 14.14L4 9.27L10.91 8.26L14 2Z" fill="currentColor" className="text-brand" opacity="0.7" />
-                  <text x="14" y="18" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="system-ui">16</text>
+              <span className="relative w-[38px] h-[30px]" aria-label="16+ jaar ervaring">
+                <svg viewBox="0 0 38 30" fill="none" className="w-full h-full">
+                  <rect x="1" y="3" width="36" height="24" rx="5" fill="currentColor" className="text-brand" opacity="0.1" />
+                  <rect x="1" y="3" width="36" height="24" rx="5" stroke="currentColor" className="text-brand/40" strokeWidth="1" />
+                  <circle cx="14" cy="15" r="8" fill="currentColor" className="text-brand" opacity="0.8" />
+                  <text x="14" y="18.5" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="system-ui, sans-serif">16</text>
+                  <text x="25" y="14" textAnchor="middle" fill="currentColor" className="text-muted" fontSize="7" fontWeight="700" fontFamily="system-ui, sans-serif">+</text>
+                  <text x="25" y="21" textAnchor="middle" fill="currentColor" className="text-muted" fontSize="5.5" fontWeight="600" fontFamily="system-ui, sans-serif">JAAR</text>
                 </svg>
               </span>
             </div>
