@@ -1,30 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import Reveal from "../components/Reveal";
-import HeroWordLift from "./HeroWordLift";
 
 export default function HeroSection() {
   const { t, language } = useLanguage();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    setMousePos({
-      x: (clientX / innerWidth - 0.5) * 20,
-      y: (clientY / innerHeight - 0.5) * 20,
-    });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
 
   return (
     <section className="relative h-screen min-h-[700px] flex flex-col justify-center overflow-hidden bg-base">
@@ -36,93 +17,89 @@ export default function HeroSection() {
           className="bg-image object-cover scale-105 grayscale-[0.2]" 
           priority 
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-base/20 via-base/60 to-base" />
-        <div className="grid-overlay absolute inset-0 pointer-events-none" />
+        <div className="hero-overlay" />
       </div>
 
       <div className="relative z-10 w-full min-h-[85vh] flex items-center">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12 w-full">
-          <div className="flex flex-col lg:flex-row items-end gap-20">
-            <div className="flex-1">
-              <div className="flex items-center gap-8 mb-16">
-                <div className="tech-tag">{t.hero.badge}</div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted">{t.hero.region}</div>
-              </div>
-              <h1 className="text-[clamp(4.5rem,12vw,9.5rem)] font-display font-extrabold leading-[0.75] tracking-tighter text-ink mb-0">
-                <span className="block">Precisie</span>
-                <span className="inline">in </span>
-                <span className="inline text-brand">Verduurzaming.</span>
-              </h1>
+          <div className="hero-content">
+            <h1 className="hero-title">
+              <span className="block">{t.hero.titleParts[0]}</span>
+              <span className="inline">{t.hero.titleParts[1]}</span>
+              <span className="hero-brand">{t.hero.titleParts[2]}</span>
+            </h1>
+            <div className="hero-body">
+              <p className="hero-desc">{t.hero.description}</p>
             </div>
-            <div className="max-w-md pb-10">
-              <div className="shelf-description mb-12">
-                <p className="text-xl text-copy leading-relaxed font-medium">
-                  {t.hero.description}
-                </p>
-              </div>
-              <Link href="/contact/" className="group flex items-center gap-6 text-sm font-bold uppercase tracking-[0.3em] text-ink">
-                <span className="w-16 h-16 rounded-full bg-brand flex items-center justify-center text-white transition-transform group-hover:scale-110">→</span>
-                {t.hero.ctaStart}
-              </Link>
-            </div>
+            <Link href="/contact/" className="hero-cta">
+              <span>{t.hero.ctaStart}</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Floating Aurora element */}
-      <div 
-        className="absolute top-1/4 right-0 w-96 h-96 bg-brand/10 rounded-full blur-[120px] pointer-events-none"
-        style={{
-          transform: `translate3d(${mousePos.x * 0.5}px, ${mousePos.y * 0.5}px, 0)`,
-        }}
-      />
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 hidden lg:flex">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/40">{t.hero.scroll}</span>
-        <div className="w-px h-12 bg-ink/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1/2 bg-brand animate-[scroll-hint_2s_infinite_ease-in-out]" />
-        </div>
-      </div>
 
       <style jsx>{`
         .bg-image { 
           opacity: 0.4; 
           transition: opacity 0.3s ease; 
         }
-        .grid-overlay { 
-          background-image: 
-            linear-gradient(var(--color-hairline) 1px, transparent 1px), 
-            linear-gradient(90deg, var(--color-hairline) 1px, transparent 1px);
-          background-size: 80px 80px;
-          opacity: 0.3;
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, color-mix(in oklch, var(--color-aurora-1) 12%, transparent) 0%, color-mix(in oklch, var(--color-brand) 20%, transparent) 40%, color-mix(in oklch, var(--color-aurora-2) 10%, transparent) 70%, transparent 100%);
+          background-size: 200% 200%;
+          animation: aurora-sweep 14s linear infinite;
         }
-        .shelf-description {
-          background: var(--color-mist);
-          border: 1px solid var(--color-hairline);
-          padding: 2.5rem;
-          backdrop-filter: blur(8px);
+        @keyframes aurora-sweep {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
-        .tech-tag {
+        .hero-content {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 10px;
+          text-align: center;
+          gap: 2.5rem;
+        }
+        .hero-title {
+          font-size: clamp(4rem, 16vw, 15rem);
+          font-family: var(--font-barlow-condensed);
+          font-weight: 800;
+          line-height: 0.78;
+          letter-spacing: -0.03em;
+          color: var(--color-ink);
+          margin: 0;
+          text-wrap: balance;
+        }
+        .hero-brand { color: var(--color-brand); }
+        .hero-body { max-width: 55ch; }
+        .hero-desc {
+          font-size: 1.25rem;
+          line-height: 1.7;
+          color: var(--color-muted);
+          margin: 0;
+        }
+        .hero-cta {
+          display: inline-flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.125rem 3rem;
+          background: var(--color-ink);
+          color: var(--color-base);
+          font-size: 0.75rem;
           font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 0.3em;
-          color: var(--color-muted);
-        }
-        .tech-tag::before {
-          content: "";
-          width: 6px;
-          height: 6px;
+          letter-spacing: 0.2em;
           border-radius: 999px;
-          background: var(--color-brand);
+          transition: all 0.3s ease;
         }
-        @keyframes scroll-hint {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(200%); }
+        .hero-cta:hover {
+          background: var(--color-brand);
+          transform: scale(1.05);
         }
       `}</style>
     </section>

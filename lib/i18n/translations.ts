@@ -15,6 +15,7 @@ export const translations = {
       badge: "Oudewater · Sinds 2008",
       region: "Regio Utrecht & omgeving",
       title: "Precisie in Verduurzaming.",
+      titleParts: ["Precisie", "in ", "Verduurzaming."],
       description: "De techniek van morgen, vandaag vakkundig geïnstalleerd door onze eigen specialisten.",
       ctaStart: "Start Project",
       ctaContact: "Contact",
@@ -72,6 +73,17 @@ export const translations = {
         description: "Een selectie van recente installaties waar we trots op zijn. Van particuliere woningen tot commerciële projecten.",
         cta: "Bekijk Alles",
         viewInstallation: "Bekijk installatie &rarr;",
+        items: [
+          { label: "Warmtepomp installatie", location: "Oudewater", category: "Verwarming" },
+          { label: "Elektrische installatie", location: "Woerden", category: "Elektra" },
+          { label: "Technisch onderhoud", location: "Oudewater", category: "Onderhoud" },
+          { label: "Renovatieproject", location: "Utrecht", category: "Renovatie" },
+          { label: "Nieuwbouwproject", location: "Bodegraven", category: "Nieuwbouw" },
+          { label: "Service en onderhoud", location: "Oudewater", category: "Service" },
+          { label: "Zonnepanelen", location: "Woerden", category: "Zonne-energie" },
+          { label: "Meterkast upgrade", location: "Oudewater", category: "Elektra" },
+          { label: "Airconditioning", location: "Bodegraven", category: "Airco" },
+        ]
       },
       trust: {
         label: "Expertise & Vakmanschap",
@@ -142,6 +154,14 @@ export const translations = {
           title: "Het werk spreekt<br /><brand>voor zichzelf</brand>",
           description: "16 eigen vakmensen, geen onderaannemers. Elk project wordt door ons eigen team ontworpen, geïnstalleerd en opgeleverd.",
           cta: "Bekijk alle projecten",
+          photos: [
+            { label: "Warmtepomp installatie", location: "Oudewater" },
+            { label: "Elektrische installatie", location: "Woerden" },
+            { label: "Technisch onderhoud", location: "Oudewater" },
+            { label: "Renovatieproject", location: "Utrecht" },
+            { label: "Installatie", location: "Bodegraven" },
+            { label: "Service oplevering", location: "Oudewater" },
+          ]
         },
         clients: {
           label: "Onze klanten",
@@ -303,6 +323,7 @@ export const translations = {
       badge: "Oudewater · Since 2008",
       region: "Utrecht Region & surroundings",
       title: "Precision in Sustainability.",
+      titleParts: ["Precision", "in ", "Sustainability."],
       description: "Tomorrow's technology, professionally installed today by our own specialists.",
       ctaStart: "Start Project",
       ctaContact: "Contact",
@@ -360,6 +381,17 @@ export const translations = {
         description: "A selection of recent installations we are proud of. From private homes to commercial projects.",
         cta: "View All",
         viewInstallation: "View installation &rarr;",
+        items: [
+          { label: "Heat pump installation", location: "Oudewater", category: "Heating" },
+          { label: "Electrical installation", location: "Woerden", category: "Electrical" },
+          { label: "Technical maintenance", location: "Oudewater", category: "Maintenance" },
+          { label: "Renovation project", location: "Utrecht", category: "Renovation" },
+          { label: "New build project", location: "Bodegraven", category: "New build" },
+          { label: "Service and maintenance", location: "Oudewater", category: "Service" },
+          { label: "Solar panels", location: "Woerden", category: "Solar energy" },
+          { label: "Electrical panel upgrade", location: "Oudewater", category: "Electrical" },
+          { label: "Air conditioning", location: "Bodegraven", category: "Airco" },
+        ]
       },
       trust: {
         label: "Expertise & Craftsmanship",
@@ -430,6 +462,14 @@ export const translations = {
           title: "The work speaks<br /><brand>for itself</brand>",
           description: "16 own craftsmen, no subcontractors. Each project is designed, installed, and delivered by our own team.",
           cta: "View all projects",
+          photos: [
+            { label: "Heat pump installation", location: "Oudewater" },
+            { label: "Electrical installation", location: "Woerden" },
+            { label: "Technical maintenance", location: "Oudewater" },
+            { label: "Renovation project", location: "Utrecht" },
+            { label: "Installation", location: "Bodegraven" },
+            { label: "Service delivery", location: "Oudewater" },
+          ]
         },
         clients: {
           label: "Our clients",
@@ -591,6 +631,7 @@ export const translations = {
       badge: "أوديواتر · منذ 2008",
       region: "منطقة أوترخت وما حولها",
       title: "الدقة في الاستدامة.",
+      titleParts: ["الدقة", "في ", "الاستدامة."],
       description: "تقنية الغد، يتم تركيبها اليوم بخبرة على أيدي متخصصينا.",
       ctaStart: "ابدأ المشروع",
       ctaContact: "اتصل بنا",
@@ -648,6 +689,17 @@ export const translations = {
         description: "مجموعة مختارة من المنشآت الحديثة التي نفخر بها. من المنازل الخاصة إلى المشاريع التجارية.",
         cta: "عرض الكل",
         viewInstallation: "عرض التركيب &rarr;",
+        items: [
+          { label: "تركيب مضخة حرارية", location: "أوديواتر", category: "تدفئة" },
+          { label: "تركيب كهربائي", location: "فوردن", category: "كهرباء" },
+          { label: "صيانة فنية", location: "أوديواتر", category: "صيانة" },
+          { label: "مشروع تجديد", location: "أوترخت", category: "تجديد" },
+          { label: "مشروع بناء جديد", location: "بوديخرافن", category: "بناء جديد" },
+          { label: "خدمة وصيانة", location: "أوديواتر", category: "خدمة" },
+          { label: "ألواح شمسية", location: "فوردن", category: "طاقة شمسية" },
+          { label: "ترقية اللوحة الكهربائية", location: "أوديواتر", category: "كهرباء" },
+          { label: "تكييف هواء", location: "بوديخرافن", category: "تكييف" },
+        ]
       },
       trust: {
         label: "خبرة وإتقان",
@@ -718,6 +770,14 @@ export const translations = {
           title: "العمل يتحدث<br /><brand>عن نفسه</brand>",
           description: "16 حرفياً من فريقنا، لا مقاولين من الباطن. كل مشروع يتم تصميمه وتركيبه وتسليمه بواسطة فريقنا الخاص.",
           cta: "عرض جميع المشاريع",
+          photos: [
+            { label: "تركيب مضخة حرارية", location: "أوديواتر" },
+            { label: "تركيب كهربائي", location: "فوردن" },
+            { label: "صيانة فنية", location: "أوديواتر" },
+            { label: "مشروع تجديد", location: "أوترخت" },
+            { label: "تركيب", location: "بوديخرافن" },
+            { label: "تسليم خدمة", location: "أوديواتر" },
+          ]
         },
         clients: {
           label: "عملاؤنا",

@@ -6,10 +6,15 @@ import { projectImages } from "@/lib/data";
 import Reveal from "../components/Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-const featured = projectImages.slice(0, 4);
-
 export default function ProjectsPreview() {
   const { t } = useLanguage();
+  const localized = t.sections.projects.items;
+  const featured = projectImages.slice(0, 4).map((img, i) => ({
+    ...img,
+    label: localized[i]?.label || img.label,
+    location: localized[i]?.location || img.location,
+    category: localized[i]?.category || img.category,
+  }));
   return (
     <section id="projecten" className="relative py-24 lg:py-36 bg-base overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12">

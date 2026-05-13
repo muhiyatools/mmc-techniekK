@@ -10,14 +10,11 @@ export default function AboutPage() {
   const { t } = useLanguage();
   const milestones = t.pages.overOns.milestones;
 
-const workPhotos = [
-  { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Warmtepomp installatie", location: "Oudewater" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", label: "Elektrische installatie", location: "Woerden" },
-  { src: "/images/projects/20240920_112524-scaled.jpg", label: "Technisch onderhoud", location: "Oudewater" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-05-59.jpg", label: "Renovatieproject", location: "Utrecht" },
-  { src: "/images/projects/PHOTO-2024-12-08-15-12-08.jpg", label: "Installatie", location: "Bodegraven" },
-  { src: "/images/projects/PHOTO-2024-12-03-12-54-08.jpg", label: "Service oplevering", location: "Oudewater" },
-];
+const workPhotos = t.pages.overOns.work.photos.map((p, i) => ({
+  src: ["/images/projects/PHOTO-2024-12-03-12-54-01.jpg", "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", "/images/projects/20240920_112524-scaled.jpg", "/images/projects/PHOTO-2024-12-08-15-05-59.jpg", "/images/projects/PHOTO-2024-12-08-15-12-08.jpg", "/images/projects/PHOTO-2024-12-03-12-54-08.jpg"][i],
+  label: p.label,
+  location: p.location,
+}));
   return (
     <>
       {/* Hero — full-bleed project photo, left-aligned copy */}

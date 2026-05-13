@@ -86,6 +86,11 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
+  const serviceTitleMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    services.forEach((s, i) => { map[s.slug] = t.sections.services.items[i]?.title || s.title; });
+    return map;
+  }, [language]);
 
   // Load admin store on mount
   useEffect(() => {
@@ -171,8 +176,8 @@ export default function Header() {
         {/* Floating Glass Island Header */}
         <div className="w-[95%] mx-auto mt-4 pointer-events-auto">
           <div className="relative flex items-center justify-between h-[60px] px-5 rounded-full bg-white/80 backdrop-blur-2xl saturate-[1.8] border border-white/30 shadow-[0_4px_20px_-5px_rgba(15,23,42,0.06)]">
-            <Link href="/" className="shrink-0 w-[140px]">
-              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={180} height={55} className="h-7 lg:h-9 w-auto object-contain" priority />
+            <Link href="/" className="shrink-0 w-[170px]">
+              <Image src="/images/logo.png" alt="MMC Techniek B.V." width={200} height={60} className="h-8 lg:h-[42px] w-auto object-contain" priority />
             </Link>
 
             <nav className="hidden lg:flex items-center gap-0.5 bg-ink/5 p-1 rounded-full">
@@ -214,7 +219,7 @@ export default function Header() {
                               {serviceIcons[service.slug] || <div className="w-5 h-5 bg-current rounded-full" />}
                             </div>
                             <div className="min-w-0 pt-0.5">
-                              <p className="text-sm font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{service.title}</p>
+                              <p className="text-sm font-bold text-ink group-hover:text-brand transition-colors mb-0.5">{serviceTitleMap[service.slug]}</p>
                               <p className="text-xs text-muted line-clamp-1 opacity-70">{service.summary}</p>
                             </div>
                           </Link>
@@ -235,7 +240,7 @@ export default function Header() {
             </nav>
 
             <div className="hidden lg:flex flex-1 justify-center px-6" ref={searchRef}>
-              <div className="flex items-center bg-white/80 backdrop-blur-sm border border-hairline px-5 h-11 w-full max-w-[480px] rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
+              <div className="flex items-center bg-white/80 backdrop-blur-sm border border-hairline px-5 h-11 w-full max-w-[580px] rounded-full group focus-within:border-brand focus-within:shadow-[0_0_0_3px_rgba(66,168,242,0.12)] transition-all duration-200">
                 <svg className="w-4 h-4 text-muted/50 group-focus-within:text-brand transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -353,13 +358,13 @@ export default function Header() {
                   <div className="pl-4 grid grid-cols-2 gap-1.5">
                     {mergedServices.map((service) => (
                       <Link
-                        key={service.title}
+                        key={service.slug}
                         href={`/aanbod/?dienst=${service.slug}`}
                         onClick={() => setMenuOpen(false)}
                         className="flex items-center gap-2 py-2 px-2 rounded-lg text-sm text-muted hover:text-brand hover:bg-brand/5 transition-colors"
                       >
                         <span className="text-brand shrink-0">{serviceIcons[service.slug]}</span>
-                        {service.title}
+                        {serviceTitleMap[service.slug]}
                       </Link>
                     ))}
                   </div>

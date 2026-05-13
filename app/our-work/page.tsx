@@ -8,6 +8,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function OurProjectsPage() {
   const { t } = useLanguage();
+  const localized = t.sections.projects.items;
   const [lightbox, setLightbox] = useState<(typeof projectImages)[0] | null>(null);
 
   useEffect(() => {
@@ -53,7 +54,9 @@ export default function OurProjectsPage() {
       <section className="pb-28 lg:pb-36 bg-base">
           <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
-            {projectImages.map((project, i) => (
+            {projectImages.map((project, i) => {
+              const proj = localized[i] || project;
+              return (
               <Reveal key={project.src} delay={i * 60}>
                 <button
                   onClick={() => setLightbox(project)}
@@ -62,9 +65,9 @@ export default function OurProjectsPage() {
                   <div className={`relative w-full ${
                     i % 5 === 0 ? "aspect-[4/5]" : i % 5 === 1 ? "aspect-[3/4]" : i % 5 === 2 ? "aspect-[4/3]" : i % 5 === 3 ? "aspect-[1/1]" : "aspect-[3/4]"
                   }`}>
-                    <Image
+                      <Image
                       src={project.src}
-                      alt={project.label}
+                      alt={proj.label}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -73,14 +76,14 @@ export default function OurProjectsPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
                     <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider rounded-full mb-3">
-                      {project.category}
+                      {proj.category}
                     </span>
-                    <p className="text-white font-semibold text-xl">{project.label}</p>
-                    <p className="text-white/70 text-sm mt-1">{project.location}</p>
+                    <p className="text-white font-semibold text-xl">{proj.label}</p>
+                    <p className="text-white/70 text-sm mt-1">{proj.location}</p>
                   </div>
                 </button>
               </Reveal>
-            ))}
+            )})}
           </div>
         </div>
       </section>
