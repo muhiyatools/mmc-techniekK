@@ -1,8 +1,8 @@
 {
   "id": "d0733398",
-  "phase": "cycling",
+  "phase": "variants_ready",
   "pageUrl": "/",
-  "sourceFile": "app/sections/HeroSection.tsx",
+  "sourceFile": "app\\sections\\HeroSection.tsx",
   "expectedVariants": 2,
   "arrivedVariants": 2,
   "visibleVariant": 1,
@@ -16,5 +16,5 @@
   "fallbackMode": null,
   "annotationArtifacts": [],
   "diagnostics": [],
-  "updatedAt": "2026-05-13T02:13:57.801Z"
+  "updatedAt": "2026-05-13T02:14:03.208Z"
 }
