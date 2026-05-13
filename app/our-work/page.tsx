@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { projectImages } from "@/lib/data";
-import Reveal from "../components/Reveal";
+import Reveal from "../_ui/Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function OurProjectsPage() {
   const { t } = useLanguage();
   const localized = t.sections.projects.items;
   const [lightbox, setLightbox] = useState<(typeof projectImages)[0] | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!lightbox) return;
@@ -18,6 +19,7 @@ export default function OurProjectsPage() {
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    lightboxRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
@@ -31,7 +33,7 @@ export default function OurProjectsPage() {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
-              <span className="inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-muted mb-6">
+              <span className="inline-flex items-center gap-2.5 text-label text-muted mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                 {t.pages.ourWork.label}
               </span>
@@ -51,7 +53,7 @@ export default function OurProjectsPage() {
       </section>
 
       {/* Masonry Grid */}
-      <section className="pb-28 lg:pb-36 bg-base">
+      <section className="pb-28 lg:pb-36 bg-bg">
           <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
             {projectImages.map((project, i) => {
@@ -91,10 +93,13 @@ export default function OurProjectsPage() {
       {/* Lightbox */}
       {lightbox && (
         <div
+          ref={lightboxRef}
+          tabIndex={-1}
           className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-ink/95 cursor-zoom-out animate-[fadeIn_200ms_ease-out]"
           onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
+          aria-label={lightbox.label}
         >
           <button
             className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"

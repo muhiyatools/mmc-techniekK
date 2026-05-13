@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import ScrollToTop from "./components/ScrollToTop";
-import WhatsAppButton from "./components/WhatsAppButton";
+import Header from "./_ui/Header";
+import Footer from "./_ui/Footer";
+import ScrollToTop from "./_ui/ScrollToTop";
+import WhatsAppButton from "./_ui/WhatsAppButton";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const barlow = Barlow({
@@ -71,17 +71,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl-NL" dir="ltr" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-base" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col bg-bg" suppressHydrationWarning>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:text-sm focus:font-bold focus:rounded-full focus:outline-none">
+          Naar hoofdinhoud
+        </a>
         <LanguageProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1">{children}</main>
           <Footer />
           <ScrollToTop />
           <WhatsAppButton />
         </LanguageProvider>
-      {/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js"></script>
-{/* impeccable-live-end */}
+      {process.env.NODE_ENV === "development" && (
+        <script src="http://localhost:8400/live.js" />
+      )}
 </body>
     </html>
   );

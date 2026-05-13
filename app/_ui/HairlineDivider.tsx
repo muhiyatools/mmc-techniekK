@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef } from "react";
 
 interface HairlineDividerProps {
   className?: string;
@@ -20,13 +20,13 @@ export default function HairlineDivider({
   delay = 0,
 }: HairlineDividerProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!draw || !ref.current) return;
 
     const el = ref.current;
 
-    // Check reduced motion
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -41,7 +41,7 @@ export default function HairlineDivider({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => {
+            timerRef.current = setTimeout(() => {
               el.style.transform = "scaleX(1)";
               el.style.opacity = "1";
             }, delay);
@@ -53,7 +53,10 @@ export default function HairlineDivider({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [draw, delay]);
 
   const base = "h-px w-full";

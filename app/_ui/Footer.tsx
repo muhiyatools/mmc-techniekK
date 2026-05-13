@@ -106,7 +106,7 @@ export default function Footer() {
                       { label: language === "nl" ? "Vloerverwarming" : "Underfloor Heating", href: "/aanbod/?dienst=vloerverwarming" },
                       { label: language === "nl" ? "Alle Diensten" : "All Services", href: "/aanbod/" },
                     ].map((link) => (
-                      <li key={link.label}>
+                      <li key={link.href}>
                         <Link href={link.href} className="text-white/50 hover:text-white transition-colors duration-300 text-sm">
                           {link.label}
                         </Link>
@@ -127,7 +127,7 @@ export default function Footer() {
                       { label: t.nav.faq, href: "/veelgestelde-vragen/" },
                       { label: t.nav.contact, href: "/contact/" },
                     ].map((link) => (
-                      <li key={link.label}>
+                      <li key={link.href}>
                         <Link href={link.href} className="text-white/50 hover:text-white transition-colors duration-300 text-sm">
                           {link.label}
                         </Link>

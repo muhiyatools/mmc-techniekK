@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { services } from "@/lib/data";
-import Reveal from "../components/Reveal";
+import Reveal from "../_ui/Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Services() {
@@ -21,7 +21,7 @@ export default function Services() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
-                <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">
+                <span className="text-label text-muted">
                   {t.sections.services.label}
                 </span>
               </div>
@@ -94,7 +94,7 @@ export default function Services() {
                     </p>
 
                     {/* CTA arrow */}
-                    <div className="mt-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand/80 group-hover:text-brand group-hover:gap-3 transition-all duration-300">
+                    <div className="mt-3 flex items-center gap-1.5 text-label text-brand/80 group-hover:text-brand group-hover:gap-3 transition-all duration-300">
                       <span>{t.sections.services.moreInfo}</span>
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />

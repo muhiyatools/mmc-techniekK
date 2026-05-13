@@ -189,6 +189,8 @@ export default function Header() {
                   {item.isHash ? (
                     <button
                       onClick={() => setDropdownOpen((p) => !p)}
+                      aria-expanded={dropdownOpen}
+                      aria-haspopup="true"
                       className={`px-4 xl:px-5 py-1.5 xl:py-2 text-[0.8125rem] xl:text-[0.875rem] font-bold uppercase tracking-wide rounded-full transition-all flex items-center gap-1.5 whitespace-nowrap ${
                         isActive(item.href) || dropdownOpen ? "bg-white text-brand shadow-sm" : "text-ink hover:bg-ink/5"
                       }`}
@@ -208,7 +210,7 @@ export default function Header() {
                   )}
 
                   {item.isHash && dropdownOpen && (
-                    <div className="absolute top-full left-0 mt-4 w-[580px] xl:w-[620px] max-w-[calc(100vw-8rem)] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden animate-dropdown-in z-50">
+                    <div role="menu" className="absolute top-full left-0 mt-4 w-[580px] xl:w-[620px] max-w-[calc(100vw-8rem)] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden animate-dropdown-in z-50">
                       <div className="p-6 grid grid-cols-2 gap-2">
                         {mergedServices.map((service) => (
                           <Link
@@ -252,6 +254,7 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={language === "nl" ? "Zoeken..." : "Search..."}
+                  aria-label={language === "nl" ? "Zoeken" : "Search"}
                   className="bg-transparent border-none text-[0.8125rem] px-2.5 focus:ring-0 w-full text-ink placeholder:text-muted/40"
                 />
                 {searchQuery && (
@@ -300,7 +303,7 @@ export default function Header() {
 
               {/* Search Results */}
               {showResults && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] xl:w-[560px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
+                <div role="listbox" aria-label={language === "nl" ? "Zoekresultaten" : "Search results"} className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] xl:w-[560px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
                   <div className="p-5 max-h-[520px] overflow-y-auto">
                     {!hasResults ? (
                       <div className="p-8 text-center text-muted">Geen resultaten gevonden.</div>
@@ -370,6 +373,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
+                aria-label={language === "nl" ? "Zoeken" : "Search"}
                 className="flex-1 h-12 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
               />
             </div>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { projectImages } from "@/lib/data";
-import Reveal from "../components/Reveal";
+import Reveal from "../_ui/Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function TrustStrip() {
@@ -18,14 +18,14 @@ export default function TrustStrip() {
   }));
 
   return (
-    <section className="relative py-24 lg:py-32 bg-base overflow-hidden">
+    <section className="relative py-24 lg:py-32 bg-bg overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="flex items-center gap-3 mb-6">
           <Reveal>
             <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
           </Reveal>
           <Reveal delay={60}>
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted">{t.sections.trust.label}</span>
+            <span className="text-label text-muted">{t.sections.trust.label}</span>
           </Reveal>
         </div>
 
@@ -48,7 +48,7 @@ export default function TrustStrip() {
                       <h3 className="text-xl font-bold mb-2 text-ink group-hover:text-brand transition-colors duration-300">
                         {reason.title}
                       </h3>
-                      <p className="text-[15px] text-muted max-w-[40ch] leading-relaxed">
+                      <p className="text-sm text-muted max-w-[40ch] leading-relaxed">
                         {reason.description}
                       </p>
                     </div>

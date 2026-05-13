@@ -2,7 +2,7 @@
 
 @theme inline {
   /* OKLCH Color Palette - tinted toward hue 240 */
-  --color-base:        #f8fafc; /* 98% 0.004 240 - Pearled cool off-white */
+  --color-bg:          #f8fafc; /* 98% 0.004 240 - Pearled cool off-white */
   --color-concrete:     #f1f5f9; /* 95% 0.010 240 - Section alternate background */
   --color-surface:     #ffffff; /* 100% — Card / panel surface, lifts above section backgrounds */
   --color-mist:        #e2e8f0; /* 90% 0.018 240 - Layered shelf surface */
@@ -27,7 +27,6 @@
 
 /* Custom utility classes */
 .text-border { color: var(--color-hairline); }
-.bg-elevated { background: var(--color-elevated); }
 .border-border { border-color: var(--color-hairline); }
 .bg-surface { background: var(--color-surface); }
 .bg-concrete { background: var(--color-concrete); }
@@ -90,6 +89,14 @@ body::before {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.6875rem;
+}
+
+.text-micro {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.625rem;
 }
 
 .text-technical {
@@ -264,9 +271,10 @@ body::before {
 }
 
 /* ── Scrollbar ── */
+* { scrollbar-width: thin; scrollbar-color: var(--color-hairline) var(--color-surface); }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-surface); }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--color-hairline); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 
 /* ── Reveal animations ── */

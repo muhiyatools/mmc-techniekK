@@ -65,7 +65,7 @@ function ImageUpload({ value, onChange, label }: { value: string | null | undefi
   const safeValue = value ?? "";
   return (
     <div>
-      <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">{label}</label>
+      <label className="block text-label text-muted mb-2">{label}</label>
       <div className="flex items-start gap-3">
         <input
           type="text" value={safeValue} onChange={(e) => onChange(e.target.value)}
@@ -100,11 +100,11 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
   const [pw, setPw] = useState("");
   const [error, setError] = useState(false);
   return (
-    <div className="min-h-screen bg-base flex items-center justify-center px-6">
+    <div className="min-h-screen bg-bg flex items-center justify-center px-6">
       <div className="w-full max-w-sm bg-white border border-hairline rounded-2xl p-8 shadow-sm">
         <div className="flex items-center gap-2.5 mb-6">
           <span className="w-2 h-2 rounded-full bg-brand" />
-          <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">MMC Admin</span>
+          <span className="text-label text-muted">MMC Admin</span>
         </div>
         <h1 className="font-display font-extrabold text-2xl text-ink mb-2 leading-tight">Inloggen</h1>
         <p className="text-sm text-muted mb-6">Voer het admin wachtwoord in.</p>
@@ -174,7 +174,7 @@ function StatsBar({ store }: { store: AdminStore }) {
 function Drawer({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[60] flex">
+    <div className="fixed inset-0 z-[60] flex" role="dialog" aria-modal="true" aria-label={title}>
       <button className="absolute inset-0 bg-ink/60" onClick={onClose} aria-label="Sluit" />
       <div className="relative ml-auto w-full max-w-lg bg-white h-full overflow-y-auto shadow-2xl flex flex-col">
         <div className="sticky top-0 bg-white border-b border-hairline px-6 py-4 flex items-center justify-between shrink-0 z-10">
@@ -239,22 +239,22 @@ function ProductEditForm({
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Productnaam *</label>
+          <label className="block text-label text-muted mb-2">Productnaam *</label>
           <input type="text" value={form.name} onChange={(e) => update("name", e.target.value)} className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
         </div>
         <div>
-          <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Merk *</label>
+          <label className="block text-label text-muted mb-2">Merk *</label>
           <input type="text" value={form.brand} onChange={(e) => update("brand", e.target.value)} className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Prijs</label>
+          <label className="block text-label text-muted mb-2">Prijs</label>
           <input type="text" value={form.price ?? ""} onChange={(e) => update("price", e.target.value || null)} placeholder="€2.800 - €5.000" className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
         </div>
         <div>
-          <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Dienst</label>
+          <label className="block text-label text-muted mb-2">Dienst</label>
           <select value={form.categoryId} onChange={(e) => update("categoryId", e.target.value)} className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all">
             {baseServices.map((s) => <option key={s.slug} value={s.slug}>{s.title}</option>)}
           </select>
@@ -264,12 +264,12 @@ function ProductEditForm({
       <ImageUpload label="Productafbeelding" value={form.image} onChange={(url) => update("image", url)} />
 
       <div>
-        <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Beschrijving</label>
+        <label className="block text-label text-muted mb-2">Beschrijving</label>
         <textarea value={form.description} onChange={(e) => update("description", e.target.value)} rows={4} className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none" />
       </div>
 
       <div>
-        <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Specificaties</label>
+        <label className="block text-label text-muted mb-2">Specificaties</label>
         <div className="flex gap-2 mb-3">
           <input type="text" value={specInput} onChange={(e) => setSpecInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (specInput.trim()) { update("techSpecs", [...form.techSpecs, specInput.trim()]); setSpecInput(""); } } }} placeholder="Spec toevoegen..." className="flex-1 px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
           <button onClick={() => { if (specInput.trim()) { update("techSpecs", [...form.techSpecs, specInput.trim()]); setSpecInput(""); } }} className="px-4 py-2.5 bg-concrete text-ink text-xs font-bold rounded-xl border border-hairline hover:border-brand hover:text-brand transition-colors">+</button>
@@ -375,11 +375,11 @@ function ProductsTab({ store, setStore, toast }: { store: AdminStore; setStore: 
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-hairline bg-concrete/40">
-                <th className="px-5 py-3 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted">Product</th>
-                <th className="px-5 py-3 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted">Merk</th>
-                <th className="px-5 py-3 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted">Dienst</th>
-                <th className="px-5 py-3 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted">Prijs</th>
-                <th className="px-5 py-3 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted text-right">Acties</th>
+                <th className="px-5 py-3 text-label text-muted">Product</th>
+                <th className="px-5 py-3 text-label text-muted">Merk</th>
+                <th className="px-5 py-3 text-label text-muted">Dienst</th>
+                <th className="px-5 py-3 text-label text-muted">Prijs</th>
+                <th className="px-5 py-3 text-label text-muted text-right">Acties</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">
@@ -471,7 +471,7 @@ function BrandsTab({ store, setStore, toast }: { store: AdminStore; setStore: (s
         <h3 className="text-sm font-bold text-ink mb-4">Merk toevoegen</h3>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           <div className="lg:col-span-1">
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Merknaam</label>
+            <label className="block text-label text-muted mb-2">Merknaam</label>
             <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="bijv. Samsung" className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
           </div>
           <div className="lg:col-span-2">
@@ -544,17 +544,17 @@ function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="space-y-5">
           <div>
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Dienst *</label>
+            <label className="block text-label text-muted mb-2">Dienst *</label>
             <select value={serviceSlug} onChange={(e) => setServiceSlug(e.target.value)} className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all">
               {baseServices.map((s) => <option key={s.slug} value={s.slug}>{s.title}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Productnaam *</label>
+            <label className="block text-label text-muted mb-2">Productnaam *</label>
             <input type="text" value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="bijv. LG Artcool Gallery" className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
           </div>
           <div>
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Merk *</label>
+            <label className="block text-label text-muted mb-2">Merk *</label>
             {newBrandMode ? (
               <div className="flex items-center gap-2">
                 <input type="text" value={form.brand} onChange={(e) => update("brand", e.target.value)} placeholder="Nieuw merk..." autoFocus className="flex-1 px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
@@ -571,21 +571,21 @@ function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore
             )}
           </div>
           <div>
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Prijs</label>
+            <label className="block text-label text-muted mb-2">Prijs</label>
             <input type="text" value={form.price ?? ""} onChange={(e) => update("price", e.target.value || null)} placeholder="€2.800 - €5.000" className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
           </div>
         </div>
         <div className="space-y-5">
           <ImageUpload label="Productafbeelding" value={form.image} onChange={(url) => update("image", url)} />
           <div>
-            <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Beschrijving</label>
+            <label className="block text-label text-muted mb-2">Beschrijving</label>
             <textarea value={form.description} onChange={(e) => update("description", e.target.value)} rows={4} placeholder="Korte productbeschrijving..." className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none" />
           </div>
         </div>
       </div>
 
       <div className="border-t border-hairline pt-5">
-        <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-muted mb-2">Specificaties</label>
+        <label className="block text-label text-muted mb-2">Specificaties</label>
         <div className="flex gap-2 mb-3">
           <input type="text" value={specInput} onChange={(e) => setSpecInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (specInput.trim()) { update("techSpecs", [...form.techSpecs, specInput.trim()]); setSpecInput(""); } } }} placeholder="Voeg specificatie toe..." className="flex-1 px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" />
           <button onClick={() => { if (specInput.trim()) { update("techSpecs", [...form.techSpecs, specInput.trim()]); setSpecInput(""); } }} className="px-4 py-2.5 bg-concrete text-ink text-xs font-bold rounded-xl border border-hairline hover:border-brand hover:text-brand transition-colors">+</button>
@@ -639,7 +639,7 @@ export default function AdminPage() {
   if (!authed) return <LoginScreen onLogin={handleLogin} />;
 
   return (
-    <div className="min-h-screen bg-base">
+    <div className="min-h-screen bg-bg">
       <ToastContainer toasts={toasts} />
 
       <div className="bg-white border-b border-hairline sticky top-0 z-40">
@@ -647,7 +647,7 @@ export default function AdminPage() {
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">MMC Admin Dashboard</span>
+              <span className="text-label text-muted">MMC Admin Dashboard</span>
             </div>
             <button onClick={() => { sessionStorage.removeItem("mmc_admin_authed"); setAuthed(false); }} className="text-xs font-bold text-muted hover:text-ink transition-colors px-3 py-1.5 rounded-lg hover:bg-concrete">Uitloggen</button>
           </div>

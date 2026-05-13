@@ -44,7 +44,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-base py-20 lg:py-28">
+      <section className="bg-bg py-20 lg:py-28">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
             <div>

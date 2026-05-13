@@ -8,7 +8,7 @@ export default function HeroSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative h-screen min-h-[700px] flex flex-col overflow-hidden bg-base">
+    <section className="relative h-screen min-h-[700px] flex flex-col overflow-hidden bg-bg">
       <div className="absolute inset-0 z-0">
         <Image 
           src="/images/background.avif" 

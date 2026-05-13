@@ -18,6 +18,7 @@ export default function Reveal({
   threshold = 0.15,
 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -27,7 +28,7 @@ export default function Reveal({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => {
+            timerRef.current = setTimeout(() => {
               el.classList.add("revealed");
             }, delay);
             observer.unobserve(el);
@@ -38,7 +39,10 @@ export default function Reveal({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [delay, threshold]);
 
   const baseClass =

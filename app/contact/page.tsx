@@ -7,7 +7,7 @@ import Link from "next/link";
 import { contactInfo, services as baseServices, testimonials, certifications, type Service } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
 import { fetchAdminStore, mergeServices } from "@/lib/adminStore";
-import Reveal from "../components/Reveal";
+import Reveal from "../_ui/Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { resolveProductImage } from "@/lib/images";
 
@@ -101,7 +101,7 @@ function ContactForm() {
   return (
     <>
       {/* Immersive Header */}
-      <section className="pt-[120px] lg:pt-[180px] pb-12 bg-base relative overflow-hidden">
+      <section className="pt-[120px] lg:pt-[180px] pb-12 bg-bg relative overflow-hidden">
         {/* Decorative mesh */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
         
@@ -145,7 +145,7 @@ function ContactForm() {
       </section>
 
       {/* Main Content */}
-      <section className="pb-32 bg-base">
+      <section className="pb-32 bg-bg">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-12 gap-16 items-start">
             
@@ -474,7 +474,7 @@ function ContactForm() {
 
 export default function ContactPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-base" />}>
+    <Suspense fallback={<div className="min-h-screen bg-bg" />}>
       <ContactForm />
     </Suspense>
   );

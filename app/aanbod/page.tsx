@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from "react";
+import { useState, useMemo, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { services as baseServices, brandImages as baseBrandImages, type Service, type Product } from "@/lib/data";
 import { fetchAdminStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
-import Reveal from "../components/Reveal";
-import BrandLogo from "../components/BrandLogo";
+import Reveal from "../_ui/Reveal";
+import BrandLogo from "../_ui/BrandLogo";
 import { resolveProductImage } from "@/lib/images";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
@@ -56,61 +56,8 @@ const serviceIcons: Record<string, React.ReactNode> = {
   ),
 };
 
-// ── Price slider ──
-const SLIDER_MIN = 0;
-const SLIDER_MAX = 20000;
-const SLIDER_STEP = 500;
-
-function PriceRangeSlider({ value, onChange }: { value: [number, number]; onChange: (v: [number, number]) => void }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState<"min" | "max" | null>(null);
-
-  const getPct = (v: number) => ((v - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
-  const getVal = (clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return SLIDER_MIN;
-    const rect = el.getBoundingClientRect();
-    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    return Math.round((SLIDER_MIN + pct * (SLIDER_MAX - SLIDER_MIN)) / SLIDER_STEP) * SLIDER_STEP;
-  };
-
-  useEffect(() => {
-    if (!dragging) return;
-    const move = (e: MouseEvent) => {
-      const raw = getVal(e.clientX);
-      if (dragging === "min") onChange([Math.min(raw, value[1] - SLIDER_STEP), value[1]]);
-      else onChange([value[0], Math.max(raw, value[0] + SLIDER_STEP)]);
-    };
-    const up = () => setDragging(null);
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", up);
-    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); };
-  }, [dragging, value, onChange]);
-
-  const fmt = (n: number) => n >= 1000 ? `€${(n / 1000).toFixed(0)}k` : `€${n}`;
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-bold text-ink tabular-nums">{fmt(value[0])}</span>
-        <span className="text-xs font-bold text-ink tabular-nums">{fmt(value[1])}</span>
-      </div>
-      <div ref={trackRef} className="relative h-2 bg-hairline rounded-full cursor-pointer">
-        <div className="absolute top-0 h-full bg-brand rounded-full" style={{ left: `${getPct(value[0])}%`, right: `${100 - getPct(value[1])}%` }} />
-        <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-brand border-2 border-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
-          style={{ left: `${getPct(value[0])}%` }}
-          onMouseDown={(e) => { e.preventDefault(); setDragging("min"); }}
-        />
-        <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-brand border-2 border-white rounded-full shadow cursor-pointer hover:scale-110 transition-transform"
-          style={{ left: `${getPct(value[1])}%` }}
-          onMouseDown={(e) => { e.preventDefault(); setDragging("max"); }}
-        />
-      </div>
-    </div>
-  );
-}
+import PriceRangeSlider, { SLIDER_MIN, SLIDER_MAX, SLIDER_STEP } from "./_components/PriceRangeSlider";
+import ProductCard from "./_components/ProductCard";
 
 // ── Sidebar ──
 function Sidebar({
@@ -143,7 +90,7 @@ function Sidebar({
   return (
     <div>
       <div className="mb-6">
-        <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.sidebar.categories}</p>
+        <p className="text-label text-muted mb-3">{t.pages.aanbod.sidebar.categories}</p>
         <ul className="space-y-0.5">
           {baseServices.map((service) => (
             <li key={service.slug}>
@@ -175,13 +122,13 @@ function Sidebar({
           <div className="h-px bg-hairline mb-6" />
 
           <div className="mb-6">
-            <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.priceRange}</p>
+            <p className="text-label text-muted mb-3">{t.pages.aanbod.priceRange}</p>
             <PriceRangeSlider value={priceRange} onChange={onPriceChange} />
           </div>
 
           {brands.length > 0 && (
             <div className="mb-4">
-              <p className="text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-muted mb-3">{t.pages.aanbod.sidebar.manufacturer}</p>
+              <p className="text-label text-muted mb-3">{t.pages.aanbod.sidebar.manufacturer}</p>
               <div className="space-y-2">
                 {brands.map((brand) => {
                   const active = selectedBrands.includes(brand);
@@ -229,12 +176,12 @@ function AanbodContent() {
     const map: Record<string, string> = {};
     baseServices.forEach((s, i) => { map[s.slug] = t.sections.services.items[i]?.title || s.title; });
     return map;
-  }, []);
+  }, [t]);
   const serviceCaptionMap = useMemo(() => {
     const map: Record<string, string> = {};
     baseServices.forEach((s, i) => { map[s.slug] = t.sections.services.items[i]?.caption || s.caption; });
     return map;
-  }, []);
+  }, [t]);
   const searchParams = useSearchParams();
   const initialDienst = searchParams.get("dienst");
 
@@ -301,12 +248,12 @@ function AanbodContent() {
   return (
     <>
       {/* Hero */}
-      <section className="pt-[70px] lg:pt-[114px] bg-base border-b border-hairline">
+      <section className="pt-[70px] lg:pt-[114px] bg-bg border-b border-hairline">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-8 lg:py-10">
           <Reveal>
             <div className="flex items-center gap-2.5 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted">{t.pages.aanbod.label}</span>
+              <span className="text-label text-muted">{t.pages.aanbod.label}</span>
             </div>
           </Reveal>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -324,7 +271,7 @@ function AanbodContent() {
         </div>
       </section>
 
-      <div className="bg-base">
+      <div className="bg-bg">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 instrument-layout">
           {/* Refined Sidebar */}
           <aside className="hidden lg:block">
@@ -348,7 +295,7 @@ function AanbodContent() {
               <div className="h-px bg-hairline mb-10" />
 
               <div className="mb-10">
-                <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">{t.pages.aanbod.sidebar.budgetRange}</p>
+                <p className="text-micro text-muted mb-4">{t.pages.aanbod.sidebar.budgetRange}</p>
                 {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
                 {!showFilters && (
                   <div className="flex items-center gap-4 text-xs font-bold text-ink mb-2">
@@ -363,13 +310,13 @@ function AanbodContent() {
 
               {availableBrands.length > 0 && (
                 <div>
-                  <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-4">{t.pages.aanbod.sidebar.manufacturer}</p>
+                  <p className="text-micro text-muted mb-4">{t.pages.aanbod.sidebar.manufacturer}</p>
                   <div className="flex flex-wrap gap-2">
                     {availableBrands.map(brand => (
                       <button 
                         key={brand}
                         onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])}
-                        className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border transition-all duration-200 flex items-center gap-1.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand' : 'bg-concrete text-muted border-transparent hover:bg-brand/10 hover:text-brand'}`}
+                        className={`px-3 py-1.5 text-micro tracking-wider rounded-lg border transition-all duration-200 flex items-center gap-1.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand' : 'bg-concrete text-muted border-transparent hover:bg-brand/10 hover:text-brand'}`}
                       >
                         <BrandLogo brand={brand} imageSrc={brandImages[brand] ?? ""} height={14} />
                       </button>
@@ -388,12 +335,12 @@ function AanbodContent() {
                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-16 -mt-16 blur-3xl" />
                   <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                      <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-muted mb-1">{serviceTitleMap[activeService.slug]}</p>
+                      <p className="text-micro text-muted mb-1">{serviceTitleMap[activeService.slug]}</p>
                       <h2 className="font-display font-bold text-3xl lg:text-4xl text-ink leading-tight tracking-tight uppercase">
                         {serviceCaptionMap[activeService.slug]}
                       </h2>
                     </div>
-                    <Link href={`/contact?service=${activeService.slug}`} className="px-6 py-3 bg-ink text-base text-[0.6875rem] font-bold uppercase tracking-[0.18em] rounded-full hover:bg-brand transition-colors text-center">
+                    <Link href={`/contact?service=${activeService.slug}`} className="px-6 py-3 bg-ink text-label text-white rounded-full hover:bg-brand transition-colors text-center">
                       {t.pages.aanbod.requestQuote}
                     </Link>
                   </div>
@@ -416,55 +363,14 @@ function AanbodContent() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredProducts.map((product, i) => (
-                    <Link
+                    <ProductCard
                       key={i}
-                      href={`/contact?product=${encodeURIComponent(product.name)}&service=${activeService.slug}`}
-                      className="product-card-v1 rounded-lg overflow-hidden group cursor-pointer block"
-                    >
-                      <div className="relative aspect-[16/10] bg-concrete">
-                        <Image src={resolveProductImage(product.image)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="absolute top-4 left-4 pointer-events-none">
-                          <div className="bg-surface/90 px-2.5 py-1.5 rounded-lg border border-hairline shadow-sm">
-                            <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={16} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <div className="flex items-start justify-between gap-4 mb-3">
-                          <h4 className="font-display font-bold text-lg text-ink uppercase tracking-tight group-hover:text-brand transition-colors">
-                            {product.name}
-                          </h4>
-                          <span className="shrink-0 text-base font-bold text-ink tabular-nums leading-none pt-0.5">
-                            {product.price || 'P.O.A.'}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted leading-relaxed mb-5 line-clamp-2">{product.description}</p>
-
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-6 pb-6 border-b border-hairline">
-                          {product.techSpecs.slice(0, 4).map((spec, idx) => (
-                            <div key={idx} className="flex items-center gap-2.5">
-                              <div className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
-                                <svg className="w-2.5 h-2.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                </svg>
-                              </div>
-                              <span className="text-[11px] font-semibold text-ink leading-tight">{spec}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-brand uppercase tracking-wider">
-                            <span>{t.pages.aanbod.requestQuote}</span>
-                            <svg className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                          </div>
-                          <span className="text-[9px] font-bold text-muted/60 uppercase tracking-wider">{t.pages.aanbod.todayQuote}</span>
-                        </div>
-                      </div>
-                    </Link>
+                      product={product}
+                      serviceSlug={activeService.slug}
+                      brandImages={brandImages}
+                      requestQuoteLabel={t.pages.aanbod.requestQuote}
+                      todayQuoteLabel={t.pages.aanbod.todayQuote}
+                    />
                   ))}
                 </div>
               </>
@@ -475,7 +381,7 @@ function AanbodContent() {
                     <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink/90 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-6">
-                      <p className="text-[0.625rem] font-bold uppercase tracking-[0.24em] text-brand mb-1">{t.pages.aanbod.dienst}</p>
+                      <p className="text-micro text-brand mb-1">{t.pages.aanbod.dienst}</p>
                       <h3 className="font-display font-bold text-xl text-white uppercase tracking-tight">{serviceTitleMap[service.slug]}</h3>
                     </div>
                   </button>

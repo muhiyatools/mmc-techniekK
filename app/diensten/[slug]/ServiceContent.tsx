@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { services, contactInfo, brandImages } from "@/lib/data";
-import Reveal from "../../components/Reveal";
-import BrandLogo from "../../components/BrandLogo";
+import Reveal from "../../_ui/Reveal";
+import BrandLogo from "../../_ui/BrandLogo";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function ServiceContent({ slug }: { slug: string }) {
@@ -138,7 +138,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
         </section>
       )}
 
-      <section className="py-14 lg:py-20 bg-base">
+      <section className="py-14 lg:py-20 bg-bg">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
             <div className="mb-10">
