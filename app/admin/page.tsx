@@ -371,7 +371,34 @@ function ProductsTab({ store, setStore, toast }: { store: AdminStore; setStore: 
       </div>
 
       <div className="bg-white border border-hairline rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-hairline">
+          {filtered.map((item, idx) => (
+            <div key={`mob-${item.source}-${item.serviceSlug}-${item.product.name}-${idx}`} className="flex items-center gap-3 px-4 py-3.5">
+              <div className="w-12 h-12 rounded-lg overflow-hidden border border-hairline bg-white shrink-0">
+                <img src={item.product.image} alt="" className="w-full h-full object-cover" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-ink truncate">{item.product.name}</p>
+                <p className="text-xs text-muted truncate">{item.product.brand} · {serviceTitle(item.serviceSlug)}</p>
+                <p className="text-xs font-semibold text-brand mt-0.5">{item.product.price ?? "Op aanvraag"}</p>
+              </div>
+              <button
+                onClick={() => setEditItem(item)}
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-brand/20 text-brand hover:bg-brand/10 transition-colors"
+                aria-label="Bewerk"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+              </button>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <div className="px-4 py-12 text-center text-sm text-muted">Geen producten gevonden.</div>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-hairline bg-concrete/40">

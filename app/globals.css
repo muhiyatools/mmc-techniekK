@@ -602,3 +602,7 @@ section {
 /* Mobile header hide/show */
 .header-hidden  { transform: translateY(-100%); }
 .header-visible { transform: translateY(0); }
+
+/* WhatsApp float — sits above bottom nav on mobile, normal on desktop */
+.wa-float { bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 0.75rem); }
+@media (min-width: 768px) { .wa-float { bottom: 1.5rem; } }
