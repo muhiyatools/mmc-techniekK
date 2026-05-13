@@ -8,44 +8,98 @@ export default function HeroSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative h-screen min-h-[700px] flex flex-col overflow-hidden bg-bg">
+    <section className="relative flex flex-col overflow-hidden bg-bg h-85dvh md:h-screen md:min-h-[700px]">
+      {/* Background image */}
       <div className="absolute inset-0 z-0">
-        <Image 
-          src="/images/background.avif" 
-          alt="MMC Techniek" 
-          fill 
-          className="object-cover scale-105 grayscale-[0.2] opacity-40" 
-          priority 
+        <Image
+          src="/images/background.avif"
+          alt="MMC Techniek"
+          fill
+          sizes="100vw"
+          className="object-cover object-center scale-105 grayscale-[0.2] opacity-40"
+          priority
         />
-        <div 
-          className="absolute inset-0"
+        {/* Aurora overlay — disabled on touch via CSS */}
+        <div
+          className="absolute inset-0 aurora-bg-anim"
           style={{
-            background: "linear-gradient(135deg, color-mix(in oklch, var(--color-aurora-1) 12%, transparent) 0%, color-mix(in oklch, var(--color-brand) 20%, transparent) 40%, color-mix(in oklch, var(--color-aurora-2) 10%, transparent) 70%, transparent 100%)",
+            background:
+              "linear-gradient(135deg, color-mix(in oklch, var(--color-aurora-1) 12%, transparent) 0%, color-mix(in oklch, var(--color-brand) 20%, transparent) 40%, color-mix(in oklch, var(--color-aurora-2) 10%, transparent) 70%, transparent 100%)",
             backgroundSize: "200% 200%",
             animation: "aurora-sweep 14s linear infinite",
           }}
         />
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-[76px] lg:pt-[80px]">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 w-full">
-          <div className="flex flex-col items-center text-center gap-8">
-            <h1 
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center pt-[60px] md:pt-[76px] lg:pt-[80px] px-5 md:px-12">
+        <div className="w-full max-w-[1440px] mx-auto">
+
+          {/* Mobile layout */}
+          <div className="md:hidden flex flex-col items-center text-center gap-6">
+            {/* Region badge */}
+            <span className="text-label text-muted/70 tracking-widest">
+              {t.hero.region}
+            </span>
+
+            {/* Headline */}
+            <h1
+              className="font-display font-extrabold leading-[0.84] tracking-[-0.02em] text-brand m-0"
+              style={{ fontSize: "clamp(3rem, 16vw, 5.5rem)" }}
+            >
+              {t.hero.titleParts[0]}{" "}
+              {t.hero.titleParts[1]}{" "}
+              {t.hero.titleParts[2]}
+            </h1>
+
+            {/* Subline */}
+            <p className="text-copy/80 text-sm leading-relaxed max-w-[280px]">
+              {t.hero.description}
+            </p>
+
+            {/* Full-width CTA */}
+            <Link
+              href="/contact/"
+              className="w-full max-w-[320px] flex items-center justify-center gap-2 px-6 py-4 bg-brand text-white text-sm font-extrabold uppercase tracking-[0.16em] rounded-full hover:bg-brand-deep transition-colors"
+            >
+              <span>{t.hero.ctaStart}</span>
+              <span aria-hidden="true">&#x2192;</span>
+            </Link>
+
+            {/* Trust pills */}
+            <div className="flex items-center gap-3 flex-wrap justify-center mt-1">
+              {(["NEN-3140", "VCA", "16+ jaar"] as const).map((badge) => (
+                <span key={badge} className="text-micro text-muted/60 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full border border-hairline/50">
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop layout (unchanged) */}
+          <div className="hidden md:flex flex-col items-center text-center gap-8">
+            <h1
               className="font-display font-extrabold leading-[0.82] tracking-[-0.02em] text-brand m-0"
               style={{ fontSize: "clamp(3.5rem, 14vw, 12rem)" }}
             >
-              <span>{t.hero.titleParts[0]} {t.hero.titleParts[1]} {t.hero.titleParts[2]}</span>
+              <span>
+                {t.hero.titleParts[0]} {t.hero.titleParts[1]}{" "}
+                {t.hero.titleParts[2]}
+              </span>
             </h1>
-            <Link 
-              href="/contact/" 
-              className="inline-flex items-center gap-3 px-11 py-4 bg-brand text-base text-xs font-bold uppercase tracking-[0.18em] rounded-full no-underline hover:bg-brand-deep hover:-translate-y-0.5 transition-all duration-300"
+            <Link
+              href="/contact/"
+              className="inline-flex items-center gap-3 px-11 py-4 bg-brand text-white text-xs font-bold uppercase tracking-[0.18em] rounded-full hover:bg-brand-deep hover:-translate-y-0.5 transition-all duration-300"
             >
               <span>{t.hero.ctaStart}</span>
-              <span>→</span>
+              <span aria-hidden="true">&#x2192;</span>
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg to-transparent z-10 pointer-events-none" />
     </section>
   );
 }

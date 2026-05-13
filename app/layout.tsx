@@ -62,6 +62,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#42a8f2",
 };
 
@@ -78,7 +79,7 @@ export default function RootLayout({
         </a>
         <LanguageProvider>
           <Header />
-          <main id="main-content" className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1 animate-[fadeIn_400ms_ease-out] md:pb-0 pb-nav">{children}</main>
           <Footer />
           <ScrollToTop />
           <WhatsAppButton />

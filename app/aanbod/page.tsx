@@ -356,9 +356,21 @@ function AanbodContent() {
                       {t.pages.aanbod.selectedCriteria}
                     </p>
                   </div>
-                  <p className="text-[10px] text-muted font-medium hidden sm:block">
-                    {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setMobileFilterOpen(true)}
+                      className="lg:hidden flex items-center gap-1.5 px-3.5 py-2.5 border border-hairline rounded-full text-[10px] font-bold text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors"
+                      aria-label={t.pages.aanbod.filterTitle}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                      </svg>
+                      {t.pages.aanbod.filterTitle}
+                    </button>
+                    <p className="text-[10px] text-muted font-medium hidden sm:block">
+                      {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
+                    </p>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

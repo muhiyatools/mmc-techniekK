@@ -49,7 +49,7 @@ export default function FAQPage() {
               value={search}
               onChange={(e) => { setSearch(e.target.value); setOpenIndex(null); }}
               placeholder={language === "nl" ? "Zoek in vragen..." : "Search questions..."}
-              className="w-full h-10 pl-10 pr-4 text-sm bg-surface border border-hairline rounded-full focus:outline-none focus:border-brand focus:ring-0 transition-colors"
+              className="w-full h-11 pl-10 pr-4 text-sm bg-surface border border-hairline rounded-full focus:outline-none focus:border-brand focus:ring-0 transition-colors"
               style={{ color: "#0f172a" }}
             />
           </div>
@@ -116,7 +116,7 @@ export default function FAQPage() {
                 <div className="flex gap-3 shrink-0">
                   <a
                     href={`tel:${contactInfo.phone}`}
-                    className="px-5 py-2.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
+                    className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
                     style={{ background: "#0f172a", color: "#fff" }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = "#42a8f2" }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a" }}
@@ -125,7 +125,7 @@ export default function FAQPage() {
                   </a>
                   <Link
                     href="/contact/"
-                    className="px-5 py-2.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
+                    className="px-5 py-3 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors"
                     style={{ border: "1px solid #0f172a", color: "#0f172a" }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#42a8f2"; e.currentTarget.style.color = "#42a8f2" }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#0f172a"; e.currentTarget.style.color = "#0f172a" }}

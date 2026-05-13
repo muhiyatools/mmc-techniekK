@@ -7,7 +7,6 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: TranslationKey;
-  dir: "ltr" | "rtl";
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -17,7 +16,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("language") as Language;
-    if (saved && (saved === "nl" || saved === "en" || saved === "ar")) {
+    if (saved === "nl" || saved === "en") {
       setLanguageState(saved);
     }
   }, []);
@@ -25,16 +24,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("language", lang);
-    const langMap = { nl: "nl-NL", en: "en-GB", ar: "ar-SA" };
+    const langMap: Record<Language, string> = { nl: "nl-NL", en: "en-GB" };
     document.documentElement.lang = langMap[lang];
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = "ltr";
   };
 
   const value = {
     language,
     setLanguage,
     t: translations[language],
-    dir: translations[language].dir as "ltr" | "rtl",
   };
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

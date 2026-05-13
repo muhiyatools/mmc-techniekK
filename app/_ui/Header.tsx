@@ -7,9 +7,10 @@ import { usePathname } from "next/navigation";
 import { contactInfo, services, brandImages, certifications } from "@/lib/data";
 import { getLocalStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
 import type { Service } from "@/lib/data";
-import TrustBar from "./TrustBar";
+import BottomNav from "./BottomNav";
+import MobileSheet from "./MobileSheet";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { resolveProductImage } from "@/lib/images";
+import { useScrollDirection } from "../_hooks/useScrollDirection";
 
 const serviceIcons: Record<string, React.ReactNode> = {
   airconditioning: (
@@ -24,7 +25,7 @@ const serviceIcons: Record<string, React.ReactNode> = {
   ),
   batterijopslag: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-1.5a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 14.25v1.5A2.25 2.25 0 003.75 18zM3.75 6h15A2.25 2.25 0 0121 8.25v1.5a2.25 2.25 0 01-2.25 2.25h-15A2.25 2.25 0 011.5 9.75v-1.5A2.25 2.25 0 013.75 6z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-1.5a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 14.25v1.5A2.25 2.25 0 003.75 18zM3.75 6h15A2.25 2.25 0 0021 8.25v1.5a2.25 2.25 0 01-2.25 2.25h-15A2.25 2.25 0 011.5 9.75v-1.5A2.25 2.25 0 013.75 6z" />
     </svg>
   ),
   warmtepompen: (
@@ -79,24 +80,23 @@ const FlagEN = () => (
 );
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [scrolled, setScrolled] = useState(false);
+  const [moreSheetOpen, setMoreSheetOpen] = useState(false);
   const [mergedServices, setMergedServices] = useState<Service[]>(services);
   const [mergedBrandImages, setMergedBrandImages] = useState(brandImages);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
+  const scrollDir = useScrollDirection();
+
   const serviceTitleMap = useMemo(() => {
     const map: Record<string, string> = {};
     services.forEach((s, i) => { map[s.slug] = t.sections.services.items[i]?.title || s.title; });
     return map;
   }, [language]);
 
-  // Load admin store on mount
   useEffect(() => {
     const store = getLocalStore();
     setMergedServices(mergeServices(store));
@@ -106,25 +106,18 @@ export default function Header() {
   const allSearchProducts = useMemo(() => mergedServices.flatMap((s) => s.products), [mergedServices]);
 
   const navItems = [
-    { label: t.nav.home, href: "/" },
-    { label: t.nav.aanbod, href: "/aanbod/", isHash: true },
+    { label: t.nav.home,    href: "/" },
+    { label: t.nav.aanbod,  href: "/aanbod/", isHash: true },
     { label: t.nav.projects, href: "/our-work/" },
-    { label: t.nav.about, href: "/over-ons/" },
-    { label: t.nav.faq, href: "/veelgestelde-vragen/" },
+    { label: t.nav.about,   href: "/over-ons/" },
+    { label: t.nav.faq,     href: "/veelgestelde-vragen/" },
   ];
-
-  // Scroll shadow
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Close everything on navigation
   useEffect(() => {
-    setMenuOpen(false);
     setDropdownOpen(false);
     setSearchQuery("");
+    setMoreSheetOpen(false);
     document.body.style.overflow = "";
   }, [pathname]);
 
@@ -150,7 +143,6 @@ export default function Header() {
     return normalize(pathname) === normalize(href);
   };
 
-  // Search results
   const searchTerm = searchQuery.toLowerCase().trim();
   const showResults = searchTerm.length >= 2;
   const matchedServices = showResults
@@ -174,9 +166,13 @@ export default function Header() {
     setLanguage(language === "nl" ? "en" : "nl");
   };
 
+  // Mobile header hide on scroll-down
+  const mobileHidden = scrollDir === "down";
+
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-50 pointer-events-none">
+      {/* ── Desktop header ── */}
+      <header className="hidden md:block fixed top-0 inset-x-0 z-50 pointer-events-none">
         <div className="w-[95%] lg:w-[92%] xl:w-[90%] mx-auto mt-4 lg:mt-5 pointer-events-auto">
           <div className="relative flex items-center justify-between h-[60px] lg:h-[76px] px-4 lg:px-6 xl:px-8 rounded-full bg-surface border border-hairline shadow-[0_4px_24px_-6px_rgba(15,23,42,0.08)]">
             <Link href="/" className="shrink-0 w-[160px] lg:w-[200px] xl:w-[220px]">
@@ -234,7 +230,7 @@ export default function Header() {
                           {t.nav.aanbod}
                         </Link>
                         <Link href="/contact/" onClick={() => setDropdownOpen(false)} className="text-xs xl:text-sm font-black uppercase tracking-widest text-brand hover:text-brand-deep transition-colors">
-                          {t.nav.requestQuote} →
+                          {t.nav.requestQuote} &rarr;
                         </Link>
                       </div>
                     </div>
@@ -249,7 +245,6 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
-                  ref={searchInputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -270,16 +265,9 @@ export default function Header() {
                 {certifications.map((c) => (
                   <div key={c.name} className="flex items-center gap-1.5 group cursor-default">
                     <div className="relative w-5 h-5">
-                      <Image
-                        src={c.src}
-                        alt={c.name}
-                        fill
-                        className="object-contain brightness-0 opacity-50 group-hover:opacity-80 transition-opacity"
-                      />
+                      <Image src={c.src} alt={c.name} fill className="object-contain brightness-0 opacity-50 group-hover:opacity-80 transition-opacity" />
                     </div>
-                    <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide">
-                      {c.name}
-                    </span>
+                    <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide">{c.name}</span>
                   </div>
                 ))}
                 <div className="w-px h-5 bg-hairline" />
@@ -291,19 +279,10 @@ export default function Header() {
                     {language === "nl" ? "Gratis Advies" : "Free Advice"}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 group cursor-default">
-                  <svg className="w-[18px] h-[18px] text-muted/50 group-hover:text-brand/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20.25 3.75v4.5m0-4.5h-4.5m4.5 0l-6 6m3 12c-8.284 0-15-6.716-15-15V4.5A2.25 2.25 0 014.5 2.25h1.372c.516 0 .966.351 1.091.852l1.106 4.423c.11.44-.054.902-.417 1.173l-1.293.97a1.062 1.062 0 00-.38 1.21 12.035 12.035 0 007.143 7.143c.441.162.928-.004 1.21-.38l.97-1.293a1.125 1.125 0 011.173-.417l4.423 1.106c.5.125.852.575.852 1.091V19.5a2.25 2.25 0 01-2.25 2.25h-2.25z" />
-                  </svg>
-                  <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide whitespace-nowrap">
-                    24/7
-                  </span>
-                </div>
               </div>
 
-              {/* Search Results */}
               {showResults && (
-                <div role="listbox" aria-label={language === "nl" ? "Zoekresultaten" : "Search results"} className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] xl:w-[560px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
+                <div role="listbox" className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] xl:w-[560px] bg-surface border border-hairline rounded-3xl shadow-xl overflow-hidden z-50">
                   <div className="p-5 max-h-[520px] overflow-y-auto">
                     {!hasResults ? (
                       <div className="p-8 text-center text-muted">Geen resultaten gevonden.</div>
@@ -326,152 +305,76 @@ export default function Header() {
               <button onClick={toggleLanguage} className="hidden lg:flex items-center justify-center w-11 h-11 rounded-full hover:bg-ink/5 transition-colors">
                 {language === "nl" ? <FlagEN /> : <FlagNL />}
               </button>
-              <Link href="/contact/" className="h-10 xl:h-11 px-5 xl:px-6 bg-ink text-white text-[0.8125rem] xl:text-[0.875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
+              <Link href="/contact/" className="h-11 xl:h-11 px-5 xl:px-6 bg-ink text-white text-[0.8125rem] xl:text-[0.875rem] font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap">
                 {t.nav.requestQuote}
               </Link>
-              <button
-                onClick={() => {
-                  setMenuOpen((p) => {
-                    const next = !p;
-                    document.body.style.overflow = next ? "hidden" : "";
-                    return next;
-                  });
-                }}
-                className="lg:hidden w-10 h-10 flex items-center justify-center text-ink bg-ink/5 rounded-full"
-                aria-label="Menu"
-              >
-                <div className="relative flex flex-col justify-between w-[18px] h-[14px]">
-                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
-                  <span className={`block h-[2px] bg-current transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-                  <span className={`block h-[2px] bg-current transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
-                </div>
-              </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile overlay */}
-      <div
-        className={`lg:hidden fixed inset-0 z-40 bg-white transition-all duration-300 ${
-          menuOpen
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-2 pointer-events-none"
-        }`}
+      {/* ── Mobile header bar ── */}
+      <header
+        className={`md:hidden fixed top-0 inset-x-0 z-50 bg-surface border-b border-hairline transition-transform duration-300 ${mobileHidden ? "header-hidden" : "header-visible"}`}
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        {/* Mobile search */}
-        <div className="px-6 pt-[88px] pb-4 border-b border-hairline">
-          <div className="relative">
-            <div className="flex items-center border border-hairline rounded-full overflow-hidden bg-concrete">
-              <div className="w-12 h-12 flex items-center justify-center shrink-0 text-muted">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={language === "nl" ? "Zoek diensten of producten..." : "Search services or products..."}
-                aria-label={language === "nl" ? "Zoeken" : "Search"}
-                className="flex-1 h-12 text-sm text-ink placeholder:text-muted/50 bg-transparent focus:outline-none pr-4"
-              />
-            </div>
-
-            {showResults && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-hairline rounded-2xl shadow-xl overflow-hidden z-50">
-                <div className="p-3 max-h-[360px] overflow-y-auto">
-                  {!hasResults ? (
-                    <div className="p-5 text-center text-sm text-muted">{language === "nl" ? "Geen resultaten" : "No results"}</div>
-                  ) : (
-                    <div className="space-y-0.5">
-                      {matchedServices.map(s => (
-                        <Link key={s.slug} href={`/aanbod/?dienst=${s.slug}`} onClick={() => { setSearchQuery(""); setMenuOpen(false); }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-brand/5 transition-all group">
-                          <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand shrink-0">{serviceIcons[s.slug]}</div>
-                          <span className="text-sm font-bold text-ink group-hover:text-brand transition-colors">{s.title}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+        <div className="flex items-center justify-between px-4 h-[60px]">
+          <Link href="/" className="shrink-0">
+            <Image src="/images/logo.png" alt="MMC Techniek B.V." width={160} height={48} className="h-8 w-auto object-contain" priority />
+          </Link>
+          <Link
+            href="/contact/"
+            className="h-9 px-4 bg-ink text-white text-xs font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap"
+          >
+            Offerte
+          </Link>
         </div>
+      </header>
 
-        <nav className="flex flex-col px-6 gap-0">
-          {navItems.map((item) => (
-            <div key={item.href}>
-              {item.isHash ? (
-                <div className="py-5 border-b border-hairline/60">
-                  <Link
-                    href="/aanbod/"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-lg font-bold text-ink mb-4 flex items-center justify-between"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                      {item.label}
-                    </span>
-                    <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                  <div className="pl-4 grid grid-cols-2 gap-1.5">
-                    {mergedServices.map((service) => (
-                      <Link
-                        key={service.slug}
-                        href={`/aanbod/?dienst=${service.slug}`}
-                        onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2 py-2 px-2 rounded-lg text-sm text-muted hover:text-brand hover:bg-brand/5 transition-colors"
-                      >
-                        <span className="text-brand shrink-0">{serviceIcons[service.slug]}</span>
-                        {serviceTitleMap[service.slug]}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <Link
-                  href={item.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`py-5 border-b border-hairline/60 text-xl font-bold block ${
-                    isActive(item.href) ? "text-brand" : "text-ink"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </div>
+      {/* ── Mobile bottom nav ── */}
+      <BottomNav onMoreClick={() => setMoreSheetOpen(true)} />
+
+      {/* ── "Meer" bottom sheet ── */}
+      <MobileSheet open={moreSheetOpen} onClose={() => setMoreSheetOpen(false)} title="Meer">
+        <nav className="flex flex-col gap-1">
+          {[
+            { label: t.nav.about,   href: "/over-ons/" },
+            { label: t.nav.faq,     href: "/veelgestelde-vragen/" },
+            { label: t.nav.contact, href: "/contact/" },
+          ].map(({ label, href }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMoreSheetOpen(false)}
+              className="flex items-center justify-between py-4 border-b border-hairline/60 text-base font-bold text-ink"
+            >
+              {label}
+              <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           ))}
         </nav>
 
-        <div className="px-6 pt-6 space-y-3">
+        <div className="mt-6 space-y-3">
           <a
             href={`tel:${contactInfo.phone}`}
             className="flex items-center justify-center gap-2 w-full py-4 border-2 border-brand text-brand font-bold rounded-full hover:bg-brand hover:text-white transition-all"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.423 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             {contactInfo.phoneDisplay}
           </a>
-          <Link
-            href="/contact/"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center w-full py-4 bg-brand text-white font-bold rounded-full hover:bg-brand-deep transition-colors"
-          >
-            {t.nav.requestQuote}
-          </Link>
           <button
-            onClick={() => { toggleLanguage(); setMenuOpen(false); }}
+            onClick={() => { toggleLanguage(); setMoreSheetOpen(false); }}
             className="flex items-center justify-center gap-3 w-full py-4 border border-hairline text-ink font-bold rounded-full hover:bg-concrete transition-all text-sm"
           >
             {language === "nl" ? <FlagEN /> : <FlagNL />}
-            <span>{language === "nl" ? "EN" : "NL"}</span>
+            <span>{language === "nl" ? "Switch to English" : "Schakel naar Nederlands"}</span>
           </button>
         </div>
-      </div>
+      </MobileSheet>
     </>
   );
 }
