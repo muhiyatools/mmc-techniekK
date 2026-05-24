@@ -6,63 +6,51 @@ import HeroSection from "./_sections/HeroSection";
 import Reveal from "./_ui/Reveal";
 import HairlineDivider from "./_ui/HairlineDivider";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import ClientStrip from "./_ui/ClientStrip";
 
-export default function Home() {
+export default function HomePage() {
   const { t } = useLanguage();
+
   return (
     <>
       <HeroSection />
 
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <HairlineDivider draw aurora delay={100} />
-      </div>
+      <TrustStrip />
 
       <Services />
 
-      <section className="relative bg-bg border-t border-hairline overflow-hidden py-16 md:py-24 lg:py-32">
-        <div className="max-w-[1280px] mx-auto px-5 md:px-6 lg:px-10">
+      <HairlineDivider aurora draw />
+
+      <section id="werkwijze" className="py-24 lg:py-40 bg-concrete overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
-            <h2 className="flex items-center gap-3 mb-12 md:mb-16 justify-center text-[10px] font-black uppercase tracking-[0.3em] text-ink">
-              <div className="w-1.5 h-1.5 rounded-full bg-brand" />
-              {t.pages.home.process.label}
-              <div className="w-1.5 h-1.5 rounded-full bg-brand" />
-            </h2>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 lg:mb-24">
+              <div>
+                <span className="text-label text-brand font-black tracking-[0.3em] mb-6 block">
+                  {t.sections.process.label}
+                </span>
+                <h2
+                  className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-black leading-[0.85] tracking-[-0.04em] text-ink uppercase"
+                  dangerouslySetInnerHTML={{ __html: t.sections.process.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+                />
+              </div>
+              <p className="text-lg md:text-xl text-muted/80 font-medium max-w-md leading-relaxed">
+                {t.sections.process.description}
+              </p>
+            </div>
           </Reveal>
 
-          {/* Mobile: clean step cards */}
-          <div className="md:hidden flex flex-col gap-4">
-            {t.pages.home.process.steps.map((step, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <div className="flex items-start gap-4 bg-surface border border-hairline rounded-xl p-4">
-                  <span className="shrink-0 w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-xs font-extrabold text-brand leading-none">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-bold text-ink leading-snug mb-1">
-                      {step.title}
-                    </h3>
-                    <p className="text-xs text-muted leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Desktop: horizontal steps */}
-          <div className="hidden md:grid md:grid-cols-4 gap-12 lg:gap-0">
-            {t.pages.home.process.steps.map((step, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            {t.sections.process.steps.map((step, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div className="relative text-center group">
-                  {i < 3 && (
-                    <div className="hidden md:block absolute top-1.5 left-[calc(50%+12px)] w-[calc(100%-24px)] h-px bg-hairline z-0" aria-hidden="true" />
-                  )}
-                  <div className="relative z-10 w-3 h-3 bg-brand rounded-full mx-auto mb-6 shadow-[0_0_0_4px_var(--color-bg),0_0_0_5px_var(--color-hairline)] group-hover:scale-125 transition-transform duration-300" />
-                  <h3 className="font-display text-xl font-bold text-ink mb-2 uppercase italic tracking-wide group-hover:text-brand transition-colors">
+                <div className="bg-white p-10 lg:p-12 border border-hairline hover:border-brand/40 transition-all duration-500 hover:shadow-2xl hover:shadow-brand/5 rounded-2xl group min-h-[320px] flex flex-col">
+                  <div className="font-display text-5xl lg:text-7xl font-black text-brand/10 group-hover:text-brand/20 transition-colors mb-10 leading-none">
+                    0{i + 1}
+                  </div>
+                  <h3 className="font-display text-xl lg:text-2xl font-black text-ink mb-4 uppercase tracking-tight">
                     {step.title}
                   </h3>
-                  <p className="text-[11px] text-muted font-bold uppercase tracking-widest opacity-60">
+                  <p className="text-base text-muted/80 leading-relaxed font-medium">
                     {step.description}
                   </p>
                 </div>
@@ -72,7 +60,7 @@ export default function Home() {
         </div>
       </section>
 
-      <TrustStrip />
+      <ClientStrip />
     </>
   );
 }
