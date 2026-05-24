@@ -17,36 +17,37 @@ export default function Footer() {
       {/* ── Desktop footer ── */}
       <div className="hidden md:block">
         {!isContactPage && (
-          <div className="bg-brand">
-            <div className="h-[2px] bg-gradient-to-r from-aurora-1 via-white/40 to-aurora-2" />
-            <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-8 lg:py-14">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="bg-brand relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
+            <div className="h-[2px] bg-gradient-to-r from-aurora-1 via-white/60 to-aurora-2" />
+            <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-24 relative z-10">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
                 <Reveal>
-                  <div className="max-w-xl">
-                    <p className="text-label text-white/50 mb-3 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-white/40 rounded-full" />
+                  <div className="max-w-2xl">
+                    <p className="text-[0.875rem] font-black uppercase tracking-[0.4em] text-white/60 mb-6 flex items-center gap-3">
+                      <span className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
                       {language === "nl" ? "OFFERTE" : "QUOTE"}
                     </p>
-                    <h2 className="font-display text-3xl lg:text-5xl font-extrabold text-white leading-none uppercase tracking-tight mb-3">
+                    <h2 className="font-display text-4xl lg:text-7xl font-black text-white leading-[0.9] uppercase tracking-[-0.03em] mb-8">
                       {t.components.preFooter.title}
                     </h2>
-                    <p className="text-white/60 text-sm max-w-md">
+                    <p className="text-white/80 text-lg lg:text-xl max-w-xl font-medium leading-relaxed">
                       {t.components.preFooter.description}
                     </p>
                   </div>
                 </Reveal>
 
                 <Reveal delay={150}>
-                  <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shrink-0">
+                  <div className="flex flex-col sm:flex-row gap-5 items-stretch sm:items-center shrink-0">
                     <Link
                       href="/contact/"
-                      className="bg-white text-brand px-8 py-4 text-xs font-bold uppercase tracking-[0.15em] hover:opacity-85 transition-all duration-300 text-center"
+                      className="bg-white text-brand px-12 py-6 text-[0.875rem] font-black uppercase tracking-[0.25em] hover:bg-ink hover:text-white transition-all duration-500 text-center rounded-full shadow-2xl"
                     >
                       {t.components.preFooter.requestQuote}
                     </Link>
                     <a
                       href={`tel:${contactInfo.phone}`}
-                      className="text-white/70 px-6 py-4 text-xs font-bold uppercase tracking-[0.15em] border border-white/25 hover:border-white/60 hover:text-white transition-all duration-300 text-center"
+                      className="text-white px-10 py-6 text-[0.875rem] font-black uppercase tracking-[0.25em] border-2 border-white/30 hover:border-white hover:bg-white/10 transition-all duration-500 text-center rounded-full"
                     >
                       {t.components.preFooter.callDirect}
                     </a>
@@ -57,27 +58,27 @@ export default function Footer() {
           </div>
         )}
 
-        <div className="bg-brand-deep">
-          <div className={`max-w-[1280px] mx-auto px-6 lg:px-10 ${isContactPage ? "pt-12 lg:pt-20" : "pt-4"}`}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 pt-10 lg:pt-20">
+        <div className="bg-ink">
+          <div className={`max-w-[1280px] mx-auto px-6 lg:px-10 ${isContactPage ? "pt-16 lg:pt-32" : "pt-8"}`}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 pt-16 lg:pt-32">
               <div className="lg:col-span-5">
                 <Reveal>
-                  <div className="mb-10">
+                  <div className="mb-16">
                     <Image
                       src="/images/logo.png"
                       alt="MMC Techniek B.V."
-                      width={240}
-                      height={80}
-                      className="h-12 w-auto object-contain mb-6 brightness-0 invert opacity-85"
+                      width={280}
+                      height={92}
+                      className="h-16 w-auto object-contain mb-10 brightness-0 invert opacity-100"
                     />
-                    <p className="text-white/50 text-sm leading-relaxed max-w-sm mb-6">
+                    <p className="text-white/60 text-lg leading-relaxed max-w-md mb-10 font-medium">
                       {t.components.footer.tagline}
                     </p>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-10">
                       {t.components.footer.certifications.map((c) => (
-                        <div key={c.name} className="flex items-center gap-3">
-                          <div className="relative w-9 h-9 shrink-0">
+                        <div key={c.name} className="flex items-center gap-5">
+                          <div className="relative w-12 h-12 shrink-0">
                             <Image
                               src={c.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"}
                               alt={c.name}
@@ -86,8 +87,8 @@ export default function Footer() {
                             />
                           </div>
                           <div>
-                            <span className="text-xs font-bold text-white/60">{c.name}</span>
-                            <span className="hidden lg:block text-[9px] text-white/30 uppercase tracking-wider mt-0.5">{c.description}</span>
+                            <span className="text-sm font-black text-white/80 uppercase tracking-widest block">{c.name}</span>
+                            <span className="hidden lg:block text-[10px] text-white/30 uppercase tracking-[0.2em] mt-1.5">{c.description}</span>
                           </div>
                         </div>
                       ))}
@@ -96,11 +97,11 @@ export default function Footer() {
                 </Reveal>
               </div>
 
-              <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-10 lg:gap-8">
+              <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-16 lg:gap-12">
                 <Reveal delay={100}>
                   <div>
-                    <h4 className="text-label text-white/50 mb-6">{t.components.footer.services}</h4>
-                    <ul className="space-y-3.5">
+                    <h4 className="text-label text-brand mb-10 font-black">{t.components.footer.services}</h4>
+                    <ul className="space-y-5">
                       {[
                         { label: language === "nl" ? "Warmtepompen" : "Heat Pumps", href: "/aanbod/?dienst=warmtepompen" },
                         { label: language === "nl" ? "Zonnepanelen" : "Solar Panels", href: "/aanbod/?dienst=zonnepanelen" },
@@ -109,7 +110,7 @@ export default function Footer() {
                         { label: language === "nl" ? "Alle Diensten" : "All Services", href: "/aanbod/" },
                       ].map((link) => (
                         <li key={link.href}>
-                          <Link href={link.href} className="text-white/50 hover:text-white transition-colors duration-300 text-sm">
+                          <Link href={link.href} className="text-white/50 hover:text-brand hover:translate-x-1 transition-all duration-300 text-base font-bold inline-block">
                             {link.label}
                           </Link>
                         </li>
@@ -120,8 +121,8 @@ export default function Footer() {
 
                 <Reveal delay={200}>
                   <div>
-                    <h4 className="text-label text-white/50 mb-6">{t.components.footer.navigation}</h4>
-                    <ul className="space-y-3.5">
+                    <h4 className="text-label text-brand mb-10 font-black">{t.components.footer.navigation}</h4>
+                    <ul className="space-y-5">
                       {[
                         { label: t.nav.about, href: "/over-ons/" },
                         { label: language === "nl" ? "Onze Werkwijze" : "How we work", href: "/#werkwijze" },
@@ -130,7 +131,7 @@ export default function Footer() {
                         { label: t.nav.contact, href: "/contact/" },
                       ].map((link) => (
                         <li key={link.href}>
-                          <Link href={link.href} className="text-white/50 hover:text-white transition-colors duration-300 text-sm">
+                          <Link href={link.href} className="text-white/50 hover:text-brand hover:translate-x-1 transition-all duration-300 text-base font-bold inline-block">
                             {link.label}
                           </Link>
                         </li>
@@ -141,15 +142,15 @@ export default function Footer() {
 
                 <Reveal delay={300}>
                   <div className="col-span-2 md:col-span-1">
-                    <h4 className="text-label text-white/50 mb-6">{t.components.footer.contact}</h4>
-                    <div className="text-white/50 text-sm space-y-3.5">
-                      <p className="leading-relaxed max-w-[20ch]">
+                    <h4 className="text-label text-brand mb-10 font-black">{t.components.footer.contact}</h4>
+                    <div className="text-white/60 text-base space-y-6">
+                      <p className="leading-relaxed max-w-[20ch] font-medium">
                         {contactInfo.address}
                       </p>
-                      <p className="text-white/80 font-semibold text-base">
+                      <p className="text-white font-black text-2xl tracking-tighter">
                         {contactInfo.phoneDisplay}
                       </p>
-                      <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.2em] pt-2">
+                      <p className="text-brand/50 text-[11px] font-black uppercase tracking-[0.3em] pt-4 border-t border-white/5">
                         {language === "nl" ? "MA_VR // 08:00 - 17:00" : "MON_FRI // 08:00 - 17:00"}
                       </p>
                     </div>
@@ -159,12 +160,12 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 mt-16">
-            <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
+          <div className="border-t border-white/5 mt-24">
+            <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <p className="text-[11px] font-black text-white/20 uppercase tracking-[0.3em]">
                 &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
               </p>
-              <div className="flex items-center gap-4 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-8 text-[11px] font-black text-white/20 uppercase tracking-[0.3em]">
                 <span>KvK: {contactInfo.kvk}</span>
                 <span>BTW: {contactInfo.btw}</span>
               </div>
@@ -177,24 +178,24 @@ export default function Footer() {
       <div className="md:hidden">
         {/* Pre-footer */}
         {!isContactPage && (
-          <div className="bg-brand px-5 py-8">
-            <p className="text-label text-white/50 mb-2">{language === "nl" ? "OFFERTE" : "QUOTE"}</p>
-            <h2 className="font-display text-xl font-extrabold text-white leading-tight uppercase tracking-tight mb-2">
+          <div className="bg-brand px-6 py-12 relative overflow-hidden">
+            <p className="text-[0.75rem] font-black uppercase tracking-[0.3em] text-white/60 mb-4">{language === "nl" ? "OFFERTE" : "QUOTE"}</p>
+            <h2 className="font-display text-3xl font-black text-white leading-none uppercase tracking-tight mb-4">
               {t.components.preFooter.title}
             </h2>
-            <p className="text-white/60 text-xs leading-relaxed mb-5">
+            <p className="text-white/80 text-base leading-relaxed mb-8 font-medium">
               {t.components.preFooter.description}
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-4">
               <Link
                 href="/contact/"
-                className="flex-1 py-3.5 bg-white text-brand text-[10px] font-bold uppercase tracking-[0.15em] rounded-full text-center hover:opacity-85 transition-all"
+                className="w-full py-5 bg-white text-brand text-[0.75rem] font-black uppercase tracking-[0.2em] rounded-full text-center shadow-xl"
               >
                 {t.components.preFooter.requestQuote}
               </Link>
               <a
                 href={`tel:${contactInfo.phone}`}
-                className="flex-1 py-3.5 text-white/80 text-[10px] font-bold uppercase tracking-[0.15em] border border-white/30 rounded-full text-center hover:border-white/60 transition-all"
+                className="w-full py-5 text-white text-[0.75rem] font-black uppercase tracking-[0.2em] border-2 border-white/30 rounded-full text-center"
               >
                 {t.components.preFooter.callDirect}
               </a>
@@ -203,25 +204,25 @@ export default function Footer() {
         )}
 
         {/* Main footer */}
-        <div className="bg-brand-deep px-5 pt-6 pb-8">
+        <div className="bg-ink px-6 pt-12 pb-10">
           {/* Logo + tagline */}
-          <div className="mb-6">
+          <div className="mb-10">
             <Image
               src="/images/logo.png"
               alt="MMC Techniek B.V."
-              width={160}
-              height={52}
-              className="h-8 w-auto object-contain mb-3 brightness-0 invert opacity-85"
+              width={180}
+              height={60}
+              className="h-10 w-auto object-contain mb-6 brightness-0 invert opacity-100"
             />
-            <p className="text-white/50 text-xs leading-relaxed max-w-[28ch]">
+            <p className="text-white/60 text-base leading-relaxed max-w-[30ch] font-medium">
               {t.components.footer.tagline}
             </p>
           </div>
 
           {/* Certs inline */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-6 mb-10">
             {t.components.footer.certifications.map((c) => (
-              <div key={c.name} className="relative w-7 h-7">
+              <div key={c.name} className="relative w-10 h-10">
                 <Image
                   src={c.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"}
                   alt={c.name}
@@ -233,10 +234,10 @@ export default function Footer() {
           </div>
 
           {/* Links grid */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 gap-10 mb-10">
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em] mb-3">{t.components.footer.services}</p>
-              <ul className="space-y-2.5">
+              <p className="text-[11px] font-black text-brand uppercase tracking-[0.2em] mb-6">{t.components.footer.services}</p>
+              <ul className="space-y-4">
                 {[
                   { label: language === "nl" ? "Warmtepompen" : "Heat Pumps", href: "/aanbod/?dienst=warmtepompen" },
                   { label: language === "nl" ? "Zonnepanelen" : "Solar Panels", href: "/aanbod/?dienst=zonnepanelen" },
@@ -245,7 +246,7 @@ export default function Footer() {
                   { label: language === "nl" ? "Alle Diensten" : "All Services", href: "/aanbod/" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-white/50 text-xs hover:text-white transition-colors">
+                    <Link href={link.href} className="text-white/50 text-base font-bold hover:text-white transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -253,8 +254,8 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em] mb-3">{t.components.footer.navigation}</p>
-              <ul className="space-y-2.5">
+              <p className="text-[11px] font-black text-brand uppercase tracking-[0.2em] mb-6">{t.components.footer.navigation}</p>
+              <ul className="space-y-4">
                 {[
                   { label: t.nav.about, href: "/over-ons/" },
                   { label: language === "nl" ? "Werkwijze" : "How We Work", href: "/#werkwijze" },
@@ -263,7 +264,7 @@ export default function Footer() {
                   { label: t.nav.contact, href: "/contact/" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-white/50 text-xs hover:text-white transition-colors">
+                    <Link href={link.href} className="text-white/50 text-base font-bold hover:text-white transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -273,21 +274,21 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="border-t border-white/10 pt-5 mb-5">
-            <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em] mb-3">{t.components.footer.contact}</p>
-            <p className="text-white/60 text-xs leading-relaxed mb-2">{contactInfo.address}</p>
-            <p className="text-white font-semibold text-sm mb-1">{contactInfo.phoneDisplay}</p>
-            <p className="text-white/30 text-[9px] font-bold uppercase tracking-[0.15em]">
+          <div className="border-t border-white/10 pt-8 mb-8">
+            <p className="text-[11px] font-black text-brand uppercase tracking-[0.2em] mb-6">{t.components.footer.contact}</p>
+            <p className="text-white/60 text-base leading-relaxed mb-4 font-medium">{contactInfo.address}</p>
+            <p className="text-white font-black text-xl mb-2">{contactInfo.phoneDisplay}</p>
+            <p className="text-white/30 text-[10px] font-black uppercase tracking-[0.2em]">
               {language === "nl" ? "MA_VR 08:00 - 17:00" : "MON_FRI 08:00 - 17:00"}
             </p>
           </div>
 
           {/* Bottom bar */}
-          <div className="border-t border-white/10 pt-4 pb-nav flex flex-col gap-1.5">
-            <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.15em]">
-              &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
+          <div className="border-t border-white/10 pt-6 pb-nav flex flex-col gap-2">
+            <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">
+              &copy; {new Date().getFullYear()} MMC Techniek B.V.
             </p>
-            <div className="flex items-center gap-3 text-[9px] font-bold text-white/15 uppercase tracking-[0.15em]">
+            <div className="flex items-center gap-5 text-[10px] font-black text-white/15 uppercase tracking-[0.2em]">
               <span>KvK: {contactInfo.kvk}</span>
               <span>BTW: {contactInfo.btw}</span>
             </div>
