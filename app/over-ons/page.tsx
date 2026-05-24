@@ -145,7 +145,7 @@ export default function AboutPage() {
                 <span className="text-micro text-white/40 mb-5 block">{m.label}</span>
               </ScrollReveal>
 
-              <h1 className="font-display text-[clamp(2.5rem,7vw,5.5rem)] lg:text-[clamp(3.5rem,5.5vw,6rem)] font-extrabold leading-[0.85] tracking-[-0.025em] text-white mb-6 overflow-hidden">
+              <h1 className="font-display text-[clamp(2.5rem,8vw,5.5rem)] lg:text-[clamp(3.5rem,6.5vw,6rem)] font-extrabold leading-[0.85] tracking-[-0.025em] text-white mb-6 overflow-hidden">
                 {titleParts.map((part, i) => {
                   if (part.startsWith("<brand>")) {
                     const clean = part.replace(/<\/?brand>/g, "");

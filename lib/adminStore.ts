@@ -248,16 +248,9 @@ export async function uploadImage(file: File): Promise<string> {
 // ── Merge helpers: admin OVERRIDES base by name ──
 export function mergeServices(adminStore: AdminStore): Service[] {
   return baseServices.map((service) => {
-    const adminList = adminStore.products[service.slug] ?? [];
-    if (adminList.length === 0) return service;
-
-    const adminMap = new Map(adminList.map((p) => [p.name, p]));
-    const mergedProducts = service.products.map((baseP) => adminMap.get(baseP.name) ?? baseP);
-
-    const baseNames = new Set(service.products.map((p) => p.name));
-    const adminOnly = adminList.filter((p) => !baseNames.has(p.name));
-
-    return { ...service, products: [...mergedProducts, ...adminOnly] };
+    // Only return products from the admin store (database)
+    const adminProducts = adminStore.products[service.slug] ?? [];
+    return { ...service, products: adminProducts };
   });
 }
 
