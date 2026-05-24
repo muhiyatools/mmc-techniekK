@@ -88,7 +88,7 @@ export default function Footer() {
                           </div>
                           <div>
                             <span className="text-sm font-black text-white/80 uppercase tracking-widest block">{c.name}</span>
-                            <span className="hidden lg:block text-[10px] text-white/30 uppercase tracking-[0.2em] mt-1.5">{c.description}</span>
+                            <span className="hidden lg:block text-xs text-white/30 uppercase tracking-[0.2em] mt-1.5">{c.description}</span>
                           </div>
                         </div>
                       ))}
@@ -106,7 +106,7 @@ export default function Footer() {
                         { label: language === "nl" ? "Warmtepompen" : "Heat Pumps", href: "/aanbod/?dienst=warmtepompen" },
                         { label: language === "nl" ? "Zonnepanelen" : "Solar Panels", href: "/aanbod/?dienst=zonnepanelen" },
                         { label: language === "nl" ? "Airconditioning" : "Air Conditioning", href: "/aanbod/?dienst=airconditioning" },
-                        { label: language === "nl" ? "Vloerverwarming" : "Underfloor Heating", href: "/aanbod/?dienst=vloerverwarming" },
+                        { label: language === "nl" ? "Meterkast" : "Meterkast", href: "/aanbod/?dienst=meterkast" },
                         { label: language === "nl" ? "Alle Diensten" : "All Services", href: "/aanbod/" },
                       ].map((link) => (
                         <li key={link.href}>
@@ -150,7 +150,7 @@ export default function Footer() {
                       <p className="text-white font-black text-2xl tracking-tighter">
                         {contactInfo.phoneDisplay}
                       </p>
-                      <p className="text-brand/50 text-[11px] font-black uppercase tracking-[0.3em] pt-4 border-t border-white/5">
+                      <p className="text-brand/50 text-xs font-black uppercase tracking-[0.3em] pt-4 border-t border-white/5">
                         {language === "nl" ? "MA_VR // 08:00 - 17:00" : "MON_FRI // 08:00 - 17:00"}
                       </p>
                     </div>
@@ -162,10 +162,10 @@ export default function Footer() {
 
           <div className="border-t border-white/5 mt-24">
             <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <p className="text-[11px] font-black text-white/20 uppercase tracking-[0.3em]">
+              <p className="text-xs font-black text-white/20 uppercase tracking-[0.3em]">
                 &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
               </p>
-              <div className="flex items-center gap-8 text-[11px] font-black text-white/20 uppercase tracking-[0.3em]">
+              <div className="flex items-center gap-8 text-xs font-black text-white/20 uppercase tracking-[0.3em]">
                 <span>KvK: {contactInfo.kvk}</span>
                 <span>BTW: {contactInfo.btw}</span>
               </div>
@@ -179,7 +179,7 @@ export default function Footer() {
         {/* Pre-footer */}
         {!isContactPage && (
           <div className="bg-brand px-6 py-12 relative overflow-hidden">
-            <p className="text-[0.75rem] font-black uppercase tracking-[0.3em] text-white/60 mb-4">{language === "nl" ? "OFFERTE" : "QUOTE"}</p>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/60 mb-4">{language === "nl" ? "OFFERTE" : "QUOTE"}</p>
             <h2 className="font-display text-3xl font-black text-white leading-none uppercase tracking-tight mb-4">
               {t.components.preFooter.title}
             </h2>
@@ -189,13 +189,13 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <Link
                 href="/contact/"
-                className="w-full py-5 bg-white text-brand text-[0.75rem] font-black uppercase tracking-[0.2em] rounded-full text-center shadow-xl"
+                className="w-full py-5 bg-white text-brand text-sm font-black uppercase tracking-[0.2em] rounded-full text-center shadow-xl"
               >
                 {t.components.preFooter.requestQuote}
               </Link>
               <a
                 href={`tel:${contactInfo.phone}`}
-                className="w-full py-5 text-white text-[0.75rem] font-black uppercase tracking-[0.2em] border-2 border-white/30 rounded-full text-center"
+                className="w-full py-5 text-white text-sm font-black uppercase tracking-[0.2em] border-2 border-white/30 rounded-full text-center"
               >
                 {t.components.preFooter.callDirect}
               </a>
@@ -242,7 +242,7 @@ export default function Footer() {
                   { label: language === "nl" ? "Warmtepompen" : "Heat Pumps", href: "/aanbod/?dienst=warmtepompen" },
                   { label: language === "nl" ? "Zonnepanelen" : "Solar Panels", href: "/aanbod/?dienst=zonnepanelen" },
                   { label: language === "nl" ? "Airco" : "Air Conditioning", href: "/aanbod/?dienst=airconditioning" },
-                  { label: language === "nl" ? "Vloerverwarming" : "Underfloor Heating", href: "/aanbod/?dienst=vloerverwarming" },
+                  { label: language === "nl" ? "Meterkast" : "Meterkast", href: "/aanbod/?dienst=meterkast" },
                   { label: language === "nl" ? "Alle Diensten" : "All Services", href: "/aanbod/" },
                 ].map((link) => (
                   <li key={link.href}>

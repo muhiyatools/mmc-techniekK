@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import Header from "./_ui/Header";
 import Footer from "./_ui/Footer";
@@ -8,32 +7,16 @@ import WhatsAppButton from "./_ui/WhatsAppButton";
 import CursorFollower from "./_ui/CursorFollower";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
-const barlow = Barlow({
-  variable: "--font-barlow",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-barlow-condensed",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://mmctechniek.nl"),
   title: "MMC Techniek B.V. | Installateur in Oudewater & omgeving",
   description:
-    "MMC Techniek B.V. uit Oudewater: specialist in warmtepompen, zonnepanelen, airco, vloerverwarming, liften en complete verduurzaming. Bel 06 3431 1225.",
+    "MMC Techniek B.V. uit Oudewater: specialist in warmtepompen, zonnepanelen, airco, meterkast en complete verduurzaming. Bel 06 3431 1225.",
   keywords: [
     "warmtepomp",
     "zonnepanelen",
     "airco",
-    "vloerverwarming",
     "meterkast",
-    "liften",
     "batterijopslag",
     "installateur",
     "Oudewater",
@@ -72,7 +55,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl-NL" dir="ltr" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
+    <html lang="nl-NL" dir="ltr" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
+      </head>
       <body className="min-h-screen flex flex-col bg-bg" suppressHydrationWarning>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:text-sm focus:font-bold focus:rounded-full focus:outline-none">
           Naar hoofdinhoud

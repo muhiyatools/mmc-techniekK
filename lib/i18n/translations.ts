@@ -1,4 +1,4 @@
-﻿export const translations = {
+export const translations = {
   nl: {
     dir: "ltr",
     nav: {
@@ -40,8 +40,7 @@
           { title: "Zonnepanelen", summary: "Hoogrendementspanelen met monitoring.", caption: "Hoogwaardige zonnepanelen voor maximale energieopbrengst", description: "Zonnepanelen zijn een slimme investering voor uw energierekening. Wij leveren en installeren hoogwaardige panelen met uitgebreide monitoring." },
           { title: "Batterijopslag", summary: "Bewaar uw eigen stroom voor de avond.", caption: "Slimme energieopslag voor dag en nacht", description: "Met een thuisbatterij slaat u de opgewekte zonne-energie op voor later gebruik. Dit maximaliseert uw eigenverbruik en reduceert energiekosten." },
           { title: "Warmtepompen", summary: "Hybride of all-electric, afgestemd op uw woning.", caption: "Moderne warmtepomp installatie voor optimaal comfort en energiebesparing", description: "Een warmtepomp is de basis voor een duurzame en energiezuinige woning. Wij installeren zowel hybride als full-electric warmtepompen, afgestemd op uw specifieke situatie." },
-          { title: "Vloerverwarming", summary: "Ingregeld voor lage aanvoertemperatuur.", caption: "Comfortabele vloerverwarming met lage temperatuur", description: "Vloerverwarming is de meest comfortabele en efficiÃ«nte manier van verwarmen. Perfect te combineren met een warmtepomp." },
-          { title: "Meterkast & Liften", summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.", caption: "Professionele meterkast uitbreiding en liften", description: "Van een volledige meterkast vernieuwing tot het plaatsen van een traplift. Wij zorgen voor een veilige en moderne elektrische installatie." },
+          { title: "Meterkast", summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.", caption: "Professionele meterkast uitbreiding", description: "Van een volledige meterkast vernieuwing tot het voorbereiden op een warmtepomp, laadpaal of zonnepanelen. Wij zorgen voor een veilige en moderne elektrische installatie." },
           { title: "Onderhoud", summary: "Service en onderhoud voor alle installaties.", caption: "Service en onderhoud voor langdurige prestaties", description: "Regelmatig onderhoud verlengt de levensduur van uw installaties en houdt ze optimaal presteren. Wij bieden onderhoudscontracten op maat." },
           { title: "Renovaties", summary: "Complete woningverduurzaming naar label A++.", caption: "Complete woningverduurzaming", description: "Wij renoveren uw woning naar energielabel A++ met een combinatie van isolatie, verwarming en duurzame energiesystemen." },
         ]
@@ -116,8 +115,7 @@
           { question: "Hoe onderhoud ik mijn airconditioning?", answer: "Wij adviseren een jaarlijkse onderhoudsbeurt: schoonmaken van filters, controleren van het koelmiddel en doorlichten van alle onderdelen." },
           { question: "Zijn jullie ook voor noodgevallen beschikbaar?", answer: "Ja. Bij storingen aan door ons geÃ¯nstalleerde systemen reageren wij zo snel mogelijk, ook buiten kantooruren. Bel 06 3431 1225 voor directe hulp." },
           { question: "Kunnen jullie ook voor bedrijven werken?", answer: "Absoluut. Naast particuliere woningen voeren wij ook installaties uit voor bedrijfspanden, kantoren en utiliteitsgebouwen." },
-          { question: "Wat kost een zonnepanelen installatie gemiddeld?", answer: "Een complete installatie van zes tot tien panelen kost gemiddeld tussen de â‚¬4.500 en â‚¬9.000 inclusief montage en omvormer. De terugverdientijd ligt doorgaans tussen vijf en acht jaar." },
-          { question: "Kunnen jullie vloerverwarming combineren met een warmtepomp?", answer: "Ja, dit is zelfs de ideale combinatie. Vloerverwarming werkt het best op lage aanvoertemperaturen, precies waar een warmtepomp optimaal op presteert." },
+          { question: "Wat kost een zonnepanelen installatie gemiddeld?", answer: "Een complete installatie van zes tot tien panelen kost gemiddeld tussen de â‚¬4.500 en â‚¬9.000 inclusief montage en omvormer. De terugverdientijd ligt doorgaans tussen vijf en acht jaar." }
         ]
       }
     },
@@ -164,9 +162,9 @@
           ]
         },
         clients: {
-          label: "Onze klanten",
-          title: "Zowel particulier<br /><brand>als zakelijk</brand>",
-          description: "Van particulier tot multinational: voor elk project leveren wij hetzelfde vakmanschap.",
+          label: "Merken waar we mee werken",
+          title: "Gecertificeerde<br /><brand>A-merken</brand>",
+          description: "Wij installeren uitsluitend hoogwaardige materialen van gerenommeerde fabrikanten.",
         },
         values: {
           label: "Waarom MMC",
@@ -349,8 +347,7 @@
           { title: "Solar Panels", summary: "High-efficiency panels with monitoring.", caption: "High-quality solar panels for maximum energy yield", description: "Solar panels are a smart investment for your energy bill. We supply and install high-quality panels with comprehensive monitoring." },
           { title: "Battery Storage", summary: "Store your own power for the evening.", caption: "Smart energy storage for day and night", description: "A home battery stores generated solar energy for later use. This maximizes your self-consumption and reduces energy costs." },
           { title: "Heat Pumps", summary: "Hybrid or all-electric, tailored to your home.", caption: "Modern heat pump installation for optimal comfort and energy savings", description: "A heat pump is the foundation for a sustainable and energy-efficient home. We install both hybrid and full-electric heat pumps tailored to your specific situation." },
-          { title: "Underfloor Heating", summary: "Designed for low flow temperature.", caption: "Comfortable underfloor heating with low temperature", description: "Underfloor heating is the most comfortable and efficient way of heating. Perfectly combinable with a heat pump." },
-          { title: "Electrical & Lifts", summary: "Replace or expand, with space for charging.", caption: "Professional electrical panel upgrade and lifts", description: "From complete electrical panel renewal to installing a stair lift. We ensure a safe and modern electrical installation." },
+          { title: "Meterkast", summary: "Replace or expand, with space for charging.", caption: "Professional electrical panel upgrade", description: "From complete electrical panel renewal to preparing for a heat pump, EV charger, or solar panels. We ensure a safe and modern electrical installation." },
           { title: "Maintenance", summary: "Service and maintenance for all installations.", caption: "Service and maintenance for long-term performance", description: "Regular maintenance extends the lifespan of your installations and keeps them performing optimally. We offer tailored maintenance contracts." },
           { title: "Renovations", summary: "Complete home sustainability upgrade to A++.", caption: "Complete home sustainability upgrade", description: "We renovate your home to energy label A++ with a combination of insulation, heating, and sustainable energy systems." },
         ]
@@ -425,8 +422,7 @@
           { question: "How do I maintain my air conditioning?", answer: "We recommend an annual service: cleaning filters, checking refrigerant, and inspecting all components. This significantly extends lifespan and maintains efficiency." },
           { question: "Are you also available for emergencies?", answer: "Yes. For faults in systems installed by us, we respond as quickly as possible, even outside office hours. Call 06 3431 1225 for immediate assistance." },
           { question: "Can you also work for businesses?", answer: "Absolutely. In addition to private homes, we also carry out installations for business premises, offices, and utility buildings." },
-          { question: "What does a solar panel installation cost on average?", answer: "A complete installation of six to ten panels averages between â‚¬4,500 and â‚¬9,000 including mounting and inverter. The payback period is typically between five and eight years." },
-          { question: "Can you combine underfloor heating with a heat pump?", answer: "Yes, this is actually the ideal combination. Underfloor heating works best with low flow temperatures, precisely where a heat pump performs optimally." },
+          { question: "What does a solar panel installation cost on average?", answer: "A complete installation of six to ten panels averages between â‚¬4,500 and â‚¬9,000 including mounting and inverter. The payback period is typically between five and eight years." }
         ]
       }
     },
@@ -473,9 +469,9 @@
           ]
         },
         clients: {
-          label: "Our clients",
-          title: "Both private<br /><brand>and commercial</brand>",
-          description: "From private individuals to multinationals: we deliver the same craftsmanship for every project.",
+          label: "Brands we work with",
+          title: "Certified<br /><brand>A-brands</brand>",
+          description: "We exclusively install high-quality materials from renowned manufacturers.",
         },
         values: {
           label: "Why MMC",

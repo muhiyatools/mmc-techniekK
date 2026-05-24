@@ -56,8 +56,7 @@ export const productCategories: ProductCategory[] = [
   { id: "zonnepanelen", label: "Zonnepanelen" },
   { id: "batterijopslag", label: "Batterijopslag" },
   { id: "warmtepompen", label: "Warmtepompen" },
-  { id: "vloerverwarming", label: "Vloerverwarming" },
-  { id: "meterkast-liften", label: "Meterkast & Liften" },
+  { id: "meterkast", label: "Meterkast" },
 ];
 
 export const brandImages: Record<string, string> = {
@@ -393,58 +392,14 @@ export const services: Service[] = [
     ],
   },
   {
-    slug: "vloerverwarming",
-    title: "Vloerverwarming",
-    summary: "Ingregeld voor lage aanvoertemperatuur.",
-    image: "/images/services/vloerverwarming.webp",
-    popular: false,
-    caption: "Comfortabele vloerverwarming met lage temperatuur",
-    description: "Vloerverwarming is de meest comfortabele en efficiënte manier van verwarmen. Perfect te combineren met een warmtepomp voor optimaal rendement.",
-    products: [
-      {
-        name: "Uponor Tacker",
-        brand: "Uponor",
-        price: null,
-        categoryId: "vloerverwarming",
-        description: "Professioneel vloerverwarmingssysteem met noppenplaat en PE-RT leiding.",
-        techSpecs: [
-          "PE-RT leidingen",
-          "Noppenplaat isolatie",
-          "Lage aanvoertemperatuur",
-          "50 jaar levensduur",
-          "Verdeelunit inbegrepen",
-          "Geschikt voor alle vloeren",
-        ],
-        image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80",
-      },
-    ],
-  },
-  {
-    slug: "meterkast-liften",
-    title: "Meterkast & Liften",
+    slug: "meterkast",
+    title: "Meterkast",
     summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.",
     image: "/images/services/meterkast.webp",
     popular: false,
-    caption: "Professionele meterkast uitbreiding en liften",
-    description: "Van een volledige meterkast vernieuwing tot het plaatsen van een traplift. Wij zorgen voor een veilige en moderne elektrische installatie.",
-    products: [
-      {
-        name: "Hager groepenkast",
-        brand: "Hager",
-        price: "€1.500 - €3.000",
-        categoryId: "meterkast-liften",
-        description: "Complete groepenkast vervanging met ruimte voor laadpaal en zonnepanelen.",
-        techSpecs: [
-          "3-fase aansluiting",
-          "Ruimte voor 12 groepen",
-          "Aardlekautomaten",
-          "Overspanningsbeveiliging",
-          "Keuringscertificaat",
-          "5 jaar garantie",
-        ],
-        image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80",
-      },
-    ],
+    caption: "Professionele meterkast uitbreiding",
+    description: "Van een volledige meterkast vernieuwing tot het voorbereiden op een warmtepomp, laadpaal of zonnepanelen. Wij zorgen voor een veilige en moderne elektrische installatie.",
+    products: [],
   },
   {
     slug: "onderhoud",

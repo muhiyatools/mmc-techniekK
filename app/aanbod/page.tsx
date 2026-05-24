@@ -34,12 +34,7 @@ const serviceIcons: Record<string, React.ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
     </svg>
   ),
-  vloerverwarming: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75" />
-    </svg>
-  ),
-  "meterkast-liften": (
+  meterkast: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
     </svg>
@@ -59,6 +54,10 @@ const serviceIcons: Record<string, React.ReactNode> = {
 import PriceRangeSlider, { SLIDER_MIN, SLIDER_MAX, SLIDER_STEP } from "./_components/PriceRangeSlider";
 import ProductCard from "./_components/ProductCard";
 import MobileSheet from "../_ui/MobileSheet";
+
+import SolarSection from "./_components/SolarSection";
+import MeterkastPlanner from "./_components/MeterkastPlanner";
+import MaintenancePlanner from "./_components/MaintenancePlanner";
 
 // ── Sidebar ──
 function Sidebar({
@@ -170,6 +169,16 @@ function Sidebar({
   );
 }
 
+const backgroundImageMap: Record<string, string> = {
+  airconditioning: "/images/services/airco.jpg",
+  zonnepanelen: "/images/services/zonnepanelen.webp",
+  batterijopslag: "/images/services/batterijopslag.webp",
+  warmtepompen: "/images/services/warmtepompen.webp",
+  meterkast: "/images/services/meterkast.webp",
+  onderhoud: "/images/services/warmtepompen.webp",
+  renovaties: "/images/services/vloerverwarming.webp",
+};
+
 // ── Main content ──
 function AanbodContent() {
   const { t } = useLanguage();
@@ -211,17 +220,17 @@ function AanbodContent() {
   }, [activeSlug, services]);
 
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
-  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen');
+  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen' && activeService.slug !== 'meterkast' && activeService.slug !== 'onderhoud');
 
   const availableBrands = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'meterkast' || activeService.slug === 'onderhoud') return [];
     const set = new Set<string>();
     activeService.products.forEach((p) => set.add(p.brand));
     return Array.from(set).sort();
   }, [activeService]);
 
   const filteredProducts = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'meterkast' || activeService.slug === 'onderhoud') return [];
     if (!activeService.products || activeService.products.length === 0) return [];
     return activeService.products.filter((p) => {
       if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
@@ -254,7 +263,21 @@ function AanbodContent() {
 
   return (
     <>
-      <section className="pt-[70px] lg:pt-[114px] bg-bg border-b border-hairline">
+      {/* Dynamic Background Image based on active category */}
+      {activeSlug && backgroundImageMap[activeSlug] && (
+        <div className="fixed inset-0 z-0 pointer-events-none transition-all duration-1000 ease-out">
+          <Image
+            src={backgroundImageMap[activeSlug]}
+            alt="Dynamic Background"
+            fill
+            className="object-cover opacity-[0.06] grayscale-[0.3] blur-[4px] transition-all duration-1000"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-bg/20 via-bg/90 to-bg" />
+        </div>
+      )}
+
+      <section className="pt-[70px] lg:pt-[114px] bg-bg/50 border-b border-hairline relative z-10">
         <div className="max-w-[1280px] mx-auto px-5 lg:px-10 py-10 lg:py-16">
           <Reveal>
             <div className="flex items-center gap-3 mb-4 md:mb-5">
@@ -362,41 +385,11 @@ function AanbodContent() {
 
           <div className="flex-1 min-w-0">
             {activeSlug === 'zonnepanelen' ? (
-              <div className="relative min-h-[70vh] rounded-3xl overflow-hidden flex flex-col items-center justify-center text-center px-6 py-24 mb-12 shadow-2xl shadow-brand/10 group">
-                <Image src="/images/solarbackground.webp" alt="Zonnepanelen" fill className="object-cover group-hover:scale-105 transition-transform duration-[12s] ease-linear" priority />
-                <div className="absolute inset-0 bg-ink/75 backdrop-blur-[2px]" />
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
-                
-                <div className="relative z-10 max-w-3xl">
-                  <Reveal>
-                    <span className="inline-block px-5 py-2 rounded-full bg-brand/15 border border-brand/30 text-brand text-[12px] font-black uppercase tracking-[0.3em] mb-8">
-                      {serviceTitleMap['zonnepanelen']}
-                    </span >
-                  </Reveal>
-                  <Reveal delay={100}>
-                    <h2 className="font-display font-black text-[clamp(2.5rem,8vw,6.5rem)] text-white leading-[0.85] tracking-[-0.04em] uppercase mb-10">
-                      Maatwerk <br/><span className="text-brand">Solar Solutions</span>
-                    </h2>
-                  </Reveal>
-                  <Reveal delay={200}>
-                    <p className="text-lg md:text-2xl text-white/70 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
-                      Wij leveren geen standaard pakketten, maar ontwerpen een systeem dat perfect past bij uw dak en energiebehoefte.
-                    </p>
-                  </Reveal>
-                  <Reveal delay={300}>
-                    <Link 
-                      href="/contact?service=zonnepanelen" 
-                      className="inline-flex items-center gap-5 px-14 py-7 bg-brand text-white text-lg md:text-xl font-black uppercase tracking-[0.2em] rounded-full hover:bg-white hover:text-brand transition-all duration-500 shadow-2xl shadow-brand/40 group/btn hover:-translate-y-2 active:translate-y-0"
-                    >
-                      <span>Vraag Maatwerk Offerte</span>
-                      <svg className="w-6 h-6 transition-transform duration-500 group-hover/btn:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                  </Reveal>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-2 via-brand/20 to-aurora-1" />
-              </div>
+              <SolarSection />
+            ) : activeSlug === 'meterkast' ? (
+              <MeterkastPlanner />
+            ) : activeSlug === 'onderhoud' ? (
+              <MaintenancePlanner />
             ) : activeSlug && activeService ? (
               <>
                 <div className="compact-service-header mb-12">

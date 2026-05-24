@@ -5,15 +5,16 @@ import Reveal from "./Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const partnerLogos = [
-  { name: "AFAS", src: "/images/partners/afas.png" },
-  { name: "ALDI", src: "/images/partners/aldi.png" },
-  { name: "Pets Place", src: "/images/partners/pets-place.png" },
-  { name: "SSH", src: "/images/partners/ssh.png" },
-  { name: "HOMIJ", src: "/images/partners/homij.png" },
-  { name: "Partner 1", src: "/images/partners/partner-1.png" },
-  { name: "Partner 2", src: "/images/partners/partner-2.png" },
-  { name: "Partner 4", src: "/images/partners/partner-4.png" },
-  { name: "Partner 6", src: "/images/partners/partner-6.png" },
+  { name: "Daikin", src: "/images/brands/daikin.png" },
+  { name: "LG", src: "/images/brands/lg.png" },
+  { name: "Mitsubishi Electric", src: "/images/brands/mitsubishi_electric.png" },
+  { name: "Trina Solar", src: "/images/brands/trina_solar.png" },
+  { name: "Jinko Solar", src: "/images/brands/jinko.png" },
+  { name: "Growatt", src: "/images/brands/growatt.png" },
+  { name: "Enphase", src: "/images/brands/enphase.png" },
+  { name: "AlphaESS", src: "/images/brands/alphaess.png" },
+  { name: "Sigenergy", src: "/images/brands/sigenergy.png" },
+  { name: "TSUN", src: "/images/brands/tsun.png" },
 ];
 
 export default function ClientStrip() {
