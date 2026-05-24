@@ -6,19 +6,22 @@ export interface AdminStore {
   products: Record<string, Product[]>;
   brandImages: Record<string, string>;
   settings?: Record<string, string>;
+  deletedProducts?: Record<string, string[]>;
 }
 
 const ADMIN_STORE_KEY = "mmc_admin_store_v2";
 
 // ── Local storage fallback ──
 export function getLocalStore(): AdminStore {
-  if (typeof window === "undefined") return { products: {}, brandImages: {}, settings: {} };
+  if (typeof window === "undefined") return { products: {}, brandImages: {}, settings: {}, deletedProducts: {} };
   try {
     const raw = localStorage.getItem(ADMIN_STORE_KEY);
-    if (!raw) return { products: {}, brandImages: {}, settings: {} };
-    return JSON.parse(raw) as AdminStore;
+    if (!raw) return { products: {}, brandImages: {}, settings: {}, deletedProducts: {} };
+    const parsed = JSON.parse(raw) as AdminStore;
+    if (!parsed.deletedProducts) parsed.deletedProducts = {};
+    return parsed;
   } catch {
-    return { products: {}, brandImages: {}, settings: {} };
+    return { products: {}, brandImages: {}, settings: {}, deletedProducts: {} };
   }
 }
 
@@ -47,7 +50,7 @@ export async function fetchAdminStore(): Promise<AdminStore> {
 
     if (!dbProducts && !dbBrands && !dbSettings) return local;
 
-    const store: AdminStore = { products: {}, brandImages: {}, settings: {} };
+    const store: AdminStore = { products: {}, brandImages: {}, settings: {}, deletedProducts: {} };
 
     dbProducts?.forEach((p: any) => {
       const slug = p.service_slug;
@@ -69,7 +72,15 @@ export async function fetchAdminStore(): Promise<AdminStore> {
 
     dbSettings?.forEach((s: any) => {
       if (!store.settings) store.settings = {};
-      store.settings[s.key] = s.value ?? "";
+      if (s.key === "deleted_products") {
+        try {
+          store.deletedProducts = JSON.parse(s.value ?? "{}");
+        } catch {
+          store.deletedProducts = {};
+        }
+      } else {
+        store.settings[s.key] = s.value ?? "";
+      }
     });
 
     // Sync to localStorage as backup
@@ -145,12 +156,32 @@ export async function deleteProduct(serviceSlug: string, name: string): Promise<
   const next: AdminStore = {
     ...local,
     products: { ...local.products },
+    deletedProducts: { ...(local.deletedProducts ?? {}) },
   };
+  // Remove from admin products
   next.products[serviceSlug] = (next.products[serviceSlug] ?? []).filter((p) => p.name !== name);
+
+  // Check if it's a base product — if so, mark as deleted
+  const isBaseProduct = baseServices.some(
+    (s) => s.slug === serviceSlug && s.products.some((p) => p.name === name)
+  );
+  if (isBaseProduct) {
+    if (!next.deletedProducts![serviceSlug]) next.deletedProducts![serviceSlug] = [];
+    if (!next.deletedProducts![serviceSlug].includes(name)) {
+      next.deletedProducts![serviceSlug] = [...next.deletedProducts![serviceSlug], name];
+    }
+  }
+
   setLocalStore(next);
 
   try {
     await supabase.from("admin_products").delete().eq("name", name).eq("service_slug", serviceSlug);
+    if (isBaseProduct) {
+      await supabase.from("admin_settings").upsert(
+        { key: "deleted_products", value: JSON.stringify(next.deletedProducts) },
+        { onConflict: "key" }
+      );
+    }
   } catch {
     // Ignore
   }
