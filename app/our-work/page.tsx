@@ -29,8 +29,8 @@ export default function OurProjectsPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative pt-[70px] lg:pt-[114px]">
+
+        <section className="relative pt-[104px] lg:pt-[114px]">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
@@ -55,7 +55,7 @@ export default function OurProjectsPage() {
 
       {/* Masonry Grid */}
       <section className="pb-28 lg:pb-36 bg-bg">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="columns-1 md:columns-2 lg:columns-3 gap-5">
             {projectImages.map((project, i) => {
               const proj = localized[i] || project;

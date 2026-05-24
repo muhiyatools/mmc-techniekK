@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "MMC Techniek B.V.",
     title: "MMC Techniek B.V. | Installateur in Oudewater & omgeving",
     description:
-      "Specialist in warmtepompen, zonnepanelen, airco en complete verduurzaming. 16+ jaar ervaring, persoonlijke service.",
+      "Specialist in warmtepompen, zonnepanelen, airco and complete verduurzaming. 16+ jaar ervaring, persoonlijke service.",
     images: [
       {
         url: "/images/services/warmtepompen.webp",
@@ -62,21 +62,25 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen flex flex-col bg-bg" suppressHydrationWarning>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:text-sm focus:font-bold focus:rounded-full focus:outline-none">
-          Naar hoofdinhoud
-        </a>
         <LanguageProvider>
+          <CursorFollower />
           <Header />
-          <main id="main-content" className="flex-1 animate-[fadeIn_400ms_ease-out] md:pb-0 pb-nav">{children}</main>
+          <main id="main-content" className="flex-1 animate-[fadeIn_400ms_ease-out]">
+            {children}
+          </main>
           <Footer />
           <ScrollToTop />
           <WhatsAppButton />
-          <CursorFollower />
         </LanguageProvider>
-      {process.env.NODE_ENV === "development" && (
-        <script src="http://localhost:8400/live.js" />
-      )}
-</body>
+
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:text-sm focus:font-bold focus:rounded-full focus:outline-none">
+          Naar hoofdinhoud
+        </a>
+
+        {process.env.NODE_ENV === "development" && (
+          <script src="http://localhost:8400/live.js" />
+        )}
+      </body>
     </html>
   );
 }

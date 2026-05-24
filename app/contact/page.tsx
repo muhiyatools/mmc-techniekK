@@ -13,6 +13,26 @@ import { resolveProductImage } from "@/lib/images";
 
 const WA_PHONE = "31634311225";
 
+const getMaintenanceOptions = (lang) => {
+  if (lang === "nl") {
+    return [
+      "Airconditioning onderhoud",
+      "Zonnepanelen onderhoud",
+      "Thuisbatterij onderhoud",
+      "Meterkast onderhoud",
+      "Elektra onderhoud"
+    ];
+  } else {
+    return [
+      "Air Conditioning maintenance",
+      "Solar Panels maintenance",
+      "Battery Storage maintenance",
+      "Meterkast maintenance",
+      "Electrical maintenance"
+    ];
+  }
+};
+
 function buildWhatsAppMessage(form: {
   name: string; email: string; phone: string;
   service: string; product: string; message: string;
@@ -38,9 +58,9 @@ function buildWhatsAppMessage(form: {
 
 const labelClass = "block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2";
 const inputClass =
-  "w-full px-5 py-4 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30";
+  "w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30";
 const selectClass =
-  "w-full px-5 py-4 pr-12 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer";
+  "w-full px-5 py-4 pr-12 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer";
 
 function ContactForm() {
   const { t, language } = useLanguage();
@@ -57,6 +77,14 @@ function ContactForm() {
     product: productParam || "",
     message: "",
   });
+
+  const maintenanceOptions = getMaintenanceOptions(language);
+  const isOnderhoud = form.service === "onderhoud";
+  const availableProducts = isOnderhoud
+    ? maintenanceOptions.map(name => ({ name }))
+    : selectedService?.products ?? [];
+  const isProductDropdownDisabled = !selectedService || (availableProducts.length === 0);
+  
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -101,9 +129,9 @@ function ContactForm() {
   return (
     <>
       {/* ── Mobile layout ── */}
-      <div className="md:hidden min-h-screen bg-bg flex flex-col pb-[calc(var(--bottom-nav-height)+var(--safe-bottom)+60px)]">
+      <div className="md:hidden min-h-screen bg-bg flex flex-col pb-12">
         {/* Compact hero */}
-        <div className="pt-[60px] px-5 pb-6">
+        <div className="pt-[104px] px-5 pb-6">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand mb-3 block">{t.nav.contact}</span>
           <h1 className="font-display text-[clamp(1.75rem,8vw,2.5rem)] font-extrabold leading-[0.9] tracking-tighter text-ink mb-3">
             {t.contact.title.split(" ").map((word, i) => (
@@ -150,23 +178,23 @@ function ContactForm() {
               <form onSubmit={handleEmailSubmit} className="p-5 space-y-6">
                 <div>
                   <label htmlFor="name-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.name}</label>
-                  <input id="name-m" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Volledige naam" className="w-full px-4 py-3.5 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
+                  <input id="name-m" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Volledige naam" className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="email-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.email}</label>
-                    <input id="email-m" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="uw@email.nl" className="w-full px-4 py-3.5 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
+                    <input id="email-m" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="uw@email.nl" className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
                   </div>
                   <div>
                     <label htmlFor="phone-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.phone}</label>
-                    <input id="phone-m" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="06 1234 5678" className="w-full px-4 py-3.5 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
+                    <input id="phone-m" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="06 1234 5678" className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="service-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.service}</label>
                   <div className="relative">
-                    <select id="service-m" value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value, product: "" })} className="w-full px-4 py-3.5 pr-10 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
+                    <select id="service-m" value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value, product: "" })} className="w-full px-4 py-3.5 pr-10 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
                       <option value="">{language === "nl" ? "Selecteer een dienst" : "Select a service"}</option>
                       {services.map((s) => <option key={s.slug} value={s.slug}>{s.title}</option>)}
                     </select>
@@ -177,13 +205,13 @@ function ContactForm() {
                 <div>
                   <label htmlFor="product-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.product} <span className="text-muted/50 font-normal lowercase tracking-normal">({t.contact.form.productOptional})</span></label>
                   <div className="relative">
-                    <select id="product-m" value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} disabled={!selectedService || selectedService.products.length === 0} className="w-full px-4 py-3.5 pr-10 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer disabled:opacity-40">
+                    <select id="product-m" value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} disabled={isProductDropdownDisabled} className="w-full px-4 py-3.5 pr-10 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer disabled:opacity-40">
                       <option value="">
                         {!selectedService ? (language === "nl" ? "Kies eerst een dienst" : "Choose a service first")
-                          : selectedService.products.length === 0 ? (language === "nl" ? "Geen producten beschikbaar" : "No products available")
-                          : (language === "nl" ? "Selecteer een product" : "Select a product")}
+                          : availableProducts.length === 0 ? (language === "nl" ? "Geen producten beschikbaar" : "No products available")
+                          : (language === "nl" ? "Selecteer een optie" : "Select an option")}
                       </option>
-                      {selectedService?.products.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
+                      {availableProducts.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
                     </select>
                     <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                   </div>
@@ -204,7 +232,7 @@ function ContactForm() {
 
                 <div>
                   <label htmlFor="message-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.message}</label>
-                  <textarea id="message-m" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-4 py-3.5 border border-hairline bg-concrete/30 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30 resize-none" placeholder={t.contact.form.placeholderMessage} />
+                  <textarea id="message-m" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30 resize-none" placeholder={t.contact.form.placeholderMessage} />
                 </div>
 
                 {error && (
@@ -252,7 +280,7 @@ function ContactForm() {
       </div>
 
       {/* Mobile sticky contact bar */}
-      <div className="fixed left-0 right-0 md:hidden z-[49] flex gap-3 bg-surface border-t border-hairline px-4 py-3" style={{ bottom: "calc(var(--bottom-nav-height) + var(--safe-bottom))" }}>
+      <div className="fixed left-0 right-0 md:hidden z-[49] flex gap-3 bg-surface border-t border-hairline px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.05)]" style={{ bottom: "0" }}>
         <a href={`tel:${WA_PHONE}`} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-hairline text-ink font-semibold text-sm active:bg-concrete transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
           Bel ons
@@ -309,8 +337,8 @@ function ContactForm() {
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <div className="grid lg:grid-cols-12 gap-16 items-start">
               <Reveal delay={300} className="lg:col-span-8">
-                <div className="bg-white border border-hairline rounded-[2.5rem] shadow-2xl shadow-ink/5 overflow-hidden relative">
-                  <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-aurora-1 via-brand to-aurora-2" />
+                <div className="bg-surface border-2 border-brand/20 rounded-[2.5rem] shadow-2xl shadow-brand/10 overflow-hidden relative">
+                  <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-aurora-1 via-brand to-aurora-2 animate-[aurora-drift_18s_linear_infinite] bg-[length:200%_100%]" />
                   {submitted ? (
                     <div className="p-12 lg:p-20 text-center py-24">
                       <div className="w-20 h-20 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center mx-auto mb-8">
@@ -333,15 +361,15 @@ function ContactForm() {
                         <div className="grid sm:grid-cols-2 gap-6">
                           <div className="sm:col-span-2">
                             <label htmlFor="name-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.name}</label>
-                            <input id="name-d" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-5 py-4 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="Volledige naam" />
+                            <input id="name-d" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="Volledige naam" />
                           </div>
                           <div>
                             <label htmlFor="email-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.email}</label>
-                            <input id="email-d" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-5 py-4 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="uw@email.nl" />
+                            <input id="email-d" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="uw@email.nl" />
                           </div>
                           <div>
                             <label htmlFor="phone-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.phone}</label>
-                            <input id="phone-d" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-5 py-4 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="06 1234 5678" />
+                            <input id="phone-d" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="06 1234 5678" />
                           </div>
                         </div>
                       </div>
@@ -355,7 +383,7 @@ function ContactForm() {
                           <div>
                             <label htmlFor="service-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.service}</label>
                             <div className="relative">
-                              <select id="service-d" value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value, product: "" })} className="w-full px-5 py-4 pr-12 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
+                              <select id="service-d" value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value, product: "" })} className="w-full px-5 py-4 pr-12 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
                                 <option value="">{language === "nl" ? "Selecteer een dienst" : "Select a service"}</option>
                                 {services.map((s) => <option key={s.slug} value={s.slug}>{s.title}</option>)}
                               </select>
@@ -365,13 +393,13 @@ function ContactForm() {
                           <div>
                             <label htmlFor="product-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.product} <span className="text-muted/50 font-normal lowercase tracking-normal">{t.contact.form.productOptional}</span></label>
                             <div className="relative">
-                              <select id="product-d" value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} disabled={!selectedService || selectedService.products.length === 0} className="w-full px-5 py-4 pr-12 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
+                              <select id="product-d" value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value })} disabled={isProductDropdownDisabled} className="w-full px-5 py-4 pr-12 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all appearance-none cursor-pointer">
                                 <option value="">
                                   {!selectedService ? (language === "nl" ? "Kies eerst een dienst" : "Choose a service first")
-                                    : selectedService.products.length === 0 ? (language === "nl" ? "Geen producten beschikbaar" : "No products available")
-                                    : (language === "nl" ? "Selecteer een product" : "Select a product")}
+                                    : availableProducts.length === 0 ? (language === "nl" ? "Geen producten beschikbaar" : "No products available")
+                                    : (language === "nl" ? "Selecteer een optie" : "Select an option")}
                                 </option>
-                                {selectedService?.products.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
+                                {availableProducts.map((p) => <option key={p.name} value={p.name}>{p.name}</option>)}
                               </select>
                               <svg className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
                             </div>
@@ -395,7 +423,7 @@ function ContactForm() {
 
                         <div>
                           <label htmlFor="message-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.message}</label>
-                          <textarea id="message-d" rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-5 py-4 border border-hairline bg-concrete/30 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all resize-none" placeholder={t.contact.form.placeholderMessage} />
+                          <textarea id="message-d" rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all resize-none" placeholder={t.contact.form.placeholderMessage} />
                         </div>
                       </div>
 

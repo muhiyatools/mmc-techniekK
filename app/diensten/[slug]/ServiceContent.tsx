@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { services, contactInfo, brandImages } from "@/lib/data";
@@ -7,10 +8,29 @@ import Reveal from "../../_ui/Reveal";
 import BrandLogo from "../../_ui/BrandLogo";
 import StickyCTA from "../../_ui/StickyCTA";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { fetchAdminStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
 
 export default function ServiceContent({ slug }: { slug: string }) {
   const { t } = useLanguage();
-  const service = services.find((s) => s.slug === slug)!;
+  const [service, setService] = useState<typeof services[0]>(() => {
+    const s = services.find((x) => x.slug === slug)!;
+    return { ...s, products: [] };
+  });
+  const [brandImagesState, setBrandImagesState] = useState<Record<string, string>>(brandImages);
+
+  useEffect(() => {
+    fetchAdminStore()
+      .then((store) => {
+        const merged = mergeServices(store);
+        const s = merged.find((x) => x.slug === slug);
+        if (s) {
+          setService(s);
+        }
+        setBrandImagesState(mergeBrandImages(store));
+      })
+      .catch(() => {});
+  }, [slug]);
+
   const relatedServices = services.filter((s) => s.slug !== slug).slice(0, 3);
   const hasProducts = service.products && service.products.length > 0;
 
@@ -24,7 +44,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
         callLabel={t.pages.diensten.callUs}
       />
 
-      <section className="relative pt-[70px] pb-16 lg:pt-[114px] lg:pb-20 overflow-hidden">
+      <section className="relative pt-[104px] pb-16 lg:pt-[114px] lg:pb-20 overflow-hidden">
         <div className="absolute inset-0">
           <Image src={service.image} alt={service.title} fill className="object-cover" priority />
           <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/60 to-ink/40" />
@@ -87,7 +107,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
                     <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted shrink-0">{t.pages.diensten.brands}</span>
                     <div className="flex flex-wrap items-center gap-6">
                       {uniqueBrands.map((brand) => (
-                        <BrandLogo key={brand} brand={brand} imageSrc={brandImages[brand] ?? ""} height={28} />
+                        <BrandLogo key={brand} brand={brand} imageSrc={brandImagesState[brand] ?? ""} height={28} />
                       ))}
                     </div>
                   </div>
@@ -104,7 +124,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
                     </div>
                     <div className="p-5 flex flex-col flex-1">
                       <div className="mb-1.5 h-6 flex items-center">
-                        <BrandLogo brand={product.brand} imageSrc={brandImages[product.brand] ?? ""} height={20} />
+                        <BrandLogo brand={product.brand} imageSrc={brandImagesState[product.brand] ?? ""} height={20} />
                       </div>
                       <h4 className="text-base font-bold text-ink mb-2 group-hover:text-brand transition-colors">{product.name}</h4>
                       <p className="text-sm text-muted mb-4 leading-relaxed">{product.description}</p>

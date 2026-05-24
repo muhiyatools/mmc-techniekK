@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Reveal from "../../_ui/Reveal";
 
@@ -81,24 +81,33 @@ const maintenanceTabs: MaintenanceTab[] = [
   },
   {
     id: "electro",
-    name: "Elektra onder de motorkap",
-    title: "Smart Home & Infrastructuur Inspectie",
+    name: "Elektra onderhoud",
+    title: "Elektra Onderhoud & Inspectie",
     price: "",
     frequency: "Jaarlijks onderhoud aanbevolen",
-    desc: "Volledige inspectie van uw slimme systemen.",
+    desc: "Volledige inspectie van uw elektrische installatie en slimme systemen.",
     checklist: [
-      "Controle van de communicatiebus (KNX / Modbus) kabels en voedingen",
+      "Controle van de groepenkast en aardlekschakelaars",
       "Inspectie van laadpaal-connectoren en load balancing meting",
-      "Controle van de warmtepomp-regelmodule en sensorkalibratie",
+      "Testen van rookmelders en noodverlichting (indien aanwezig)",
       "Test van relais en dimmers op correct functioneren",
       "Controle van back-up batterijvoedingen (UPS) van slimme systemen",
-      "Software- en beveiligingsupdates van centrale controllers"
+      "NEN-3140 veiligheidsmetingen aan kritieke circuits"
     ]
   }
 ];
 
 export default function MaintenancePlanner() {
   const [activeTabId, setActiveTabId] = useState("airco");
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const typeParam = searchParams?.get('type');
+
+  useEffect(() => {
+    if (typeParam) {
+      const match = maintenanceTabs.find(t => t.name.toLowerCase().includes(typeParam.toLowerCase()));
+      if (match) setActiveTabId(match.id);
+    }
+  }, [typeParam]);
 
   const activeTab = maintenanceTabs.find((t) => t.id === activeTabId) || maintenanceTabs[0];
 

@@ -160,14 +160,14 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="border-t border-white/5 mt-24">
+          <div className="border-t border-white/10 mt-24">
             <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <p className="text-xs font-black text-white/20 uppercase tracking-[0.3em]">
+              <p className="text-xs font-black text-brand uppercase tracking-[0.3em]">
                 &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
               </p>
-              <div className="flex items-center gap-8 text-xs font-black text-white/20 uppercase tracking-[0.3em]">
-                <span>KvK: {contactInfo.kvk}</span>
-                <span>BTW: {contactInfo.btw}</span>
+              <div className="flex items-center gap-8 text-xs font-black text-brand uppercase tracking-[0.3em]">
+                <span>KvK: <span className="text-white/80">{contactInfo.kvk}</span></span>
+                <span>BTW: <span className="text-white/80">{contactInfo.btw}</span></span>
               </div>
             </div>
           </div>

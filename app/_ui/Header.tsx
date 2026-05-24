@@ -7,8 +7,6 @@ import { usePathname } from "next/navigation";
 import { contactInfo, services, brandImages, certifications } from "@/lib/data";
 import { getLocalStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
 import type { Service } from "@/lib/data";
-import BottomNav from "./BottomNav";
-import MobileSheet from "./MobileSheet";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useScrollDirection } from "../_hooks/useScrollDirection";
 
@@ -77,8 +75,9 @@ const FlagEN = () => (
 export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [moreSheetOpen, setMoreSheetOpen] = useState(false);
-  const [mergedServices, setMergedServices] = useState<Service[]>(services);
+  const [mergedServices, setMergedServices] = useState<Service[]>(
+    services.map((s) => ({ ...s, products: [] }))
+  );
   const [mergedBrandImages, setMergedBrandImages] = useState(brandImages);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -90,7 +89,7 @@ export default function Header() {
     const map: Record<string, string> = {};
     services.forEach((s, i) => { map[s.slug] = t.sections.services.items[i]?.title || s.title; });
     return map;
-  }, [language]);
+  }, [language, t]);
 
   useEffect(() => {
     const store = getLocalStore();
@@ -112,7 +111,6 @@ export default function Header() {
   useEffect(() => {
     setDropdownOpen(false);
     setSearchQuery("");
-    setMoreSheetOpen(false);
     document.body.style.overflow = "";
   }, [pathname]);
 
@@ -313,63 +311,49 @@ export default function Header() {
         className={`md:hidden fixed top-0 inset-x-0 z-50 bg-surface border-b border-hairline transition-transform duration-300 ${mobileHidden ? "header-hidden" : "header-visible"}`}
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        <div className="flex items-center justify-between px-4 h-[60px]">
-          <Link href="/" className="shrink-0">
-            <Image src="/images/logo.png" alt="MMC Techniek B.V." width={160} height={48} className="h-8 w-auto object-contain" priority />
+        {/* Top Row: centered logo, flag left, Offerte CTA right */}
+        <div className="grid grid-cols-3 items-center w-full px-4 h-[54px]">
+          <button onClick={toggleLanguage} className="justify-self-start flex items-center justify-center w-9 h-9 rounded-full hover:bg-ink/5 transition-colors">
+            {language === "nl" ? <FlagEN /> : <FlagNL />}
+          </button>
+          
+          <Link href="/" className="justify-self-center shrink-0 flex justify-center">
+            <Image src="/images/logo.png" alt="MMC Techniek B.V." width={140} height={42} className="h-7 w-auto object-contain" priority />
           </Link>
+          
           <Link
             href="/contact/"
-            className="h-9 px-4 bg-ink text-white text-xs font-extrabold uppercase tracking-wide rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap"
+            className="justify-self-end h-8 px-4 bg-ink text-white text-[10px] font-black uppercase tracking-wider rounded-full hover:bg-brand transition-colors flex items-center whitespace-nowrap"
           >
             Offerte
           </Link>
         </div>
-      </header>
 
-      {/* ── Mobile bottom nav ── */}
-      <BottomNav onMoreClick={() => setMoreSheetOpen(true)} />
-
-      {/* ── "Meer" bottom sheet ── */}
-      <MobileSheet open={moreSheetOpen} onClose={() => setMoreSheetOpen(false)} title="Meer">
-        <nav className="flex flex-col gap-1">
+        {/* Bottom Row: horizontal scrollable link pills menu */}
+        <div className="px-4 pb-2.5 overflow-x-auto scrollbar-none flex items-center gap-2 whitespace-nowrap select-none">
           {[
-            { label: t.nav.about,   href: "/over-ons/" },
-            { label: t.nav.faq,     href: "/veelgestelde-vragen/" },
+            { label: t.nav.home, href: "/" },
+            { label: t.nav.aanbod, href: "/aanbod/" },
+            { label: t.nav.projects, href: "/our-work/" },
+            { label: t.nav.about, href: "/over-ons/" },
+            { label: t.nav.faq, href: "/veelgestelde-vragen/" },
             { label: t.nav.contact, href: "/contact/" },
-          ].map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMoreSheetOpen(false)}
-              className="flex items-center justify-between py-4 border-b border-hairline/60 text-base font-bold text-ink"
-            >
-              {label}
-              <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="mt-6 space-y-3">
-          <a
-            href={`tel:${contactInfo.phone}`}
-            className="flex items-center justify-center gap-2 w-full py-4 border-2 border-brand text-brand font-bold rounded-full hover:bg-brand hover:text-white transition-all"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.423 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            {contactInfo.phoneDisplay}
-          </a>
-          <button
-            onClick={() => { toggleLanguage(); setMoreSheetOpen(false); }}
-            className="flex items-center justify-center gap-3 w-full py-4 border border-hairline text-ink font-bold rounded-full hover:bg-concrete transition-all text-sm"
-          >
-            {language === "nl" ? <FlagEN /> : <FlagNL />}
-            <span>{language === "nl" ? "Switch to English" : "Schakel naar Nederlands"}</span>
-          </button>
+          ].map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide transition-colors ${
+                  active ? "bg-brand text-white" : "bg-ink/5 text-ink"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
-      </MobileSheet>
+      </header>
     </>
   );
-}
+};

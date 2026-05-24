@@ -16,7 +16,7 @@ export const translations = {
       region: "Regio Utrecht & omgeving",
       title: "Precisie in Verduurzaming.",
       titleParts: ["Precisie", "in ", "Verduurzaming."],
-      description: "De techniek van morgen, vandaag vakkundig geÃ¯nstalleerd door onze eigen specialisten.",
+      description: "De techniek van morgen, vandaag vakkundig geïnstalleerd door onze eigen specialisten.",
       ctaStart: "Start Project",
       ctaContact: "Contact",
       scroll: "Scroll",
@@ -36,8 +36,8 @@ export const translations = {
         cta: "Klaar voor een duurzame toekomst? Laat u adviseren door onze experts.",
         ctaButton: "Offerte aanvragen",
         items: [
-          { title: "Airconditioning", summary: "Stille systemen voor koelen en verwarmen.", caption: "Stille en energiezuinige airco voor elk seizoen", description: "Moderne airco systemen bieden niet alleen verkoeling in de zomer, maar ook efficiÃ«nte verwarming in de winter. Perfect voor een comfortabel binnenklimaat het hele jaar door." },
-          { title: "Zonnepanelen", summary: "Hoogrendementspanelen met monitoring.", caption: "Hoogwaardige zonnepanelen voor maximale energieopbrengst", description: "Zonnepanelen zijn een slimme investering voor uw energierekening. Wij leveren en installeren hoogwaardige panelen met uitgebreide monitoring." },
+          { title: "Airconditioning", summary: "Stille systemen voor koelen en verwarmen.", caption: "Stille en energiezuinige airco voor elk seizoen", description: "Moderne airco systemen bieden niet alleen verkoeling in de zomer, maar ook efficiënte verwarming in de winter. Perfect voor een comfortabel binnenklimaat het hele jaar door." },
+          { title: "Zonnepanelen", summary: "Maatwerk solar systemen voor uw dak.", caption: "Bespaar direct met een maatwerk zonne-energie systeem", description: "Geen standaard pakketten, maar een installatie die is geoptimaliseerd voor uw specifieke daksituatie en energieverbruik." },
           { title: "Batterijopslag", summary: "Bewaar uw eigen stroom voor de avond.", caption: "Slimme energieopslag voor dag en nacht", description: "Met een thuisbatterij slaat u de opgewekte zonne-energie op voor later gebruik. Dit maximaliseert uw eigenverbruik en reduceert energiekosten." },
           { title: "Warmtepompen", summary: "Hybride of all-electric, afgestemd op uw woning.", caption: "Moderne warmtepomp installatie voor optimaal comfort en energiebesparing", description: "Een warmtepomp is de basis voor een duurzame en energiezuinige woning. Wij installeren zowel hybride als full-electric warmtepompen, afgestemd op uw specifieke situatie." },
           { title: "Meterkast", summary: "Vervangen of uitbreiden, met ruimte voor laadpaal.", caption: "Professionele meterkast uitbreiding", description: "Van een volledige meterkast vernieuwing tot het voorbereiden op een warmtepomp, laadpaal of zonnepanelen. Wij zorgen voor een veilige en moderne elektrische installatie." },
@@ -69,11 +69,11 @@ export const translations = {
       projects: {
         label: "Project Portfolio",
         title: "Vakmanschap in <brand>Beeld</brand>.",
-        description: "Een selectie van recente installaties waar we trots op zijn. Van particuliere woningen tot commerciÃ«le projecten.",
+        description: "Een selectie van recente installaties waar we trots op zijn. Van particuliere woningen tot commerciële projecten.",
         cta: "Bekijk Alles",
         viewInstallation: "Bekijk installatie &rarr;",
         items: [
-          { label: "Warmtepomp installatie", location: "Oudewater", category: "Verwarming" },
+          { label: "Zonnepanelen installatie", location: "Oudewater", category: "Zonne-energie" },
           { label: "Elektrische installatie", location: "Woerden", category: "Elektra" },
           { label: "Technisch onderhoud", location: "Oudewater", category: "Onderhoud" },
           { label: "Renovatieproject", location: "Utrecht", category: "Renovatie" },
@@ -99,23 +99,23 @@ export const translations = {
         description: "Hier vindt u de meest gestelde vragen over onze diensten, offertes en werkwijze.",
         cta: "Bekijk alle vragen",
         items: [
-          { question: "Wat kost een warmtepomp?", answer: "De kosten van een warmtepomp variÃ«ren tussen â‚¬4.500 en â‚¬8.500, afhankelijk van het type (hybride of all-electric) en uw specifieke situatie. Wij maken graag een vrijblijvende offerte op maat." },
+          { question: "Wat kost een warmtepomp?", answer: "De kosten van een warmtepomp variëren tussen €4.500 en €8.500, afhankelijk van het type (hybride of all-electric) and uw specifieke situatie. Wij maken graag een vrijblijvende offerte op maat." },
           { question: "Hoe snel kan ik een offerte verwachten?", answer: "Na een eerste gesprek en eventueel een bezoek ter plaatse ontvangt u binnen 24 uur een heldere, gedetailleerde offerte zonder verborgen kosten." },
           { question: "Werken jullie ook buiten Oudewater?", answer: "Ja, wij zijn actief in de hele regio Utrecht, Woerden, Bodegraven en omgeving. Neem contact op om te bespreken of uw locatie binnen ons werkgebied valt." },
           { question: "Kan ik subsidie krijgen voor een warmtepomp of zonnepanelen?", answer: "In veel gevallen komt u in aanmerking voor ISDE-subsidie of lokale duurzaamheidsregelingen. Wij adviseren u hier graag over tijdens het intakegesprek." },
           { question: "Bieden jullie ook onderhoud aan na installatie?", answer: "Absoluut. Wij bieden verschillende onderhoudscontracten aan zodat uw installaties jarenlang optimaal blijven presteren. Service na oplevering is voor ons vanzelfsprekend." },
-          { question: "Wat is het verschil tussen hybride en all-electric?", answer: "Een hybride warmtepomp werkt samen met uw bestaande cv-ketel en is ideaal voor woningen die nog niet volledig geÃ¯soleerd zijn. Een all-electric systeem vervangt de ketel volledig en is geschikt voor goed geÃ¯soleerde woningen." },
-          { question: "Hoe lang duurt een installatie?", answer: "De installatietijd varieert per dienst. Een airconditioning is doorgaans binnen Ã©Ã©n dag geplaatst. Een warmtepomp of complete zonnepaneleninstallatie neemt Ã©Ã©n tot twee dagen in beslag." },
+          { question: "Wat is het verschil tussen hybride en all-electric?", answer: "Een hybride warmtepomp werkt samen met uw bestaande cv-ketel en is ideaal voor woningen die nog niet volledig geïsoleerd zijn. Een all-electric systeem vervangt de ketel volledig en is geschikt voor goed geïsoleerde woningen." },
+          { question: "Hoe lang duurt een installatie?", answer: "De installatietijd varieert per dienst. Een airconditioning is doorgaans binnen één dag geplaatst. Een warmtepomp of complete zonnepaneleninstallatie neemt één tot twee dagen in beslag." },
           { question: "Welke garantie bieden jullie op installaties?", answer: "Wij bieden fabrieksgarantie op alle producten, aangevuld met onze eigen installatiegarantie. Afhankelijk van het product geldt twee tot vijftien jaar garantie." },
           { question: "Zijn er bouwvergunningen nodig voor zonnepanelen of een warmtepomp?", answer: "In de meeste gevallen is geen bouwvergunning nodig. Zonnepanelen op een schuin dak zijn vergunningsvrij. Voor monumenten kan een melding of vergunning vereist zijn." },
           { question: "Werken jullie ook tijdens de weekenden?", answer: "In overleg is werken op zaterdag mogelijk. Voor spoedgevallen zijn wij zeven dagen per week bereikbaar via 06 3431 1225." },
-          { question: "Is mijn dak geschikt voor zonnepanelen?", answer: "De meeste daken zijn geschikt voor zonnepanelen. Wij beoordelen de draagkracht, oriÃ«ntatie en schaduwval van uw dak tijdens een gratis adviesbezoek." },
+          { question: "Is mijn dak geschikt voor zonnepanelen?", answer: "De meeste daken zijn geschikt voor zonnepanelen. Wij beoordelen de draagkracht, oriëntatie en schaduwval van uw dak tijdens een gratis adviesbezoek." },
           { question: "Hoe werkt een thuisbatterij precies?", answer: "Een thuisbatterij slaat de door uw zonnepanelen opgewekte energie op voor gebruik in de avond of nacht. Zo benut u meer van uw eigen zonne-energie." },
           { question: "Welke subsidies zijn beschikbaar in 2025?", answer: "De ISDE-subsidie is beschikbaar voor warmtepompen. Daarnaast zijn er gemeentelijke regelingen en gunstige btw-tarieven voor zonnepanelen." },
           { question: "Hoe onderhoud ik mijn airconditioning?", answer: "Wij adviseren een jaarlijkse onderhoudsbeurt: schoonmaken van filters, controleren van het koelmiddel en doorlichten van alle onderdelen." },
-          { question: "Zijn jullie ook voor noodgevallen beschikbaar?", answer: "Ja. Bij storingen aan door ons geÃ¯nstalleerde systemen reageren wij zo snel mogelijk, ook buiten kantooruren. Bel 06 3431 1225 voor directe hulp." },
+          { question: "Zijn jullie ook voor noodgevallen beschikbaar?", answer: "Ja. Bij storingen aan door ons geïnstalleerde systemen reageren wij zo snel mogelijk, ook buiten kantooruren. Bel 06 3431 1225 voor directe hulp." },
           { question: "Kunnen jullie ook voor bedrijven werken?", answer: "Absoluut. Naast particuliere woningen voeren wij ook installaties uit voor bedrijfspanden, kantoren en utiliteitsgebouwen." },
-          { question: "Wat kost een zonnepanelen installatie gemiddeld?", answer: "Een complete installatie van zes tot tien panelen kost gemiddeld tussen de â‚¬4.500 en â‚¬9.000 inclusief montage en omvormer. De terugverdientijd ligt doorgaans tussen vijf en acht jaar." }
+          { question: "Wat kost een zonnepanelen installatie gemiddeld?", answer: "Een complete installatie van zes tot tien panelen kost gemiddeld tussen de €4.500 en €9.000 inclusief montage en omvormer. De terugverdientijd ligt doorgaans tussen vijf en acht jaar." }
         ]
       }
     },
@@ -137,7 +137,7 @@ export const translations = {
         description: "Sinds 2008 installeren wij duurzame systemen met vakmanschap dat u kunt zien en voelen. Een vast team van eigen mensen, geen onderaannemers, en een commitment dat niet ophoudt na oplevering.",
         story: {
           label: "Ons verhaal",
-          title: "Van Ã©Ã©n idee<br /><brand>naar 16 vakmensen</brand>",
+          title: "Van één idee<br /><brand>naar 16 vakmensen</brand>",
           description: "Wat begon als een eenmanszaak in Oudewater groeide uit tot een team van gedreven vakmensen. Dezelfde waarden staan nog steeds centraal: vakmanschap, betrouwbaarheid, en nazorg die verder gaat dan de oplevering.",
         },
         milestones: [
@@ -150,10 +150,10 @@ export const translations = {
         work: {
           label: "Ons werk",
           title: "Het werk spreekt<br /><brand>voor zichzelf</brand>",
-          description: "16 eigen vakmensen, geen onderaannemers. Elk project wordt door ons eigen team ontworpen, geÃ¯nstalleerd en opgeleverd.",
+          description: "16 eigen vakmensen, geen onderaannemers. Elk project wordt door ons eigen team ontworpen, geïnstalleerd en opgeleverd.",
           cta: "Bekijk alle projecten",
           photos: [
-            { label: "Warmtepomp installatie", location: "Oudewater" },
+            { label: "Zonnepanelen installatie", location: "Oudewater" },
             { label: "Elektrische installatie", location: "Woerden" },
             { label: "Technisch onderhoud", location: "Oudewater" },
             { label: "Renovatieproject", location: "Utrecht" },
@@ -213,7 +213,7 @@ export const translations = {
         callUs: "Bel ons",
         products: "Producten & Merken",
         whatWeSupply: "Wat wij <brand>leveren</brand>",
-        productsDescription: "Kwalitatieve producten van A-merken, professioneel geÃ¯nstalleerd door onze eigen monteurs.",
+        productsDescription: "Kwalitatieve producten van A-merken, professioneel geïnstalleerd door onze eigen monteurs.",
         brands: "Merken:",
         priceOnRequest: "Prijs op aanvraag",
         quote: "Offerte",
@@ -227,7 +227,7 @@ export const translations = {
         title: "Diensten en producten voor een <brand>duurzaam thuis</brand>",
         description: "Kies een dienst om producten en installaties te ontdekken.",
         sidebar: {
-          categories: "CategorieÃ«n",
+          categories: "Categorieën",
           budgetRange: "Budget Range",
           manufacturer: "Merken",
           catalog: "Catalog",
@@ -380,7 +380,7 @@ export const translations = {
         cta: "View All",
         viewInstallation: "View installation &rarr;",
         items: [
-          { label: "Heat pump installation", location: "Oudewater", category: "Heating" },
+          { label: "Solar panel installation", location: "Oudewater", category: "Solar energy" },
           { label: "Electrical installation", location: "Woerden", category: "Electrical" },
           { label: "Technical maintenance", location: "Oudewater", category: "Maintenance" },
           { label: "Renovation project", location: "Utrecht", category: "Renovation" },
@@ -406,7 +406,7 @@ export const translations = {
         description: "Here you will find the most frequently asked questions about our services, quotes, and working method.",
         cta: "View all questions",
         items: [
-          { question: "How much does a heat pump cost?", answer: "The cost of a heat pump varies between â‚¬4,500 and â‚¬8,500, depending on the type (hybrid or all-electric) and your specific situation. We are happy to make a no-obligation quote." },
+          { question: "How much does a heat pump cost?", answer: "The cost of a heat pump varies between €4,500 and €8,500, depending on the type (hybrid or all-electric) and your specific situation. We are happy to make a no-obligation quote." },
           { question: "How quickly can I expect a quote?", answer: "After an initial consultation and possibly a site visit, you will receive a clear, detailed quote within 24 hours with no hidden costs." },
           { question: "Do you also work outside Oudewater?", answer: "Yes, we are active throughout the Utrecht region, Woerden, Bodegraven, and surrounding areas. Contact us to discuss whether your location falls within our service area." },
           { question: "Can I get a subsidy for a heat pump or solar panels?", answer: "In many cases, you may qualify for ISDE subsidy or local sustainability schemes. We are happy to advise you during the intake interview." },
@@ -422,7 +422,7 @@ export const translations = {
           { question: "How do I maintain my air conditioning?", answer: "We recommend an annual service: cleaning filters, checking refrigerant, and inspecting all components. This significantly extends lifespan and maintains efficiency." },
           { question: "Are you also available for emergencies?", answer: "Yes. For faults in systems installed by us, we respond as quickly as possible, even outside office hours. Call 06 3431 1225 for immediate assistance." },
           { question: "Can you also work for businesses?", answer: "Absolutely. In addition to private homes, we also carry out installations for business premises, offices, and utility buildings." },
-          { question: "What does a solar panel installation cost on average?", answer: "A complete installation of six to ten panels averages between â‚¬4,500 and â‚¬9,000 including mounting and inverter. The payback period is typically between five and eight years." }
+          { question: "What does a solar panel installation cost on average?", answer: "A complete installation of six to ten panels averages between €4,500 and €9,000 including mounting and inverter. The payback period is typically between five and eight years." }
         ]
       }
     },

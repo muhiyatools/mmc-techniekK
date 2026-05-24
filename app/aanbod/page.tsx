@@ -10,6 +10,7 @@ import Reveal from "../_ui/Reveal";
 import BrandLogo from "../_ui/BrandLogo";
 import { resolveProductImage } from "@/lib/images";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import dynamic from "next/dynamic";
 
 // ── Service icons ──
 const serviceIcons: Record<string, React.ReactNode> = {
@@ -34,7 +35,12 @@ const serviceIcons: Record<string, React.ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
     </svg>
   ),
-  meterkast: (
+  vloerverwarming: (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75" />
+    </svg>
+  ),
+  "meterkast-liften": (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
     </svg>
@@ -55,9 +61,23 @@ import PriceRangeSlider, { SLIDER_MIN, SLIDER_MAX, SLIDER_STEP } from "./_compon
 import ProductCard from "./_components/ProductCard";
 import MobileSheet from "../_ui/MobileSheet";
 
-import SolarSection from "./_components/SolarSection";
-import MeterkastPlanner from "./_components/MeterkastPlanner";
-import MaintenancePlanner from "./_components/MaintenancePlanner";
+const SolarSection = dynamic(() => import("./_components/SolarSection"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] rounded-[2.5rem] bg-concrete animate-pulse flex items-center justify-center border-2 border-hairline/50">
+      <span className="text-sm text-muted font-bold uppercase tracking-wider">Laden...</span>
+    </div>
+  )
+});
+
+const MaintenancePlanner = dynamic(() => import("./_components/MaintenancePlanner"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] rounded-[2.5rem] bg-concrete animate-pulse flex items-center justify-center border-2 border-hairline/50">
+      <span className="text-sm text-muted font-bold uppercase tracking-wider">Laden...</span>
+    </div>
+  )
+});
 
 // ── Sidebar ──
 function Sidebar({
@@ -169,16 +189,6 @@ function Sidebar({
   );
 }
 
-const backgroundImageMap: Record<string, string> = {
-  airconditioning: "/images/services/airco.jpg",
-  zonnepanelen: "/images/services/zonnepanelen.webp",
-  batterijopslag: "/images/services/batterijopslag.webp",
-  warmtepompen: "/images/services/warmtepompen.webp",
-  meterkast: "/images/services/meterkast.webp",
-  onderhoud: "/images/services/warmtepompen.webp",
-  renovaties: "/images/services/vloerverwarming.webp",
-};
-
 // ── Main content ──
 function AanbodContent() {
   const { t } = useLanguage();
@@ -195,7 +205,7 @@ function AanbodContent() {
   const searchParams = useSearchParams();
   const initialDienst = searchParams.get("dienst");
 
-  const [services, setServices] = useState<Service[]>(baseServices);
+  const [services, setServices] = useState<Service[]>(() => baseServices.map(s => ({ ...s, products: [] })));
   const [brandImages, setBrandImages] = useState<Record<string, string>>(baseBrandImages);
   const [activeSlug, setActiveSlug] = useState<string | null>(initialDienst || null);
   const [priceRange, setPriceRange] = useState<[number, number]>([SLIDER_MIN, SLIDER_MAX]);
@@ -220,17 +230,17 @@ function AanbodContent() {
   }, [activeSlug, services]);
 
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
-  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen' && activeService.slug !== 'onderhoud');
+  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen');
 
   const availableBrands = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'onderhoud') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen') return [];
     const set = new Set<string>();
     activeService.products.forEach((p) => set.add(p.brand));
     return Array.from(set).sort();
   }, [activeService]);
 
   const filteredProducts = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'onderhoud') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen') return [];
     if (!activeService.products || activeService.products.length === 0) return [];
     return activeService.products.filter((p) => {
       if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
@@ -247,13 +257,21 @@ function AanbodContent() {
     });
   }, [activeService, selectedBrands, priceRange]);
 
-  const handleCategorySelect = (slug: string) => {
+  const handleCategorySelect = (slug: string, type?: string) => {
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    if (isMobile && activeSlug === slug) return;
-    const next = activeSlug === slug ? null : slug;
+    if (isMobile && activeSlug === slug && !type) return;
+    const next = activeSlug === slug && !type ? null : slug;
     setActiveSlug(next);
     setSelectedBrands([]);
     setPriceRange([SLIDER_MIN, SLIDER_MAX]);
+    
+    // Update URL if type is provided for maintenance
+    if (type && typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('dienst', slug);
+      url.searchParams.set('type', type);
+      window.history.replaceState({}, '', url);
+    }
   };
 
   const handleResetFilters = () => {
@@ -263,21 +281,7 @@ function AanbodContent() {
 
   return (
     <>
-      {/* Dynamic Background Image based on active category */}
-      {activeSlug && backgroundImageMap[activeSlug] && (
-        <div className="fixed inset-0 z-0 pointer-events-none transition-all duration-1000 ease-out">
-          <Image
-            src={backgroundImageMap[activeSlug]}
-            alt="Dynamic Background"
-            fill
-            className="object-cover opacity-[0.06] grayscale-[0.3] blur-[4px] transition-all duration-1000"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg/20 via-bg/90 to-bg" />
-        </div>
-      )}
-
-      <section className="pt-[70px] lg:pt-[114px] bg-bg/50 border-b border-hairline relative z-10">
+      <section className="pt-[70px] lg:pt-[114px] bg-bg border-b border-hairline">
         <div className="max-w-[1280px] mx-auto px-5 lg:px-10 py-10 lg:py-16">
           <Reveal>
             <div className="flex items-center gap-3 mb-4 md:mb-5">
@@ -304,7 +308,7 @@ function AanbodContent() {
         <div className="lg:hidden border-b border-hairline bg-surface sticky top-[60px] z-30">
           <div className="flex gap-1 px-4 py-3 overflow-x-auto scrollbar-none" role="tablist">
             <div className="flex gap-2 mx-auto">
-              {services.map((service, i) => (
+              {services.map((service) => (
                 <button
                   key={`tab-${service.slug}`}
                   role="tab"
@@ -325,136 +329,151 @@ function AanbodContent() {
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 instrument-layout">
-          <aside className="hidden lg:block">
-            <div className="sidebar-panel">
-              <div className="mb-14">
-                <h3 className="text-2xl font-display font-black text-ink uppercase tracking-tight mb-8">{t.pages.aanbod.sidebar.catalog}</h3>
-                <div className="minimal-list space-y-3">
-                  {services.map(s => (
+      <div className="max-w-[1280px] mx-auto px-5 lg:px-10 instrument-layout">
+        <aside className="hidden lg:block">
+          <div className="sidebar-panel">
+            <div className="mb-14">
+              <h3 className="text-2xl font-display font-black text-ink uppercase tracking-tight mb-8">{t.pages.aanbod.sidebar.catalog}</h3>
+              <div className="minimal-list space-y-3">
+                {services.map(s => (
+                  <div key={s.slug}>
                     <button 
-                      key={s.slug} 
                       onClick={() => handleCategorySelect(s.slug)}
                       className={`minimal-btn text-lg py-2 ${activeSlug === s.slug ? 'active scale-105 origin-left' : 'hover:translate-x-1'} transition-all duration-300 font-black uppercase tracking-wide`}
                     >
                       <span className="icon scale-125">{serviceIcons[s.slug]}</span>
                       <span>{serviceTitleMap[s.slug]}</span>
                     </button>
-                  ))}
-                </div>
-              </div>
 
-              {activeSlug !== 'zonnepanelen' && (
-                <>
-                  <div className="h-px bg-hairline mb-14" />
-                  <div className="mb-14">
-                    <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.budgetRange}</p>
-                    {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
-                    {!showFilters && (
-                      <div className="flex items-center gap-5 text-sm font-black text-ink mb-2">
-                        <span>€0</span>
-                        <div className="flex-1 h-1 bg-hairline relative rounded-full">
-                          <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand" />
-                        </div>
-                        <span>€20k+</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {availableBrands.length > 0 && (
-                    <div>
-                      <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.manufacturer}</p>
-                      <div className="flex flex-wrap gap-3">
-                        {availableBrands.map(brand => (
+                    {/* Maintenance Dropdown / Sub-items */}
+                    {s.slug === 'onderhoud' && activeSlug === 'onderhoud' && (
+                      <div className="pl-8 py-2 space-y-2 border-l border-brand/30 ml-3 mt-1 animate-fade-in">
+                        {['Airco', 'Solar', 'Batterij', 'Meterkast', 'Elektra'].map(type => (
                           <button 
-                            key={brand}
-                            onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])}
-                            className={`px-4 py-2 text-micro tracking-widest rounded-xl border-2 transition-all duration-300 flex items-center gap-2.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand shadow-lg shadow-brand/10' : 'bg-concrete text-muted border-transparent hover:border-brand/20 hover:text-brand'}`}
+                            key={type}
+                            onClick={() => handleCategorySelect('onderhoud', type.toLowerCase())}
+                            className="block text-sm font-bold text-muted hover:text-brand transition-colors py-1"
                           >
-                            <BrandLogo brand={brand} imageSrc={brandImages[brand] ?? ""} height={18} />
+                            {type} Onderhoud
                           </button>
                         ))}
                       </div>
+                    )}
+                  </div>
+                ))}
+              </div>            </div>
+
+            {activeSlug !== 'zonnepanelen' && (
+              <>
+                <div className="h-px bg-hairline mb-14" />
+                <div className="mb-14">
+                  <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.budgetRange}</p>
+                  {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
+                  {!showFilters && (
+                    <div className="flex items-center gap-5 text-sm font-black text-ink mb-2">
+                      <span>€0</span>
+                      <div className="flex-1 h-1 bg-hairline relative rounded-full">
+                        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand" />
+                      </div>
+                      <span>€20k+</span>
                     </div>
                   )}
-                </>
-              )}
-            </div>
-          </aside>
+                </div>
 
-          <div className="flex-1 min-w-0">
-            {activeSlug === 'zonnepanelen' ? (
-              <SolarSection />
-            ) : activeSlug === 'onderhoud' ? (
-              <MaintenancePlanner />
-            ) : activeSlug && activeService ? (
-              <>
-                <div className="compact-service-header mb-12">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full -mr-32 -mt-32 blur-[100px] hidden md:block" />
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 p-8 lg:p-12">
-                    <div>
-                      <p className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/60 mb-3">{serviceTitleMap[activeService.slug]}</p>
-                      <h2 className="font-display font-black text-2xl md:text-5xl lg:text-6xl text-ink leading-[0.9] tracking-[-0.03em] uppercase">
-                        {serviceCaptionMap[activeService.slug]}
-                      </h2>
+                {availableBrands.length > 0 && (
+                  <div>
+                    <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.manufacturer}</p>
+                    <div className="flex flex-wrap gap-3">
+                      {availableBrands.map(brand => (
+                        <button 
+                          key={brand}
+                          onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])}
+                          className={`px-4 py-2 text-micro tracking-widest rounded-xl border-2 transition-all duration-300 flex items-center gap-2.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand shadow-lg shadow-brand/10' : 'bg-concrete text-muted border-transparent hover:border-brand/20 hover:text-brand'}`}
+                        >
+                          <BrandLogo brand={brand} imageSrc={brandImages[brand] ?? ""} height={18} />
+                        </button>
+                      ))}
                     </div>
-                    <Link href={`/contact?service=${activeService.slug}`} className="px-10 py-5 md:px-14 md:py-6 bg-ink text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.25em] text-white rounded-full hover:bg-brand transition-all duration-500 text-center shadow-2xl hover:shadow-brand/40 hover:-translate-y-1 active:translate-y-0 shrink-0">
-                      {t.pages.aanbod.requestQuote}
-                    </Link>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between mb-8 md:mb-12 border-b-2 border-hairline/50 pb-6 md:pb-8">
-                  <div className="flex items-center gap-5">
-                    <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-black text-ink uppercase tracking-widest ml-2">
-                      {filteredProducts.length} {t.pages.aanbod.results}
-                    </p>
-                    <div className="h-5 md:h-6 w-px bg-hairline shrink-0" />
-                    <button
-                      onClick={() => setMobileFilterOpen(true)}
-                      className="lg:hidden flex items-center gap-2 px-4 py-2 border-2 border-hairline rounded-full text-[11px] font-black text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
-                      aria-label={t.pages.aanbod.filterTitle}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                      </svg>
-                      {t.pages.aanbod.filterTitle}
-                    </button>
-                    <p className="hidden lg:block text-[11px] text-muted/60 font-black uppercase tracking-widest">
-                      {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10 lg:gap-12 mb-20">
-                  {filteredProducts.map((product, i) => (
-                    <ProductCard
-                      key={i}
-                      product={product}
-                      serviceSlug={activeService.slug}
-                      brandImages={brandImages}
-                      requestQuoteLabel={t.pages.aanbod.requestQuote}
-                      todayQuoteLabel={t.pages.aanbod.todayQuote}
-                    />
-                  ))}
-                </div>
+                )}
               </>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 mb-20">
-                {services.map((service, i) => (
-                  <button key={service.slug} onClick={() => handleCategorySelect(service.slug)} className="group relative aspect-[16/10] rounded-3xl overflow-hidden bg-ink shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                    <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-50 group-hover:scale-110 group-hover:opacity-70 transition-all duration-[1.5s] ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
-                      <p className="text-micro text-brand font-black mb-3">{t.pages.aanbod.dienst}</p>
-                      <h3 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500">{serviceTitleMap[service.slug]}</h3>
-                    </div>
-                  </button>
-                ))}
-              </div>
             )}
           </div>
+        </aside>
+
+        <div className="flex-1 min-w-0">
+          {activeSlug === 'zonnepanelen' ? (
+            <SolarSection />
+          ) : activeSlug === 'onderhoud' ? (
+            <MaintenancePlanner />
+          ) : activeSlug && activeService ? (
+            <>
+              <div className="compact-service-header mb-12">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full -mr-32 -mt-32 blur-[100px] hidden md:block" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 p-8 lg:p-12">
+                  <div>
+                    <p className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/60 mb-3">{serviceTitleMap[activeService.slug]}</p>
+                    <h2 className="font-display font-black text-2xl md:text-5xl lg:text-6xl text-ink leading-[0.9] tracking-[-0.03em] uppercase">
+                      {serviceCaptionMap[activeService.slug]}
+                    </h2>
+                  </div>
+                  <Link href={`/contact?service=${activeService.slug}`} className="px-10 py-5 md:px-14 md:py-6 bg-ink text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.25em] text-white rounded-full hover:bg-brand transition-all duration-500 text-center shadow-2xl hover:shadow-brand/40 hover:-translate-y-1 active:translate-y-0 shrink-0">
+                    {t.pages.aanbod.requestQuote}
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between mb-8 md:mb-12 border-b-2 border-hairline/50 pb-6 md:pb-8">
+                <div className="flex items-center gap-5">
+                  <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-black text-ink uppercase tracking-widest ml-2">
+                    {filteredProducts.length} {t.pages.aanbod.results}
+                  </p>
+                  <div className="h-5 md:h-6 w-px bg-hairline shrink-0" />
+                  <button
+                    onClick={() => setMobileFilterOpen(true)}
+                    className="lg:hidden flex items-center gap-2 px-4 py-2 border-2 border-hairline rounded-full text-[11px] font-black text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
+                    aria-label={t.pages.aanbod.filterTitle}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                    {t.pages.aanbod.filterTitle}
+                  </button>
+                  <p className="hidden lg:block text-[11px] text-muted/60 font-black uppercase tracking-widest">
+                    {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10 lg:gap-12 mb-20">
+                {filteredProducts.map((product, i) => (
+                  <ProductCard
+                    key={i}
+                    product={product}
+                    serviceSlug={activeService.slug}
+                    brandImages={brandImages}
+                    requestQuoteLabel={t.pages.aanbod.requestQuote}
+                    todayQuoteLabel={t.pages.aanbod.todayQuote}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 mb-20">
+              {services.map((service, i) => (
+                <button key={service.slug} onClick={() => handleCategorySelect(service.slug)} className="group relative aspect-[16/10] rounded-3xl overflow-hidden bg-ink shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                  <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-50 group-hover:scale-110 group-hover:opacity-70 transition-all duration-[1.5s] ease-out" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
+                    <p className="text-micro text-brand font-black mb-3">{t.pages.aanbod.dienst}</p>
+                    <h3 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500">{serviceTitleMap[service.slug]}</h3>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

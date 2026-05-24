@@ -15,6 +15,17 @@ const partnerLogos = [
   { name: "AlphaESS", src: "/images/brands/alphaess.png" },
   { name: "Sigenergy", src: "/images/brands/sigenergy.png" },
   { name: "TSUN", src: "/images/brands/tsun.png" },
+  { name: "Hager", src: "/images/brands/hager.png" },
+  { name: "Deye", src: "/images/brands/deye.png" },
+  { name: "Alberto Sassi", src: "/images/brands/alberto_sassi.png" },
+  { name: "Busch-Jaeger", src: "/images/brands/busch_jaeger.png" },
+  { name: "Jung", src: "/images/brands/jung.png" },
+  { name: "Gira", src: "/images/brands/gira.png" },
+  { name: "Schneider Electric", src: "/images/brands/schneider_electric.png" },
+  { name: "Weheat", src: "/images/brands/weheat.png" },
+  { name: "Remeha", src: "/images/brands/remeha.png" },
+  { name: "ABB", src: "/images/brands/ABB.png" },
+  { name: "EMAT", src: "/images/brands/emat.png" },
 ];
 
 export default function ClientStrip() {

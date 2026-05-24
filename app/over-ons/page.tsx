@@ -129,40 +129,37 @@ export default function AboutPage() {
 
   return (
     <>
-      <div className="pt-[70px] lg:pt-[114px]">
+      <div className="pt-[104px] lg:pt-[114px]">
         {/* ── Hero ── */}
-        <section className="relative min-h-[90vh] lg:min-h-[85vh] flex items-center bg-ink overflow-hidden">
+        <section className="relative min-h-[85vh] lg:min-h-[80vh] flex items-center bg-ink overflow-hidden">
           <div ref={heroParallax.ref} className="absolute inset-0" style={{ transform: `translateY(${heroParallax.offset}px)` }}>
-            <Image src="/images/solarbackground.webp" alt="" fill className="object-cover opacity-35 lg:opacity-45 scale-105" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/75 to-ink/20" />
+            <Image src="/images/solarbackground.webp" alt="" fill className="object-cover opacity-25 lg:opacity-30 scale-105" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/20" />
           </div>
 
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand to-aurora-2 animate-[aurora-drift_18s_linear_infinite] bg-[length:200%_100%] opacity-60" />
 
-          <div className="relative w-full max-w-[1280px] mx-auto px-6 lg:px-10 py-32 lg:py-48">
+          <div className="relative w-full max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-24">
             <div className="max-w-4xl lg:max-w-[1000px]">
               <ScrollReveal threshold={0.3}>
-                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.35em] text-brand mb-10 block">{m.label}</span>
+                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.35em] text-brand mb-6 block">{m.label}</span>
               </ScrollReveal>
 
-              <h1 className="font-display text-[clamp(3.5rem,11vw,9rem)] lg:text-[clamp(5.5rem,9vw,11rem)] font-black leading-[0.8] tracking-[-0.04em] text-white mb-12 overflow-hidden uppercase">
-                {titleParts.map((part, i) => {
-                  if (part.startsWith("<brand>")) {
-                    const clean = part.replace(/<\/?brand>/g, "");
-                    return <WordLift key={i} text={clean} brandTag delay={i * 120} />;
-                  }
-                  return <WordLift key={i} text={part} delay={i * 120} />;
-                })}
-              </h1>
+              <ScrollReveal delay={100} threshold={0.3}>
+                <h1 
+                  className="font-display text-[clamp(2.75rem,8vw,7.5rem)] lg:text-[clamp(4.5rem,7vw,9rem)] font-black leading-[0.95] tracking-tight text-white mb-8 uppercase text-wrap-balance"
+                  dangerouslySetInnerHTML={{ __html: heroTitle.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+                />
+              </ScrollReveal>
 
-              <ScrollReveal threshold={0.3}>
-                <p className="text-[clamp(1.25rem,2vw,1.75rem)] text-white/70 font-medium leading-relaxed max-w-3xl mb-20 lg:mb-32">
+              <ScrollReveal delay={200} threshold={0.3}>
+                <p className="text-[clamp(1.15rem,1.8vw,1.5rem)] text-white/70 font-medium leading-relaxed max-w-3xl mb-12">
                   {heroDesc}
                 </p>
               </ScrollReveal>
 
               <ScrollReveal threshold={0.3}>
-                <div className="flex flex-wrap gap-x-20 lg:gap-x-32 gap-y-12">
+                <div className="flex flex-wrap gap-x-20 lg:gap-x-32 gap-y-8">
                   {statsData.map(([val, label]) => (
                     <div key={`stat-${label}`}>
                       <div className="font-display text-[clamp(3rem,5vw,5.5rem)] font-black text-white tabular-nums leading-none tracking-tighter">{val}</div>
