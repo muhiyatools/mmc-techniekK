@@ -54,9 +54,21 @@ function useParallax(speed = 0.3) {
   return { ref, offset };
 }
 
-function ScrollReveal({ children, threshold = 0.15, className = "" }: { children: React.ReactNode; threshold?: number; className?: string }) {
+function ScrollReveal({ children, threshold = 0.15, className = "", delay = 0 }: { children: React.ReactNode; threshold?: number; className?: string; delay?: number }) {
   const ref = useScrollReveal(threshold);
-  return <div ref={ref} className={className} style={{ opacity: 0, transform: "translateY(32px)", transition: "opacity 800ms cubic-bezier(0.16,1,0.3,1), transform 800ms cubic-bezier(0.16,1,0.3,1)" }}>{children}</div>;
+  return (
+    <div 
+      ref={ref} 
+      className={className} 
+      style={{ 
+        opacity: 0, 
+        transform: "translateY(32px)", 
+        transition: `opacity 800ms cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 800ms cubic-bezier(0.16,1,0.3,1) ${delay}ms` 
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 function WordLift({ text, brandTag, delay = 0 }: { text: string; brandTag?: boolean; delay?: number }) {
