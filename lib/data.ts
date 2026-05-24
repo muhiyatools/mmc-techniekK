@@ -546,7 +546,7 @@ export const clientLogos = [
 ];
 
 export const projectImages = [
-  { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Warmtepomp installatie", location: "Oudewater", category: "Verwarming" },
+  { src: "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", label: "Zonnepanelen installatie", location: "Oudewater", category: "Zonne-energie" },
   { src: "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", label: "Elektrische installatie", location: "Woerden", category: "Elektra" },
   { src: "/images/projects/20240920_112524-scaled.jpg", label: "Technisch onderhoud", location: "Oudewater", category: "Onderhoud" },
   { src: "/images/projects/PHOTO-2024-12-08-15-05-59.jpg", label: "Renovatieproject", location: "Utrecht", category: "Renovatie" },
