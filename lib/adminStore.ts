@@ -5,19 +5,20 @@ import type { Service, Product } from "./data";
 export interface AdminStore {
   products: Record<string, Product[]>;
   brandImages: Record<string, string>;
+  settings?: Record<string, string>;
 }
 
 const ADMIN_STORE_KEY = "mmc_admin_store_v2";
 
 // ── Local storage fallback ──
 export function getLocalStore(): AdminStore {
-  if (typeof window === "undefined") return { products: {}, brandImages: {} };
+  if (typeof window === "undefined") return { products: {}, brandImages: {}, settings: {} };
   try {
     const raw = localStorage.getItem(ADMIN_STORE_KEY);
-    if (!raw) return { products: {}, brandImages: {} };
+    if (!raw) return { products: {}, brandImages: {}, settings: {} };
     return JSON.parse(raw) as AdminStore;
   } catch {
-    return { products: {}, brandImages: {} };
+    return { products: {}, brandImages: {}, settings: {} };
   }
 }
 
@@ -32,14 +33,21 @@ export async function fetchAdminStore(): Promise<AdminStore> {
   const local = getLocalStore();
 
   try {
-    const [{ data: dbProducts }, { data: dbBrands }] = await Promise.all([
-      supabase.from("admin_products").select("*"),
-      supabase.from("admin_brands").select("*"),
-    ]);
+    const fetchProducts = async () => {
+      try { const { data } = await supabase.from("admin_products").select("*"); return data; } catch { return null; }
+    };
+    const fetchBrands = async () => {
+      try { const { data } = await supabase.from("admin_brands").select("*"); return data; } catch { return null; }
+    };
+    const fetchSettings = async () => {
+      try { const { data } = await supabase.from("admin_settings").select("*"); return data; } catch { return null; }
+    };
 
-    if (!dbProducts && !dbBrands) return local;
+    const [dbProducts, dbBrands, dbSettings] = await Promise.all([fetchProducts(), fetchBrands(), fetchSettings()]);
 
-    const store: AdminStore = { products: {}, brandImages: {} };
+    if (!dbProducts && !dbBrands && !dbSettings) return local;
+
+    const store: AdminStore = { products: {}, brandImages: {}, settings: {} };
 
     dbProducts?.forEach((p: any) => {
       const slug = p.service_slug;
@@ -59,6 +67,11 @@ export async function fetchAdminStore(): Promise<AdminStore> {
       store.brandImages[b.name] = b.logo_url ?? "";
     });
 
+    dbSettings?.forEach((s: any) => {
+      if (!store.settings) store.settings = {};
+      store.settings[s.key] = s.value ?? "";
+    });
+
     // Sync to localStorage as backup
     setLocalStore(store);
 
@@ -66,6 +79,26 @@ export async function fetchAdminStore(): Promise<AdminStore> {
   } catch (err) {
     // Supabase not configured — return localStorage data
     return local;
+  }
+}
+
+// ── Save general settings ──
+export async function saveSetting(key: string, value: string): Promise<boolean> {
+  const local = getLocalStore();
+  const next: AdminStore = {
+    ...local,
+    settings: {
+      ...(local.settings ?? {}),
+      [key]: value,
+    },
+  };
+  setLocalStore(next);
+
+  try {
+    await supabase.from("admin_settings").upsert({ key, value }, { onConflict: "key" });
+    return true;
+  } catch {
+    return false;
   }
 }
 

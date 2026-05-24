@@ -98,3 +98,27 @@ DROP TRIGGER IF EXISTS admin_products_updated_at ON public.admin_products;
 CREATE TRIGGER admin_products_updated_at
   BEFORE UPDATE ON public.admin_products
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+-- 9. Admin settings table (key-value for hero text etc.)
+CREATE TABLE IF NOT EXISTS public.admin_settings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  key text NOT NULL UNIQUE,
+  value text NOT NULL DEFAULT '',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.admin_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read settings"
+  ON public.admin_settings FOR SELECT TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Allow public write settings"
+  ON public.admin_settings FOR ALL TO anon, authenticated
+  USING (true) WITH CHECK (true);
+
+DROP TRIGGER IF EXISTS admin_settings_updated_at ON public.admin_settings;
+CREATE TRIGGER admin_settings_updated_at
+  BEFORE UPDATE ON public.admin_settings
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();

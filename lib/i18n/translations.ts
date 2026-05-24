@@ -184,6 +184,7 @@
           label: "Gecertificeerd vakmanschap",
           title: "Erkend door de<br /><brand>industrie</brand>",
         },
+        cta: "Plan een gesprek",
         stats: [
           { label: "Jaar ervaring" },
           { label: "Projecten opgeleverd" },
@@ -492,6 +493,7 @@
           label: "Certified craftsmanship",
           title: "Recognized by<br /><brand>the industry</brand>",
         },
+        cta: "Book a call",
         stats: [
           { label: "Years experience" },
           { label: "Projects delivered" },

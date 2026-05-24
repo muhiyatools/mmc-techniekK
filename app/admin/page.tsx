@@ -8,6 +8,7 @@ import {
   deleteProduct,
   saveBrand,
   deleteBrand,
+  saveSetting,
   uploadImage,
   mergeServices,
   mergeBrandImages,
@@ -638,11 +639,111 @@ function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore
   );
 }
 
+// ── Settings Tab ──
+function SettingsTab({ store, setStore, toast }: { store: AdminStore; setStore: (s: AdminStore) => void; toast: ReturnType<typeof useToast>["show"] }) {
+  const [aboutTitleNl, setAboutTitleNl] = useState(store.settings?.about_hero_title_nl ?? "");
+  const [aboutTitleEn, setAboutTitleEn] = useState(store.settings?.about_hero_title_en ?? "");
+  const [aboutDescNl, setAboutDescNl] = useState(store.settings?.about_hero_desc_nl ?? "");
+  const [aboutDescEn, setAboutDescEn] = useState(store.settings?.about_hero_desc_en ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await Promise.all([
+        saveSetting("about_hero_title_nl", aboutTitleNl),
+        saveSetting("about_hero_title_en", aboutTitleEn),
+        saveSetting("about_hero_desc_nl", aboutDescNl),
+        saveSetting("about_hero_desc_en", aboutDescEn),
+      ]);
+      const next: AdminStore = {
+        ...store,
+        settings: {
+          ...(store.settings ?? {}),
+          about_hero_title_nl: aboutTitleNl,
+          about_hero_title_en: aboutTitleEn,
+          about_hero_desc_nl: aboutDescNl,
+          about_hero_desc_en: aboutDescEn,
+        },
+      };
+      setStore(next);
+      toast("Instellingen opgeslagen", "success");
+    } catch (e) {
+      toast("Fout bij opslaan: " + String(e), "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-hairline rounded-2xl p-5 lg:p-6 space-y-6">
+      <div>
+        <h3 className="text-sm font-bold text-ink mb-1">Over Ons - Hero Sectie</h3>
+        <p className="text-xs text-muted">Pas de introductietekst van de Over Ons pagina aan. Gebruik &lt;brand&gt; en &lt;/brand&gt; voor het blauwe logo effect.</p>
+      </div>
+
+      <div className="border-t border-hairline pt-5 space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className="block text-label text-muted mb-2">Hero Titel (Nederlands)</label>
+            <input
+              type="text"
+              value={aboutTitleNl}
+              onChange={(e) => setAboutTitleNl(e.target.value)}
+              placeholder="Vakmanschap<br />&lt;brand&gt;uit Oudewater&lt;/brand&gt;"
+              className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+            />
+          </div>
+          <div>
+            <label className="block text-label text-muted mb-2">Hero Titel (Engels)</label>
+            <input
+              type="text"
+              value={aboutTitleEn}
+              onChange={(e) => setAboutTitleEn(e.target.value)}
+              placeholder="Craftsmanship<br />&lt;brand&gt;from Oudewater&lt;/brand&gt;"
+              className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className="block text-label text-muted mb-2">Beschrijving (Nederlands)</label>
+            <textarea
+              value={aboutDescNl}
+              onChange={(e) => setAboutDescNl(e.target.value)}
+              rows={4}
+              placeholder="Sinds 2008 installeren wij..."
+              className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none"
+            />
+          </div>
+          <div>
+            <label className="block text-label text-muted mb-2">Beschrijving (Engels)</label>
+            <textarea
+              value={aboutDescEn}
+              onChange={(e) => setAboutDescEn(e.target.value)}
+              rows={4}
+              placeholder="Since 2008, we have been installing..."
+              className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-2 border-t border-hairline">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-brand text-white text-sm font-bold rounded-full hover:bg-brand-deep transition-colors uppercase tracking-wide disabled:opacity-50">
+          {saving ? "Opslaan..." : "Instellingen opslaan"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main ──
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [store, setStoreState] = useState<AdminStore>({ products: {}, brandImages: {} });
-  const [activeTab, setActiveTab] = useState<"products" | "brands" | "add">("products");
+  const [store, setStoreState] = useState<AdminStore>({ products: {}, brandImages: {}, settings: {} });
+  const [activeTab, setActiveTab] = useState<"products" | "brands" | "add" | "settings">("products");
   const [loading, setLoading] = useState(true);
   const { toasts, show } = useToast();
 
@@ -688,6 +789,7 @@ export default function AdminPage() {
               { key: "products" as const, label: "Producten", icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg> },
               { key: "brands" as const, label: "Merken", icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M6 6h.008v.008H6V6z" /></svg> },
               { key: "add" as const, label: "Toevoegen", icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 4.5v15m7.5-7.5h-15" /></svg> },
+              { key: "settings" as const, label: "Instellingen", icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg> },
             ].map((t) => (
               <button key={t.key} onClick={() => setActiveTab(t.key)} className={`flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wide border-b-2 transition-colors whitespace-nowrap ${activeTab === t.key ? "text-brand border-brand" : "text-muted border-transparent hover:text-ink"}`}>
                 {t.icon}
@@ -710,6 +812,7 @@ export default function AdminPage() {
             {activeTab === "products" && <ProductsTab store={store} setStore={setStore} toast={show} />}
             {activeTab === "brands" && <BrandsTab store={store} setStore={setStore} toast={show} />}
             {activeTab === "add" && <AddProductTab store={store} setStore={setStore} toast={show} />}
+            {activeTab === "settings" && <SettingsTab store={store} setStore={setStore} toast={show} />}
           </>
         )}
       </div>
