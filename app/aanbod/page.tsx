@@ -107,7 +107,7 @@ function Sidebar({
                   {serviceIcons[service.slug]}
                 </span>
                 <span className="flex-1 leading-tight">{sidebarTitleMap[service.slug]}</span>
-                {service.products && service.products.length > 0 && (
+                {service.products && service.products.length > 0 && service.slug !== 'zonnepanelen' && (
                   <span className={`text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full tabular-nums shrink-0 ${activeSlug === service.slug ? "bg-brand/15 text-brand" : "bg-concrete text-muted"}`}>
                     {service.products.length}
                   </span>
@@ -118,7 +118,7 @@ function Sidebar({
         </ul>
       </div>
 
-      {showFilters && (
+      {showFilters && activeSlug !== 'zonnepanelen' && (
         <>
           <div className="h-px bg-hairline mb-6" />
 
@@ -199,12 +199,9 @@ function AanbodContent() {
         setServices(mergeServices(store));
         setBrandImages(mergeBrandImages(store));
       })
-      .catch(() => {
-        // Supabase not configured, use base data
-      });
+      .catch(() => {});
   }, []);
 
-  // Auto-select first service on mobile when nothing selected
   useEffect(() => {
     if (activeSlug !== null || services.length === 0) return;
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -214,17 +211,17 @@ function AanbodContent() {
   }, [activeSlug, services]);
 
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
-  const showFilters = !!(activeService && activeService.products.length > 0);
+  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen');
 
   const availableBrands = useMemo(() => {
-    if (!activeService) return [];
+    if (!activeService || activeService.slug === 'zonnepanelen') return [];
     const set = new Set<string>();
     activeService.products.forEach((p) => set.add(p.brand));
     return Array.from(set).sort();
   }, [activeService]);
 
   const filteredProducts = useMemo(() => {
-    if (!activeService) return [];
+    if (!activeService || activeService.slug === 'zonnepanelen') return [];
     if (!activeService.products || activeService.products.length === 0) return [];
     return activeService.products.filter((p) => {
       if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
@@ -257,23 +254,22 @@ function AanbodContent() {
 
   return (
     <>
-      {/* Hero */}
       <section className="pt-[70px] lg:pt-[114px] bg-bg border-b border-hairline">
-        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 py-6 lg:py-10">
+        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 py-10 lg:py-16">
           <Reveal>
-            <div className="flex items-center gap-2 mb-2 md:mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-              <span className="text-label text-muted">{t.pages.aanbod.label}</span>
+            <div className="flex items-center gap-3 mb-4 md:mb-5">
+              <span className="w-2.5 h-2.5 rounded-full bg-brand shadow-sm shadow-brand/20" />
+              <span className="text-label text-muted font-black tracking-[0.25em]">{t.pages.aanbod.label}</span>
             </div>
           </Reveal>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 md:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 md:gap-10">
             <Reveal delay={60}>
-              <h1 className="font-display font-extrabold text-[clamp(1.5rem,3.5vw,3rem)] leading-[0.95] tracking-tight text-ink"
+              <h1 className="font-display font-black text-[clamp(2.5rem,6vw,6rem)] leading-[0.85] tracking-[-0.04em] text-ink max-w-2xl"
                 dangerouslySetInnerHTML={{ __html: t.pages.aanbod.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
               />
             </Reveal>
             <Reveal delay={120}>
-              <p className="text-xs md:text-sm text-muted leading-relaxed max-w-xs sm:text-right">
+              <p className="text-base lg:text-xl text-muted/80 font-medium leading-relaxed max-w-sm sm:text-right">
                 {t.pages.aanbod.description}
               </p>
             </Reveal>
@@ -282,23 +278,22 @@ function AanbodContent() {
       </section>
 
       <div className="bg-bg">
-        {/* Mobile category tabs */}
-        <div className="lg:hidden border-b border-hairline bg-surface">
-          <div className="flex gap-1 px-4 py-2.5 overflow-x-auto scrollbar-none" role="tablist">
-            <div className="flex gap-1 mx-auto">
+        <div className="lg:hidden border-b border-hairline bg-surface sticky top-[60px] z-30">
+          <div className="flex gap-1 px-4 py-3 overflow-x-auto scrollbar-none" role="tablist">
+            <div className="flex gap-2 mx-auto">
               {services.map((service, i) => (
                 <button
                   key={`tab-${service.slug}`}
                   role="tab"
                   aria-selected={activeSlug === service.slug}
                   onClick={() => handleCategorySelect(service.slug)}
-                  className={`relative flex items-center gap-2 px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-wide whitespace-nowrap touch-target transition-all shrink-0 rounded-lg ${
+                  className={`relative flex items-center gap-3 px-5 py-3 text-[12px] font-black uppercase tracking-wider whitespace-nowrap touch-target transition-all shrink-0 rounded-xl border ${
                     activeSlug === service.slug
-                      ? "bg-brand text-white shadow-sm"
-                      : "text-muted hover:text-ink hover:bg-concrete"
+                      ? "bg-brand text-white border-brand shadow-lg shadow-brand/20"
+                      : "text-muted border-hairline hover:text-ink hover:bg-concrete"
                   }`}
                 >
-                  <span className={`w-3.5 h-3.5 shrink-0 ${activeSlug === service.slug ? "" : "opacity-60"}`}>
+                  <span className={`w-4 h-4 shrink-0 ${activeSlug === service.slug ? "" : "opacity-60"}`}>
                     {serviceIcons[service.slug]}
                   </span>
                   <span>{serviceTitleMap[service.slug]}</span>
@@ -309,102 +304,139 @@ function AanbodContent() {
         </div>
 
         <div className="max-w-[1280px] mx-auto px-5 lg:px-10 instrument-layout">
-          {/* Refined Sidebar */}
           <aside className="hidden lg:block">
             <div className="sidebar-panel">
-              <div className="mb-10">
-                <h3 className="text-xl font-display font-bold text-ink uppercase tracking-tight mb-6">{t.pages.aanbod.sidebar.catalog}</h3>
-                <div className="minimal-list space-y-2">
+              <div className="mb-14">
+                <h3 className="text-2xl font-display font-black text-ink uppercase tracking-tight mb-8">{t.pages.aanbod.sidebar.catalog}</h3>
+                <div className="minimal-list space-y-3">
                   {services.map(s => (
                     <button 
                       key={s.slug} 
                       onClick={() => handleCategorySelect(s.slug)}
-                      className={`minimal-btn ${activeSlug === s.slug ? 'active' : ''}`}
+                      className={`minimal-btn text-lg py-2 ${activeSlug === s.slug ? 'active scale-105 origin-left' : 'hover:translate-x-1'} transition-all duration-300 font-black uppercase tracking-wide`}
                     >
-                      <span className="icon">{serviceIcons[s.slug]}</span>
+                      <span className="icon scale-125">{serviceIcons[s.slug]}</span>
                       <span>{serviceTitleMap[s.slug]}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="h-px bg-hairline mb-10" />
+              {activeSlug !== 'zonnepanelen' && (
+                <>
+                  <div className="h-px bg-hairline mb-14" />
+                  <div className="mb-14">
+                    <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.budgetRange}</p>
+                    {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
+                    {!showFilters && (
+                      <div className="flex items-center gap-5 text-sm font-black text-ink mb-2">
+                        <span>€0</span>
+                        <div className="flex-1 h-1 bg-hairline relative rounded-full">
+                          <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand" />
+                        </div>
+                        <span>€20k+</span>
+                      </div>
+                    )}
+                  </div>
 
-              <div className="mb-10">
-                <p className="text-micro text-muted mb-4">{t.pages.aanbod.sidebar.budgetRange}</p>
-                {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
-                {!showFilters && (
-                  <div className="flex items-center gap-4 text-xs font-bold text-ink mb-2">
-                    <span>€0</span>
-                    <div className="flex-1 h-px bg-hairline relative">
-                      <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand" />
+                  {availableBrands.length > 0 && (
+                    <div>
+                      <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.manufacturer}</p>
+                      <div className="flex flex-wrap gap-3">
+                        {availableBrands.map(brand => (
+                          <button 
+                            key={brand}
+                            onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])}
+                            className={`px-4 py-2 text-micro tracking-widest rounded-xl border-2 transition-all duration-300 flex items-center gap-2.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand shadow-lg shadow-brand/10' : 'bg-concrete text-muted border-transparent hover:border-brand/20 hover:text-brand'}`}
+                          >
+                            <BrandLogo brand={brand} imageSrc={brandImages[brand] ?? ""} height={18} />
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <span>€20k</span>
-                  </div>
-                )}
-              </div>
-
-              {availableBrands.length > 0 && (
-                <div>
-                  <p className="text-micro text-muted mb-4">{t.pages.aanbod.sidebar.manufacturer}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {availableBrands.map(brand => (
-                      <button 
-                        key={brand}
-                        onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])}
-                        className={`px-3 py-1.5 text-micro tracking-wider rounded-lg border transition-all duration-200 flex items-center gap-1.5 ${selectedBrands.includes(brand) ? 'bg-brand text-white border-brand' : 'bg-concrete text-muted border-transparent hover:bg-brand/10 hover:text-brand'}`}
-                      >
-                        <BrandLogo brand={brand} imageSrc={brandImages[brand] ?? ""} height={14} />
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  )}
+                </>
               )}
             </div>
           </aside>
 
-          {/* Main Content */}
           <div className="flex-1 min-w-0">
-            {activeSlug && activeService ? (
+            {activeSlug === 'zonnepanelen' ? (
+              <div className="relative min-h-[70vh] rounded-3xl overflow-hidden flex flex-col items-center justify-center text-center px-6 py-24 mb-12 shadow-2xl shadow-brand/10 group">
+                <Image src="/images/solarbackground.webp" alt="Zonnepanelen" fill className="object-cover group-hover:scale-105 transition-transform duration-[12s] ease-linear" priority />
+                <div className="absolute inset-0 bg-ink/75 backdrop-blur-[2px]" />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2" />
+                
+                <div className="relative z-10 max-w-3xl">
+                  <Reveal>
+                    <span className="inline-block px-5 py-2 rounded-full bg-brand/15 border border-brand/30 text-brand text-[12px] font-black uppercase tracking-[0.3em] mb-8">
+                      {serviceTitleMap['zonnepanelen']}
+                    </span >
+                  </Reveal>
+                  <Reveal delay={100}>
+                    <h2 className="font-display font-black text-[clamp(2.5rem,8vw,6.5rem)] text-white leading-[0.85] tracking-[-0.04em] uppercase mb-10">
+                      Maatwerk <br/><span className="text-brand">Solar Solutions</span>
+                    </h2>
+                  </Reveal>
+                  <Reveal delay={200}>
+                    <p className="text-lg md:text-2xl text-white/70 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
+                      Wij leveren geen standaard pakketten, maar ontwerpen een systeem dat perfect past bij uw dak en energiebehoefte.
+                    </p>
+                  </Reveal>
+                  <Reveal delay={300}>
+                    <Link 
+                      href="/contact?service=zonnepanelen" 
+                      className="inline-flex items-center gap-5 px-14 py-7 bg-brand text-white text-lg md:text-xl font-black uppercase tracking-[0.2em] rounded-full hover:bg-white hover:text-brand transition-all duration-500 shadow-2xl shadow-brand/40 group/btn hover:-translate-y-2 active:translate-y-0"
+                    >
+                      <span>Vraag Maatwerk Offerte</span>
+                      <svg className="w-6 h-6 transition-transform duration-500 group-hover/btn:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                  </Reveal>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-2 via-brand/20 to-aurora-1" />
+              </div>
+            ) : activeSlug && activeService ? (
               <>
-                <div className="compact-service-header">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full -mr-16 -mt-16 blur-3xl hidden md:block" />
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+                <div className="compact-service-header mb-12">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full -mr-32 -mt-32 blur-[100px] hidden md:block" />
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 p-8 lg:p-12">
                     <div>
-                      <p className="text-micro text-muted mb-0.5 md:mb-1">{serviceTitleMap[activeService.slug]}</p>
-                      <h2 className="font-display font-bold text-lg md:text-3xl lg:text-4xl text-ink leading-tight tracking-tight uppercase">
+                      <p className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/60 mb-3">{serviceTitleMap[activeService.slug]}</p>
+                      <h2 className="font-display font-black text-2xl md:text-5xl lg:text-6xl text-ink leading-[0.9] tracking-[-0.03em] uppercase">
                         {serviceCaptionMap[activeService.slug]}
                       </h2>
                     </div>
-                    <Link href={`/contact?service=${activeService.slug}`} className="px-5 py-2.5 md:px-6 md:py-3 bg-ink text-label text-white rounded-full hover:bg-brand transition-colors text-center text-xs md:text-sm">
+                    <Link href={`/contact?service=${activeService.slug}`} className="px-10 py-5 md:px-14 md:py-6 bg-ink text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.25em] text-white rounded-full hover:bg-brand transition-all duration-500 text-center shadow-2xl hover:shadow-brand/40 hover:-translate-y-1 active:translate-y-0 shrink-0">
                       {t.pages.aanbod.requestQuote}
                     </Link>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-4 md:mb-8 border-b border-hairline pb-3 md:pb-4">
-                  <div className="flex items-center gap-3">
-                    <p className="shrink-0 whitespace-nowrap text-[11px] md:text-xs font-bold text-ink uppercase tracking-wider ml-2">
+                <div className="flex items-center justify-between mb-8 md:mb-12 border-b-2 border-hairline/50 pb-6 md:pb-8">
+                  <div className="flex items-center gap-5">
+                    <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-black text-ink uppercase tracking-widest ml-2">
                       {filteredProducts.length} {t.pages.aanbod.results}
                     </p>
-                    <div className="h-3 md:h-4 w-px bg-hairline shrink-0" />
+                    <div className="h-5 md:h-6 w-px bg-hairline shrink-0" />
                     <button
                       onClick={() => setMobileFilterOpen(true)}
-                      className="lg:hidden flex items-center gap-1 px-2.5 py-1.5 border border-hairline rounded-full text-[9px] font-bold text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
+                      className="lg:hidden flex items-center gap-2 px-4 py-2 border-2 border-hairline rounded-full text-[11px] font-black text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
                       aria-label={t.pages.aanbod.filterTitle}
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                       </svg>
                       {t.pages.aanbod.filterTitle}
                     </button>
-                    <p className="hidden lg:block text-[9px] text-muted font-medium">
+                    <p className="hidden lg:block text-[11px] text-muted/60 font-black uppercase tracking-widest">
                       {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10 lg:gap-12 mb-20">
                   {filteredProducts.map((product, i) => (
                     <ProductCard
                       key={i}
@@ -418,14 +450,14 @@ function AanbodContent() {
                 </div>
               </>
             ) : (
-              <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 mb-20">
                 {services.map((service, i) => (
-                  <button key={service.slug} onClick={() => handleCategorySelect(service.slug)} className="group relative aspect-video rounded-xl overflow-hidden bg-ink">
-                    <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/90 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-6">
-                      <p className="text-micro text-brand mb-1">{t.pages.aanbod.dienst}</p>
-                      <h3 className="font-display font-bold text-xl text-white uppercase tracking-tight">{serviceTitleMap[service.slug]}</h3>
+                  <button key={service.slug} onClick={() => handleCategorySelect(service.slug)} className="group relative aspect-[16/10] rounded-3xl overflow-hidden bg-ink shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                    <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-50 group-hover:scale-110 group-hover:opacity-70 transition-all duration-[1.5s] ease-out" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
+                      <p className="text-micro text-brand font-black mb-3">{t.pages.aanbod.dienst}</p>
+                      <h3 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500">{serviceTitleMap[service.slug]}</h3>
                     </div>
                   </button>
                 ))}
@@ -435,13 +467,12 @@ function AanbodContent() {
         </div>
       </div>
 
-      {/* Mobile filter bottom sheet */}
       <MobileSheet
         open={mobileFilterOpen}
         onClose={() => setMobileFilterOpen(false)}
         title={t.pages.aanbod.filterTitle}
       >
-        <div className="overflow-y-auto max-h-[60vh] pb-4">
+        <div className="overflow-y-auto max-h-[75vh] pb-10 px-6">
           <Sidebar
             activeSlug={activeSlug}
             priceRange={priceRange}

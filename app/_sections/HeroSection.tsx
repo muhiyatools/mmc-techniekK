@@ -16,7 +16,7 @@ export default function HeroSection() {
           alt="MMC Techniek"
           fill
           sizes="100vw"
-          className="object-cover object-center scale-105 grayscale-[0.2] opacity-40"
+          className="object-cover object-center scale-105 grayscale-[0.15] opacity-60"
           priority
         />
         {/* Aurora overlay — disabled on touch via CSS */}
@@ -36,16 +36,16 @@ export default function HeroSection() {
         <div className="w-full max-w-[1440px] mx-auto">
 
           {/* Mobile layout */}
-          <div className="md:hidden flex flex-col items-center text-center gap-6">
+          <div className="md:hidden flex flex-col items-center text-center gap-8">
             {/* Region badge */}
-            <span className="text-label text-muted/70 tracking-widest">
+            <span className="text-label text-muted/80 tracking-[0.25em] font-black">
               {t.hero.region}
             </span>
 
             {/* Headline */}
             <h1
-              className="font-display font-extrabold leading-[0.84] tracking-[-0.02em] text-brand m-0"
-              style={{ fontSize: "clamp(3rem, 16vw, 5.5rem)" }}
+              className="font-display font-black leading-[0.82] tracking-[-0.03em] text-brand m-0"
+              style={{ fontSize: "clamp(3.5rem, 18vw, 6.5rem)" }}
             >
               {t.hero.titleParts[0]}{" "}
               {t.hero.titleParts[1]}{" "}
@@ -53,28 +53,28 @@ export default function HeroSection() {
             </h1>
 
             {/* Subline */}
-            <p className="text-copy/80 text-sm leading-relaxed max-w-[280px]">
+            <p className="text-copy/90 text-base font-black leading-relaxed max-w-[300px]">
               {t.hero.description}
             </p>
 
             {/* Full-width CTA */}
             <Link
               href="/contact/"
-              className="w-full max-w-[320px] flex items-center justify-center gap-2 px-6 py-4 bg-brand text-white text-sm font-extrabold uppercase tracking-[0.16em] rounded-full hover:bg-brand-deep transition-colors"
+              className="w-full max-w-[360px] flex items-center justify-center gap-3 px-8 py-5 bg-brand text-white text-base font-black uppercase tracking-[0.18em] rounded-full hover:bg-brand-deep transition-colors shadow-xl shadow-brand/20"
             >
               <span>{t.hero.ctaStart}</span>
               <span aria-hidden="true">&#x2192;</span>
             </Link>
 
             {/* Trust badges — images on mobile */}
-            <div className="flex items-center gap-2.5 flex-wrap justify-center mt-1">
-              <span className="relative w-[44px] h-[30px]">
-                <Image src="/images/certifications/nen-3140.png" alt="NEN-3140" fill className="object-contain" sizes="44px" />
+            <div className="flex items-center gap-3 flex-wrap justify-center mt-2">
+              <span className="relative w-[48px] h-[34px]">
+                <Image src="/images/certifications/nen-3140.png" alt="NEN-3140" fill className="object-contain" sizes="48px" />
               </span>
-              <span className="relative w-[28px] h-[30px]">
-                <Image src="/images/certifications/vca.png" alt="VCA" fill className="object-contain" sizes="28px" />
+              <span className="relative w-[32px] h-[34px]">
+                <Image src="/images/certifications/vca.png" alt="VCA" fill className="object-contain" sizes="32px" />
               </span>
-              <span className="relative w-[38px] h-[30px]" aria-label="16+ jaar ervaring">
+              <span className="relative w-[42px] h-[34px]" aria-label="16+ jaar ervaring">
                 <svg viewBox="0 0 38 30" fill="none" className="w-full h-full">
                   <rect x="1" y="3" width="36" height="24" rx="5" fill="currentColor" className="text-brand" opacity="0.1" />
                   <rect x="1" y="3" width="36" height="24" rx="5" stroke="currentColor" className="text-brand/40" strokeWidth="1" />
@@ -87,11 +87,11 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Desktop layout (unchanged) */}
-          <div className="hidden md:flex flex-col items-center text-center gap-8">
+          {/* Desktop layout */}
+          <div className="hidden md:flex flex-col items-center text-center gap-12">
             <h1
-              className="font-display font-extrabold leading-[0.82] tracking-[-0.02em] text-brand m-0"
-              style={{ fontSize: "clamp(3.5rem, 14vw, 12rem)" }}
+              className="font-display font-black leading-[0.8] tracking-[-0.04em] text-brand m-0"
+              style={{ fontSize: "clamp(5rem, 16vw, 14rem)" }}
             >
               <span>
                 {t.hero.titleParts[0]} {t.hero.titleParts[1]}{" "}
@@ -100,7 +100,7 @@ export default function HeroSection() {
             </h1>
             <Link
               href="/contact/"
-              className="inline-flex items-center gap-3 px-11 py-4 bg-brand text-white text-xs font-bold uppercase tracking-[0.18em] rounded-full hover:bg-brand-deep hover:-translate-y-0.5 transition-all duration-300"
+              className="inline-flex items-center gap-5 px-16 py-6 bg-brand text-white text-base lg:text-lg font-black uppercase tracking-[0.22em] rounded-full hover:bg-brand-deep hover:-translate-y-1.5 transition-all duration-300 shadow-2xl shadow-brand/30"
             >
               <span>{t.hero.ctaStart}</span>
               <span aria-hidden="true">&#x2192;</span>
@@ -110,7 +110,7 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg to-transparent z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg to-transparent z-10 pointer-events-none" />
     </section>
   );
 }

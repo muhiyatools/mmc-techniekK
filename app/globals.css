@@ -57,8 +57,8 @@ body {
   background: var(--color-base);
   color: var(--color-copy);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: clamp(1rem, 1.1vw, 1.25rem);
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -91,25 +91,26 @@ body::before {
 /* ── Precision Studio Utilities ── */
 .text-label {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  font-size: clamp(0.75rem, 0.9vw, 0.875rem);
 }
 
 .text-micro {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.24em;
-  font-size: 0.625rem;
+  letter-spacing: 0.26em;
+  font-size: clamp(0.6875rem, 0.8vw, 0.8125rem);
 }
 
 .text-technical {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.05em;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: clamp(0.9375rem, 1.1vw, 1.125rem);
 }
 
 /* Aanbod Instrument Dashboard */
@@ -575,11 +576,11 @@ section {
   align-items: center;
   justify-content: center;
   gap: 3px;
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--color-muted);
   transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
