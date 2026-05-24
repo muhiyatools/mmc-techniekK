@@ -19,9 +19,9 @@ const maintenanceTabs: MaintenanceTab[] = [
     id: "airco",
     name: "Airconditioning",
     title: "Airco Service & Reiniging",
-    price: "€ 99,- per jaar",
+    price: "",
     frequency: "Jaarlijks onderhoud aanbevolen",
-    desc: "Zorg voor schone, bacterievrije lucht en een optimaal rendement van uw airconditioner.",
+    desc: "Voor een schone werking en optimaal rendement.",
     checklist: [
       "Reiniging en desinfectie van de binnenunit filters",
       "Controle en reiniging van de condensor (buitenunit)",
@@ -35,9 +35,9 @@ const maintenanceTabs: MaintenanceTab[] = [
     id: "solar",
     name: "Zonnepanelen",
     title: "Zonnepanelen Inspectie & Reiniging",
-    price: "€ 149,- per jaar",
+    price: "",
     frequency: "Elke 2 jaar aanbevolen",
-    desc: "Maximaliseer uw opbrengst door vuilophoping te verwijderen en controleer de veiligheid.",
+    desc: "Maximaliseer opbrengst en controleer de veiligheid.",
     checklist: [
       "Visuele inspectie op hotspots, glasbreuk en delaminatie",
       "Controle van de bekabeling onder de panelen en connectoren",
@@ -51,9 +51,9 @@ const maintenanceTabs: MaintenanceTab[] = [
     id: "battery",
     name: "Thuisbatterij",
     title: "Thuisbatterij & Batterij-diagnose",
-    price: "€ 119,- per jaar",
+    price: "",
     frequency: "Jaarlijkse keuring aanbevolen",
-    desc: "Controleer de batterijgezondheid en optimaliseer het laadgedrag met firmware updates.",
+    desc: "Controleer de batterijgezondheid en het laadgedrag.",
     checklist: [
       "Uitlezen van de batterij-management-systeem (BMS) foutlogboeken",
       "Meting van de individuele celbalancering en capaciteitsafname",
@@ -67,9 +67,9 @@ const maintenanceTabs: MaintenanceTab[] = [
     id: "meterkast",
     name: "Meterkast",
     title: "Meterkast NEN-3140 Veiligheidsinspectie",
-    price: "€ 89,- eenmalig",
+    price: "",
     frequency: "Elke 5 jaar aanbevolen",
-    desc: "Voorkom brandgevaar en stroomstoringen door een grondige thermografische controle.",
+    desc: "Voorkom brandgevaar en controleer alle componenten.",
     checklist: [
       "Thermografische scan op oververhitting van componenten",
       "Controle van de aandraaimomenten van alle schroefverbindingen",
@@ -83,9 +83,9 @@ const maintenanceTabs: MaintenanceTab[] = [
     id: "electro",
     name: "Elektra onder de motorkap",
     title: "Smart Home & Infrastructuur Inspectie",
-    price: "€ 179,- per jaar",
+    price: "",
     frequency: "Jaarlijks onderhoud aanbevolen",
-    desc: "Volledige inspectie van uw smart home systemen, laadpalen en warmtepomp-aansturing.",
+    desc: "Volledige inspectie van uw slimme systemen.",
     checklist: [
       "Controle van de communicatiebus (KNX / Modbus) kabels en voedingen",
       "Inspectie van laadpaal-connectoren en load balancing meting",
@@ -115,8 +115,8 @@ export default function MaintenancePlanner() {
             <h2 className="font-display font-black text-3xl md:text-5xl lg:text-6xl text-ink leading-[0.9] tracking-[-0.03em] uppercase mb-4">
               Professioneel Onderhoud
             </h2>
-            <p className="text-base lg:text-lg text-muted/80 leading-relaxed font-medium">
-              Voorkomen is beter dan genezen. Met regelmatig onderhoud door de gecertificeerde monteurs van MMC Techniek borgt u de veiligheid, levensduur en het maximale rendement van al uw technische installaties.
+            <p className="text-sm text-muted/80 leading-relaxed font-medium">
+              Periodieke inspectie en service van uw technische installaties.
             </p>
           </div>
           <Link href={`/contact?service=onderhoud&type=${activeTab.name}`} className="px-10 py-5 md:px-14 md:py-6 bg-brand text-sm lg:text-base font-black uppercase tracking-[0.25em] text-white rounded-full hover:bg-ink transition-all duration-500 text-center shadow-2xl hover:shadow-brand/40 hover:-translate-y-1 shrink-0">
@@ -155,9 +155,6 @@ export default function MaintenancePlanner() {
             <div className="border-b border-hairline pb-6 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
                 <h3 className="font-display font-black text-2xl lg:text-3xl uppercase tracking-tight text-ink">{activeTab.title}</h3>
-                <span className="px-3.5 py-1.5 bg-brand/10 border border-brand/25 text-brand text-xs font-black rounded-full uppercase tracking-wider tabular-nums shrink-0">
-                  {activeTab.price}
-                </span>
               </div>
               <p className="text-sm text-muted/75 font-semibold leading-relaxed mb-4">{activeTab.desc}</p>
               <div className="flex items-center gap-2 text-xs font-black text-brand uppercase tracking-widest">
@@ -183,8 +180,8 @@ export default function MaintenancePlanner() {
             </div>
 
             <div className="pt-6 border-t border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <p className="text-xs text-muted/60 font-semibold leading-relaxed max-w-sm">
-                Na afloop ontvangt u een volledig servicerapport voor uw verzekering of onderhoudsboekje.
+              <p className="text-xs text-muted/60 font-medium">
+                U ontvangt na afloop een servicerapport.
               </p>
               <Link
                 href={`/contact?service=onderhoud&type=${activeTab.name}`}

@@ -13,7 +13,7 @@ export default function Footer() {
   const isContactPage = pathname === "/contact" || pathname === "/contact/";
 
   return (
-    <footer>
+    <footer className="relative z-10 bg-ink">
       {/* ── Desktop footer ── */}
       <div className="hidden md:block">
         {!isContactPage && (

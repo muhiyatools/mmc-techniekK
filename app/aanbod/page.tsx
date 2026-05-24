@@ -220,17 +220,17 @@ function AanbodContent() {
   }, [activeSlug, services]);
 
   const activeService = services.find((s) => s.slug === activeSlug) ?? null;
-  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen' && activeService.slug !== 'meterkast' && activeService.slug !== 'onderhoud');
+  const showFilters = !!(activeService && activeService.products.length > 0 && activeService.slug !== 'zonnepanelen' && activeService.slug !== 'onderhoud');
 
   const availableBrands = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'meterkast' || activeService.slug === 'onderhoud') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'onderhoud') return [];
     const set = new Set<string>();
     activeService.products.forEach((p) => set.add(p.brand));
     return Array.from(set).sort();
   }, [activeService]);
 
   const filteredProducts = useMemo(() => {
-    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'meterkast' || activeService.slug === 'onderhoud') return [];
+    if (!activeService || activeService.slug === 'zonnepanelen' || activeService.slug === 'onderhoud') return [];
     if (!activeService.products || activeService.products.length === 0) return [];
     return activeService.products.filter((p) => {
       if (selectedBrands.length > 0 && p.brand && !selectedBrands.includes(p.brand)) return false;
@@ -386,8 +386,6 @@ function AanbodContent() {
           <div className="flex-1 min-w-0">
             {activeSlug === 'zonnepanelen' ? (
               <SolarSection />
-            ) : activeSlug === 'meterkast' ? (
-              <MeterkastPlanner />
             ) : activeSlug === 'onderhoud' ? (
               <MaintenancePlanner />
             ) : activeSlug && activeService ? (
