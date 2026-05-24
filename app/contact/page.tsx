@@ -13,7 +13,7 @@ import { resolveProductImage } from "@/lib/images";
 
 const WA_PHONE = "31634311225";
 
-const getMaintenanceOptions = (lang) => {
+const getMaintenanceOptions = (lang: string) => {
   if (lang === "nl") {
     return [
       "Airconditioning onderhoud",
@@ -78,13 +78,17 @@ function ContactForm() {
     message: "",
   });
 
+  const selectedService = services.find((s) => s.slug === form.service);
   const maintenanceOptions = getMaintenanceOptions(language);
   const isOnderhoud = form.service === "onderhoud";
   const availableProducts = isOnderhoud
     ? maintenanceOptions.map(name => ({ name }))
     : selectedService?.products ?? [];
   const isProductDropdownDisabled = !selectedService || (availableProducts.length === 0);
-  
+  const selectedProduct = form.product && selectedService
+    ? selectedService.products.find((p) => p.name === form.product)
+    : null;
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -94,11 +98,6 @@ function ContactForm() {
       setServices(mergeServices(store));
     });
   }, []);
-
-  const selectedService = services.find((s) => s.slug === form.service);
-  const selectedProduct = form.product && selectedService
-    ? selectedService.products.find((p) => p.name === form.product)
-    : null;
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
