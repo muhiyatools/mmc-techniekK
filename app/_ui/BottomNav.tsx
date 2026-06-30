@@ -38,7 +38,7 @@ const NAV_ITEMS = [
   { label: "Home",      href: "/",           Icon: IconHome },
   { label: "Aanbod",    href: "/aanbod",     Icon: IconLayers },
   { label: "Offerte",   href: "/contact",    Icon: IconQuote, cta: true },
-  { label: "Projecten", href: "/our-work",   Icon: IconProjects },
+  { label: "Instagram", href: "/our-work",   Icon: IconProjects },
   { label: "Meer",      href: null,          Icon: IconMore },
 ] as const;
 

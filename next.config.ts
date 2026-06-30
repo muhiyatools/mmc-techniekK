@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
   outputFileTracingRoot: path.resolve('.'),
+  cacheComponents: true,
   images: {
     unoptimized: true,
     qualities: [75, 90],
