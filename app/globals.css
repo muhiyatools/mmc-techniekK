@@ -458,8 +458,10 @@ section {
 }
 
 /* Bottom-nav safe area spacer */
-.pb-nav {
-  padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
+@media (max-width: 1023.98px) {
+  .pb-nav {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
+  }
 }
 
 /* Hide scrollbar (for swipe carousels) */
@@ -564,7 +566,7 @@ section {
 .bottom-nav {
   display: none;
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -621,4 +623,4 @@ section {
 
 /* WhatsApp float — sits above bottom nav on mobile, normal on desktop */
 .wa-float { bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 0.75rem); }
-@media (min-width: 768px) { .wa-float { bottom: 1.5rem; } }
+@media (min-width: 1024px) { .wa-float { bottom: 1.5rem; } }

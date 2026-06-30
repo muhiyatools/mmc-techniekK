@@ -9,6 +9,8 @@ import { getLocalStore, mergeServices, mergeBrandImages } from "@/lib/adminStore
 import type { Service } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useScrollDirection } from "../_hooks/useScrollDirection";
+import BottomNav from "./BottomNav";
+import MobileSheet from "./MobileSheet";
 
 const serviceIcons: Record<string, React.ReactNode> = {
   airconditioning: (
@@ -75,6 +77,7 @@ const FlagEN = () => (
 export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [mergedServices, setMergedServices] = useState<Service[]>(
     services.map((s) => ({ ...s, products: [] }))
   );
@@ -111,6 +114,7 @@ export default function Header() {
   useEffect(() => {
     setDropdownOpen(false);
     setSearchQuery("");
+    setMobileSheetOpen(false);
     document.body.style.overflow = "";
   }, [pathname]);
 
@@ -165,7 +169,7 @@ export default function Header() {
   return (
     <>
       {/* ── Desktop header ── */}
-      <header className="hidden md:block fixed top-0 inset-x-0 z-50 pointer-events-none">
+      <header className="hidden lg:block fixed top-0 inset-x-0 z-50 pointer-events-none">
         <div className="w-[95%] lg:w-[92%] xl:w-[90%] mx-auto mt-4 lg:mt-5 pointer-events-auto">
           <div className="relative flex items-center justify-between h-[60px] lg:h-[76px] px-4 lg:px-6 xl:px-8 rounded-full bg-surface border border-hairline shadow-[0_4px_24px_-6px_rgba(15,23,42,0.08)]">
             <Link href="/" className="shrink-0 w-[160px] lg:w-[200px] xl:w-[220px]">
@@ -308,7 +312,7 @@ export default function Header() {
 
       {/* ── Mobile header bar ── */}
       <header
-        className={`md:hidden fixed top-0 inset-x-0 z-50 bg-surface border-b border-hairline transition-transform duration-300 ${mobileHidden ? "header-hidden" : "header-visible"}`}
+        className={`lg:hidden fixed top-0 inset-x-0 z-50 bg-surface border-b border-hairline transition-transform duration-300 ${mobileHidden ? "header-hidden" : "header-visible"}`}
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         {/* Top Row: centered logo, flag left, Offerte CTA right */}
@@ -328,32 +332,84 @@ export default function Header() {
             Offerte
           </Link>
         </div>
-
-        {/* Bottom Row: horizontal scrollable link pills menu */}
-        <div className="px-4 pb-2.5 overflow-x-auto scrollbar-none flex items-center gap-2 whitespace-nowrap select-none">
-          {[
-            { label: t.nav.home, href: "/" },
-            { label: t.nav.aanbod, href: "/aanbod/" },
-            { label: t.nav.projects, href: "/our-work/" },
-            { label: t.nav.about, href: "/over-ons/" },
-            { label: t.nav.faq, href: "/veelgestelde-vragen/" },
-            { label: t.nav.contact, href: "/contact/" },
-          ].map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide transition-colors ${
-                  active ? "bg-brand text-white" : "bg-ink/5 text-ink"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
       </header>
+
+      {/* Mobile Bottom Navigation & Sheet (visible only on mobile/tablet viewports) */}
+      <div className="lg:hidden">
+        <BottomNav onMoreClick={() => setMobileSheetOpen(true)} />
+        
+        <MobileSheet
+          open={mobileSheetOpen}
+          onClose={() => setMobileSheetOpen(false)}
+          title="Menu"
+        >
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/over-ons/"
+                onClick={() => setMobileSheetOpen(false)}
+                className="flex items-center gap-3 p-3.5 bg-ink/5 hover:bg-ink/10 rounded-2xl transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-bold text-ink">{t.nav.about}</span>
+              </Link>
+
+              <Link
+                href="/veelgestelde-vragen/"
+                onClick={() => setMobileSheetOpen(false)}
+                className="flex items-center gap-3 p-3.5 bg-ink/5 hover:bg-ink/10 rounded-2xl transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="text-xs font-bold text-ink">{t.nav.faq}</span>
+              </Link>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black text-muted uppercase tracking-[0.2em] block mb-3 pl-1">
+                {t.nav.services}
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                {mergedServices.map((service) => (
+                  <Link
+                    key={service.slug}
+                    href={`/aanbod/?dienst=${service.slug}`}
+                    onClick={() => setMobileSheetOpen(false)}
+                    className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-brand/5 border border-hairline/30 transition-all group"
+                  >
+                    <div className="shrink-0 w-8 h-8 rounded-lg bg-brand/5 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-all">
+                      {serviceIcons[service.slug] || <div className="w-3.5 h-3.5 bg-current rounded-full" />}
+                    </div>
+                    <span className="text-xs font-bold text-ink truncate group-hover:text-brand transition-colors">
+                      {serviceTitleMap[service.slug]}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-hairline/60 pt-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between text-[10px] text-muted">
+                <span>KvK: {contactInfo.kvk}</span>
+                <span>BTW: {contactInfo.btw}</span>
+              </div>
+              <a
+                href={`tel:${contactInfo.phone}`}
+                className="w-full h-11 flex items-center justify-center bg-brand text-white font-extrabold text-xs uppercase tracking-wider rounded-full hover:bg-brand/90 transition-all shadow-sm"
+              >
+                Bel: {contactInfo.phoneDisplay}
+              </a>
+            </div>
+          </div>
+        </MobileSheet>
+      </div>
     </>
   );
 };
