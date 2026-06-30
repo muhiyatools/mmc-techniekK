@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://givwadhkowednmwskpfc.supabase.co";
+const SUPABASE_URL = "https://stjmmlzykokwaqkushnu.supabase.co";
 
 export function resolveProductImage(image: string | null | undefined): string {
   if (!image) return "/images/placeholder-product.png";

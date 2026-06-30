@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 // Inline SVG icons
 const IconHome = () => (
@@ -35,24 +36,38 @@ interface BottomNavProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Home",      href: "/",           Icon: IconHome },
-  { label: "Aanbod",    href: "/aanbod",     Icon: IconLayers },
-  { label: "Offerte",   href: "/contact",    Icon: IconQuote, cta: true },
-  { label: "Instagram", href: "/our-work",   Icon: IconProjects },
-  { label: "Meer",      href: null,          Icon: IconMore },
+  { key: "home",      label: "Home",      href: "/",           Icon: IconHome },
+  { key: "aanbod",    label: "Aanbod",    href: "/aanbod",     Icon: IconLayers },
+  { key: "offerte",   label: "Offerte",   href: "/contact",    Icon: IconQuote, cta: true },
+  { key: "projects",  label: "Projects",  href: "/our-work",   Icon: IconProjects },
+  { key: "more",      label: "Meer",      href: null,          Icon: IconMore },
 ] as const;
 
 export default function BottomNav({ onMoreClick }: BottomNavProps) {
   const pathname = usePathname();
+  const { t, language } = useLanguage();
+
+  const getTranslatedLabel = (key: string, defaultLabel: string) => {
+    switch (key) {
+      case "home": return t.nav.home;
+      case "aanbod": return t.nav.aanbod;
+      case "offerte": return language === "nl" ? "Offerte" : "Quote";
+      case "projects": return t.nav.projects;
+      case "more": return language === "nl" ? "Meer" : "More";
+      default: return defaultLabel;
+    }
+  };
 
   return (
     <nav className="bottom-nav" aria-label="Mobiele navigatie">
       {NAV_ITEMS.map((item) => {
-        const { label, href, Icon } = item;
+        const { key, label, href, Icon } = item;
         const cta = "cta" in item && item.cta;
         const isActive = href
           ? href === "/" ? pathname === "/" : pathname.startsWith(href)
           : false;
+
+        const displayLabel = getTranslatedLabel(key, label);
 
         if (href === null) {
           return (
@@ -63,7 +78,7 @@ export default function BottomNav({ onMoreClick }: BottomNavProps) {
               aria-label="Meer menu openen"
             >
               <Icon />
-              <span>{label}</span>
+              <span>{displayLabel}</span>
             </button>
           );
         }
@@ -76,7 +91,7 @@ export default function BottomNav({ onMoreClick }: BottomNavProps) {
             aria-current={isActive ? "page" : undefined}
           >
             <Icon />
-            <span>{label}</span>
+            <span>{displayLabel}</span>
           </Link>
         );
       })}

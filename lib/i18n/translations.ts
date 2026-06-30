@@ -4,7 +4,7 @@ export const translations = {
     nav: {
       home: "Home",
       services: "Diensten",
-      projects: "Instagram",
+      projects: "Projecten",
       about: "Over ons",
       faq: "Veelgestelde vragen",
       aanbod: "Aanbod",
@@ -191,8 +191,8 @@ export const translations = {
         ],
       },
       ourWork: {
-        label: "Instagram",
-        title: "MMC op Instagram",
+        label: "Projecten",
+        title: "Onze Projecten",
         description: "Volg onze dagelijkse installaties, handige tips en updates uit de praktijk.",
         close: "Sluiten",
         follow: "Volg op Instagram",
@@ -327,7 +327,7 @@ export const translations = {
     nav: {
       home: "Home",
       services: "Services",
-      projects: "Instagram",
+      projects: "Projects",
       about: "About us",
       faq: "FAQ",
       aanbod: "Catalog",
@@ -514,8 +514,8 @@ export const translations = {
         ],
       },
       ourWork: {
-        label: "Instagram",
-        title: "MMC on Instagram",
+        label: "Projects",
+        title: "Our Projects",
         description: "Follow our daily installations, useful tips, and updates from the field.",
         close: "Close",
         follow: "Follow on Instagram",
