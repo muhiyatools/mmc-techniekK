@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,6 +12,11 @@ export default function Footer() {
   const { t, language } = useLanguage();
   const pathname = usePathname();
   const isContactPage = pathname === "/contact" || pathname === "/contact/";
+
+  const [currentYear, setCurrentYear] = useState(2026);
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className="relative z-10 bg-ink">
@@ -163,7 +169,7 @@ export default function Footer() {
           <div className="border-t border-white/10 mt-24">
             <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <p className="text-xs font-black text-brand uppercase tracking-[0.3em]">
-                &copy; {new Date().getFullYear()} MMC Techniek B.V. {t.components.footer.allRightsReserved}
+                &copy; {currentYear} MMC Techniek B.V. {t.components.footer.allRightsReserved}
               </p>
               <div className="flex items-center gap-8 text-xs font-black text-brand uppercase tracking-[0.3em]">
                 <span>KvK: <span className="text-white/80">{contactInfo.kvk}</span></span>
@@ -286,7 +292,7 @@ export default function Footer() {
           {/* Bottom bar */}
           <div className="border-t border-white/10 pt-6 pb-nav flex flex-col gap-2">
             <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">
-              &copy; {new Date().getFullYear()} MMC Techniek B.V.
+              &copy; {currentYear} MMC Techniek B.V.
             </p>
             <div className="flex items-center gap-5 text-[10px] font-black text-white/15 uppercase tracking-[0.2em]">
               <span>KvK: {contactInfo.kvk}</span>

@@ -230,7 +230,7 @@ export default function InstagramFeed() {
                       rel="noopener noreferrer"
                       className="px-6 h-[34px] flex items-center bg-brand text-white font-bold text-xs uppercase tracking-wider rounded-full hover:bg-brand-hover shadow-sm transition-all"
                     >
-                      {t.ourWork.follow}
+                      {t.pages.ourWork.follow}
                     </a>
                     <Link
                       href="/contact/"
@@ -245,15 +245,15 @@ export default function InstagramFeed() {
                 <div className="flex gap-8 mb-6 text-sm md:text-base justify-center md:justify-start text-ink/90 font-medium">
                   <div>
                     <span className="font-extrabold text-ink">{instagramProfile.postsCount} </span>
-                    {t.ourWork.posts}
+                    {t.pages.ourWork.posts}
                   </div>
                   <div>
                     <span className="font-extrabold text-ink">1.4k </span>
-                    {t.ourWork.followers}
+                    {t.pages.ourWork.followers}
                   </div>
                   <div>
                     <span className="font-extrabold text-ink">{instagramProfile.followingCount} </span>
-                    {t.ourWork.following}
+                    {t.pages.ourWork.following}
                   </div>
                 </div>
 
@@ -323,12 +323,12 @@ export default function InstagramFeed() {
             <Reveal delay={100}>
               <div className="flex flex-wrap items-center justify-center gap-2 pb-4 scrollbar-none">
                 {[
-                  { id: "all", label: t.ourWork.allCategories },
-                  { id: "zonnepanelen", label: t.ourWork.catSolar },
-                  { id: "airco", label: t.ourWork.catAirco },
-                  { id: "warmtepompen", label: t.ourWork.catPump },
-                  { id: "meterkast", label: t.ourWork.catMeter },
-                  { id: "overig", label: t.ourWork.catOther },
+                  { id: "all", label: t.pages.ourWork.allCategories },
+                  { id: "zonnepanelen", label: t.pages.ourWork.catSolar },
+                  { id: "airco", label: t.pages.ourWork.catAirco },
+                  { id: "warmtepompen", label: t.pages.ourWork.catPump },
+                  { id: "meterkast", label: t.pages.ourWork.catMeter },
+                  { id: "overig", label: t.pages.ourWork.catOther },
                 ].map((cat) => (
                   <button
                     key={cat.id}
@@ -604,7 +604,7 @@ export default function InstagramFeed() {
                           {comment.likes && comment.likes > 0 ? (
                             <span>{comment.likes} vind-ik-leuks</span>
                           ) : null}
-                          <button className="hover:text-ink transition-colors">{t.ourWork.reply}</button>
+                          <button className="hover:text-ink transition-colors">{t.pages.ourWork.reply}</button>
                         </div>
                       </div>
                     </div>
@@ -637,7 +637,7 @@ export default function InstagramFeed() {
                 </div>
 
                 <div className="text-sm font-extrabold text-ink">
-                  {lightboxPost.likesCount + (likedPosts[lightboxPost.id] ? 1 : 0)} {t.ourWork.likes}
+                  {lightboxPost.likesCount + (likedPosts[lightboxPost.id] ? 1 : 0)} {t.pages.ourWork.likes}
                 </div>
               </div>
 
@@ -645,7 +645,7 @@ export default function InstagramFeed() {
               <form onSubmit={handleAddComment} className="border-t border-hairline/60 flex items-center px-4 py-3 bg-white">
                 <input
                   type="text"
-                  placeholder={t.ourWork.addComment}
+                  placeholder={t.pages.ourWork.addComment}
                   value={newCommentText}
                   onChange={(e) => setNewCommentText(e.target.value)}
                   className="flex-1 text-xs md:text-sm text-ink placeholder:text-muted/60 focus:outline-none bg-transparent pr-4 focus:ring-0 border-none"
