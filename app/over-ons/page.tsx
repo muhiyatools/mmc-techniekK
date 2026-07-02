@@ -32,6 +32,8 @@ function useParallax(speed = 0.3) {
   return { ref, offset };
 }
 
+type SystemKey = "solar" | "battery" | "pump" | "airco" | "electrics";
+
 export default function AboutPage() {
   const { t, language } = useLanguage();
   const m = t.pages.overOns;
@@ -39,6 +41,7 @@ export default function AboutPage() {
   const heroParallax = useParallax(0.25);
   const [activePillar, setActivePillar] = useState<number>(0);
   const [activeMilestone, setActiveMilestone] = useState<number>(0);
+  const [hoveredSystem, setHoveredSystem] = useState<SystemKey>("solar");
 
   useEffect(() => {
     fetchAdminStore().then(store => {
@@ -57,6 +60,55 @@ export default function AboutPage() {
     ["100%", m.stats[2]?.label || (language === "nl" ? "eigen personeel" : "in-house team")],
     ["A-Merk", m.stats[3]?.label || (language === "nl" ? "kwaliteit" : "quality")],
   ];
+
+  // System details data for the blueprint section
+  const systemsData: Record<SystemKey, { title: string; quote: string; text: string; color: string; rgb: string }> = {
+    solar: {
+      title: language === "nl" ? "Zonnepanelen (Generatie)" : "Solar Panels (Generation)",
+      quote: language === "nl" ? "Maximale opbrengst via geoptimiseerde dakinstallaties." : "Maximum yield through optimized rooftop installations.",
+      text: language === "nl" 
+        ? "MMC Techniek levert en installeert hoogwaardige zonnepanelen van betrouwbare A-merken. Geen standaardpakketten, maar een installatie die nauwkeurig is berekend op uw daksituatie en stroomverbruik voor een optimaal rendement."
+        : "MMC Techniek supplies and installs premium solar panels from trusted A-brands. No standard packages, but an installation precisely engineered for your specific roof layout and power consumption for maximum efficiency.",
+      color: "text-amber-400",
+      rgb: "250, 204, 21"
+    },
+    battery: {
+      title: language === "nl" ? "Thuisbatterijen (Opslag)" : "Home Batteries (Storage)",
+      quote: language === "nl" ? "Uw eigen opgewekte zonne-energie dag en nacht beschikbaar." : "Your self-generated solar energy available day and night.",
+      text: language === "nl" 
+        ? "Sla uw overtollige zonnestroom op voor gebruik tijdens de avond- en nachturen. Met een slimme thuisbatterij verhoogt u uw zelfconsumptie, verlaagt u uw afhankelijkheid van het net en bent u voorbereid op dynamische energietarieven."
+        : "Store your excess solar power for use during evening and night hours. With a smart home battery, you increase your self-consumption, reduce grid dependency, and prepare for dynamic energy tariffs.",
+      color: "text-emerald-400",
+      rgb: "52, 211, 153"
+    },
+    pump: {
+      title: language === "nl" ? "Warmtepompen (Verwarming)" : "Heat Pumps (Heating)",
+      quote: language === "nl" ? "Duurzaam en gasloos verwarmen met maximaal rendement." : "Sustainable and gas-free heating with maximum efficiency.",
+      text: language === "nl" 
+        ? "De basis voor een toekomstbestendige woning. Wij adviseren, ontwerpen en installeren zowel hybride systemen als all-electric warmtepompen. Volledig afgestemd op de isolatiewaarde van uw woning en uw comfortwensen."
+        : "The foundation of a future-proof home. We advise, design, and install both hybrid systems and all-electric heat pumps, fully customized to your home's insulation and comfort needs.",
+      color: "text-orange-400",
+      rgb: "251, 146, 60"
+    },
+    airco: {
+      title: language === "nl" ? "Airconditioning (Klimaatbeheersing)" : "Air Conditioning (Climate Control)",
+      quote: language === "nl" ? "Stille, energiezuinige koeling én verwarming in elk seizoen." : "Quiet, energy-efficient cooling and heating in any season.",
+      text: language === "nl" 
+        ? "Moderne airconditioningsystemen bieden het hele jaar door comfort: ze koelen op warme zomerdagen en verwarmen uiterst efficiënt in de winter. Onze fluisterstille units worden vakkundig en met oog voor detail gemonteerd."
+        : "Modern air conditioning systems offer year-round comfort: cooling on hot summer days and highly efficient heating in winter. Our whisper-quiet units are professionally installed with an eye for detail.",
+      color: "text-cyan-400",
+      rgb: "34, 211, 238"
+    },
+    electrics: {
+      title: language === "nl" ? "Elektrotechniek & Meterkast (Distributie)" : "Electrical Systems & Fuse Boxes (Distribution)",
+      quote: language === "nl" ? "De veilige, moderne basis voor al uw duurzame systemen." : "The safe, modern foundation for all your sustainable systems.",
+      text: language === "nl" 
+        ? "Een goed functionerende en veilige meterkast is essentieel voor uw warmtepomp, zonnepanelen, laadpaal of thuisbatterij. Wij vernieuwen, breiden uit en certificeren uw elektrische installatie volgens de strengste NEN 1010 normen."
+        : "A well-functioning and safe electrical panel is essential for your heat pump, solar panels, EV charger, or home battery. We upgrade, expand, and certify your electrical installation according to strict NEN 1010 standards.",
+      color: "text-indigo-400",
+      rgb: "129, 140, 248"
+    }
+  };
 
   // SVG Icons for the 8 reasons
   const getIconForReason = (index: number) => {
@@ -96,43 +148,6 @@ export default function AboutPage() {
       </svg>,
     ];
     return icons[index] || icons[0];
-  };
-
-  const getSystemIcon = (type: string) => {
-    switch (type) {
-      case "airconditioning":
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m9-9H3m14.5-4.5L18.5 9m-13 6 1 1.5M16.5 15.5l1.5 1.5m-11-11 1-1.5" />
-          </svg>
-        );
-      case "solar":
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1M4 12H3m18 0h-1m-3.5-6.5-1 1m-9 9-1 1m0-11.5 1 1m9 9 1 1M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-          </svg>
-        );
-      case "battery":
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 10.5h-1.5V9a1.5 1.5 0 0 0-1.5-1.5h-12A1.5 1.5 0 0 0 4.5 9v1.5H3a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5v-6a1.5 1.5 0 0 0-1.5-1.5zM9 12h6M12 9v6" />
-          </svg>
-        );
-      case "pump":
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        );
-      case "electrics":
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-          </svg>
-        );
-      default:
-        return null;
-    }
   };
 
   return (
@@ -245,58 +260,254 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Mission (Onze Missie) ── */}
+        {/* ── Mission (Sustainable Energy Flow Blueprint) ── */}
         <section className="py-24 lg:py-40 bg-ink text-white relative overflow-hidden">
+          {/* Ambient Blueprint Grids */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none">
+            <svg width="100%" height="100%">
+              <defs>
+                <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#gridPattern)" />
+            </svg>
+          </div>
+          
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
 
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10 text-center">
-            <Reveal>
-              <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-6 block">
-                {m.mission.label}
-              </span>
-            </Reveal>
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10">
+            <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+              
+              {/* Left Column: Mission text & Dynamic System Detail */}
+              <div className="lg:col-span-6">
+                <Reveal>
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-6 block">
+                    {m.mission.label}
+                  </span>
+                </Reveal>
 
-            <Reveal delay={100}>
-              <h2 
-                className="font-display text-[clamp(2.5rem,5.5vw,5rem)] font-black leading-[0.85] tracking-tight uppercase max-w-4xl mx-auto mb-10"
-                dangerouslySetInnerHTML={{ __html: m.mission.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-              />
-            </Reveal>
+                <Reveal delay={100}>
+                  <h2 
+                    className="font-display text-[clamp(2.5rem,4.5vw,4rem)] font-black leading-[0.9] tracking-tight uppercase mb-8"
+                    dangerouslySetInnerHTML={{ __html: m.mission.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+                  />
+                </Reveal>
 
-            <Reveal delay={200}>
-              <p className="text-xl lg:text-2xl text-white/70 max-w-3xl mx-auto leading-relaxed mb-16 font-medium">
-                {m.mission.description}
-              </p>
-            </Reveal>
+                <Reveal delay={180}>
+                  <p className="text-lg lg:text-xl text-white/70 leading-relaxed mb-12 font-medium">
+                    {m.mission.description}
+                  </p>
+                </Reveal>
 
-            {/* Glowing System Grid */}
-            <Reveal delay={300}>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
-                {[
-                  { name: language === "nl" ? "Airconditioning" : "Air Conditioning", type: "airconditioning" },
-                  { name: language === "nl" ? "Elektrotechniek" : "Electrical Systems", type: "electrics" },
-                  { name: language === "nl" ? "Zonnepanelen" : "Solar Panels", type: "solar" },
-                  { name: language === "nl" ? "Thuisbatterijen" : "Home Batteries", type: "battery" },
-                  { name: language === "nl" ? "Warmtepompen" : "Heat Pumps", type: "pump" },
-                ].map((sys) => (
+                {/* System Detail Dashboard (Swaps based on blueprint hotspot hover) */}
+                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                  {/* Glowing active bar */}
                   <div 
-                    key={sys.type}
-                    className="p-6 bg-white/5 border border-white/10 rounded-2xl flex flex-col items-center justify-center gap-4 hover:border-brand/40 hover:bg-white/10 hover:shadow-lg hover:shadow-brand/5 hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-brand/10 text-brand flex items-center justify-center">
-                      {getSystemIcon(sys.type)}
-                    </div>
-                    <span className="font-display font-bold uppercase text-[0.8125rem] tracking-wider text-white/80">
-                      {sys.name}
+                    className="absolute top-0 left-0 bottom-0 w-1.5 transition-colors duration-500" 
+                    style={{ backgroundColor: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
+                  />
+                  
+                  <div className="pl-4">
+                    <span 
+                      className={`text-[0.6875rem] font-black uppercase tracking-[0.3em] transition-colors duration-500`}
+                      style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
+                    >
+                      {language === "nl" ? "Systeemonderdeel" : "System Component"}
                     </span>
+                    <h3 className="font-display text-2xl lg:text-3xl font-black uppercase text-white mt-2 mb-3 tracking-tight">
+                      {systemsData[hoveredSystem].title}
+                    </h3>
+                    <p 
+                      className="text-base font-bold italic mb-6 leading-snug transition-colors duration-500"
+                      style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 0.85)` }}
+                    >
+                      &ldquo;{systemsData[hoveredSystem].quote}&rdquo;
+                    </p>
+                    <p className="text-white/70 leading-relaxed font-medium">
+                      {systemsData[hoveredSystem].text}
+                    </p>
                   </div>
-                ))}
+                </div>
+
+                {/* Micro selector buttons for mobile / screen readers */}
+                <div className="flex flex-wrap gap-3 mt-6 lg:hidden">
+                  {(Object.keys(systemsData) as SystemKey[]).map((key) => (
+                    <button 
+                      key={key}
+                      onClick={() => setHoveredSystem(key)}
+                      className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-full transition-all border ${
+                        hoveredSystem === key 
+                          ? "bg-white text-ink border-white" 
+                          : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10"
+                      }`}
+                    >
+                      {systemsData[key].title.split(" (")[0]}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </Reveal>
+
+              {/* Right Column: Architectural House Blueprint SVG */}
+              <div className="lg:col-span-6 flex justify-center items-center">
+                <Reveal variant="scale" className="w-full max-w-lg aspect-[4/3] bg-ink/40 border border-white/5 rounded-3xl p-6 lg:p-8 shadow-2xl relative">
+                  
+                  <svg viewBox="0 0 400 300" className="w-full h-full select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {/* Blueprint grid lines */}
+                    <defs>
+                      <pattern id="blueprintGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.03" />
+                      </pattern>
+                    </defs>
+                    <rect width="400" height="300" fill="url(#blueprintGrid)" rx="16" />
+
+                    {/* Conduit links (Conduit Lines) */}
+                    {/* Solar -> Meterkast */}
+                    <path 
+                      d="M 130 70 L 130 110 L 140 110 L 140 215" 
+                      stroke={hoveredSystem === "solar" || hoveredSystem === "electrics" ? `rgba(${systemsData.solar.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "electrics" ? 2.5 : 1}
+                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      className={hoveredSystem === "solar" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* Solar -> Battery */}
+                    <path 
+                      d="M 130 70 L 130 110 L 95 110 L 95 215" 
+                      stroke={hoveredSystem === "solar" || hoveredSystem === "battery" ? `rgba(${systemsData.battery.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "battery" ? 2.5 : 1}
+                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "battery" ? "6, 4" : "4, 4"}
+                      className={hoveredSystem === "solar" || hoveredSystem === "battery" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* Battery -> Meterkast */}
+                    <path 
+                      d="M 95 215 L 140 215" 
+                      stroke={hoveredSystem === "battery" || hoveredSystem === "electrics" ? `rgba(${systemsData.battery.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "battery" || hoveredSystem === "electrics" ? 2.5 : 1}
+                      strokeDasharray={hoveredSystem === "battery" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      className={hoveredSystem === "battery" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* Meterkast -> Airco */}
+                    <path 
+                      d="M 140 215 L 140 180 L 260 180 L 260 145" 
+                      stroke={hoveredSystem === "airco" || hoveredSystem === "electrics" ? `rgba(${systemsData.airco.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "airco" || hoveredSystem === "electrics" ? 2.5 : 1}
+                      strokeDasharray={hoveredSystem === "airco" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      className={hoveredSystem === "airco" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* Meterkast -> Heat Pump */}
+                    <path 
+                      d="M 140 215 L 275 215" 
+                      stroke={hoveredSystem === "pump" || hoveredSystem === "electrics" ? `rgba(${systemsData.pump.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "pump" || hoveredSystem === "electrics" ? 2.5 : 1}
+                      strokeDasharray={hoveredSystem === "pump" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      className={hoveredSystem === "pump" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* House Wireframe Drawing */}
+                    {/* Roof left & right */}
+                    <line x1="60" y1="110" x2="200" y2="30" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
+                    <line x1="200" y1="30" x2="340" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
+                    {/* Outer walls */}
+                    <line x1="80" y1="110" x2="80" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="320" y1="110" x2="320" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    {/* Ceiling, floors */}
+                    <line x1="80" y1="110" x2="320" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="80" y1="180" x2="320" y2="180" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="80" y1="250" x2="320" y2="250" stroke="white" strokeWidth="1.2" strokeOpacity="0.25" />
+                    {/* Internal Room Dividers */}
+                    <line x1="200" y1="110" x2="200" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.08" />
+
+                    {/* Solar Panel Framing Outline */}
+                    <line x1="85" y1="95" x2="175" y2="45" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
+                    <line x1="85" y1="98" x2="175" y2="48" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
+                    {/* Panel divisions */}
+                    <line x1="107" y1="83" x2="107" y2="86" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+                    <line x1="130" y1="70" x2="130" y2="73" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+                    <line x1="152" y1="57" x2="152" y2="60" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+
+                    {/* Architectural Labels */}
+                    <text x="85" y="105" fill="white" fillOpacity="0.25" fontSize="6" fontFamily="var(--font-barlow)">LVL. 01</text>
+                    <text x="85" y="175" fill="white" fillOpacity="0.25" fontSize="6" fontFamily="var(--font-barlow)">LVL. 00</text>
+                    <text x="210" y="120" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">CLIMATE</text>
+                    <text x="210" y="190" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">COMBUSTION ROOM</text>
+                    <text x="90" y="245" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">STORAGE</text>
+
+                    {/* Pulsing circles behind hotspots */}
+                    {Object.keys(systemsData).map((key) => {
+                      const sysKey = key as SystemKey;
+                      const active = hoveredSystem === sysKey;
+                      let coords = { x: 0, y: 0 };
+                      if (sysKey === "solar") coords = { x: 130, y: 70 };
+                      if (sysKey === "airco") coords = { x: 260, y: 145 };
+                      if (sysKey === "battery") coords = { x: 95, y: 215 };
+                      if (sysKey === "electrics") coords = { x: 140, y: 215 };
+                      if (sysKey === "pump") coords = { x: 275, y: 215 };
+
+                      return (
+                        <g key={sysKey} className="cursor-pointer" onMouseEnter={() => setHoveredSystem(sysKey)} onClick={() => setHoveredSystem(sysKey)}>
+                          {/* Outer pulse */}
+                          <circle 
+                            cx={coords.x} 
+                            cy={coords.y} 
+                            r={active ? 15 : 0} 
+                            fill={`rgba(${systemsData[sysKey].rgb}, 0.15)`}
+                            className={active ? "animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" : ""}
+                            style={{ transition: "r 0.3s" }}
+                          />
+                          {/* Middle ring */}
+                          <circle 
+                            cx={coords.x} 
+                            cy={coords.y} 
+                            r={active ? 8 : 4} 
+                            stroke={`rgba(${systemsData[sysKey].rgb}, 1)`} 
+                            strokeWidth="1.5" 
+                            fill="#0f172a" 
+                            style={{ transition: "r 0.3s" }}
+                          />
+                          {/* Inner dot */}
+                          <circle 
+                            cx={coords.x} 
+                            cy={coords.y} 
+                            r="2" 
+                            fill={`rgba(${systemsData[sysKey].rgb}, 1)`} 
+                          />
+                          
+                          {/* Transparent hover catcher */}
+                          <circle cx={coords.x} cy={coords.y} r="18" fill="transparent" />
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </Reveal>
+              </div>
+
+            </div>
           </div>
           
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
+          
+          <style jsx global>{`
+            @keyframes dash {
+              to {
+                stroke-dashoffset: -20;
+              }
+            }
+          `}</style>
         </section>
 
         {/* ── Our Story (Ons Verhaal Timeline) ── */}
@@ -512,46 +723,6 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* ── Interactive CTA ── */}
-        <section className="py-20 lg:py-32 bg-ink text-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand/20 via-transparent to-transparent pointer-events-none" />
-          
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10 text-center relative z-10">
-            <Reveal>
-              <h2 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-black uppercase leading-tight tracking-tight mb-8">
-                {language === "nl" ? "Klaar om te verduurzamen?" : "Ready to make your home sustainable?"}
-              </h2>
-            </Reveal>
-            <Reveal delay={100}>
-              <p className="text-lg lg:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed mb-12 font-medium">
-                {language === "nl" 
-                  ? "Neem vandaag nog contact op voor een vrijblijvend adviesgesprek of ontvang binnen 24 uur een heldere offerte."
-                  : "Contact us today for a free consultation or receive a clear quote within 24 hours."
-                }
-              </p>
-            </Reveal>
-            <Reveal delay={200}>
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-                <Link
-                  href="/contact/"
-                  className="group inline-flex items-center gap-4 px-10 py-5 bg-brand text-white text-[0.8125rem] font-black uppercase tracking-[0.25em] rounded-full hover:bg-white hover:text-ink transition-all duration-500 shadow-2xl shadow-brand/20"
-                >
-                  <span>{language === "nl" ? "Offerte aanvragen" : "Request Quote"}</span>
-                  <svg className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </Link>
-                <a
-                  href="tel:+31634311225"
-                  className="inline-flex items-center gap-4 px-10 py-5 bg-white/5 border border-white/10 text-white text-[0.8125rem] font-black uppercase tracking-[0.25em] rounded-full hover:bg-white/15 transition-all duration-500"
-                >
-                  <span>{language === "nl" ? "Bel direct" : "Call direct"}</span>
-                </a>
-              </div>
-            </Reveal>
           </div>
         </section>
       </div>
