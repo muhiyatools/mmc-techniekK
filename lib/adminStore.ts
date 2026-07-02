@@ -63,6 +63,7 @@ export async function fetchAdminStore(): Promise<AdminStore> {
         techSpecs: Array.isArray(p.tech_specs) ? p.tech_specs : [],
         image: p.image ?? "",
         images: Array.isArray(p.images) ? p.images : [],
+        sizes: Array.isArray(p.sizes) ? p.sizes : [],
         categoryId: slug,
       });
     });
@@ -142,6 +143,7 @@ export async function saveProduct(serviceSlug: string, product: Product): Promis
         tech_specs: product.techSpecs,
         image: product.image,
         images: product.images ?? [],
+        sizes: product.sizes ?? [],
         service_slug: serviceSlug,
       },
       { onConflict: "name,service_slug" }

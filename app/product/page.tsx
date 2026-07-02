@@ -159,7 +159,8 @@ function ProductDetailContent() {
   }
 
   // Parse descriptions: Support "short --- long" or first paragraph split
-  const descParts = product.description.split("---");
+  const cleanDescription = (product.description || "").replace(/\\n/g, "\n");
+  const descParts = cleanDescription.split("---");
   let shortDesc = "";
   let longDesc = "";
 
@@ -167,12 +168,12 @@ function ProductDetailContent() {
     shortDesc = descParts[0].trim();
     longDesc = descParts[1].trim();
   } else {
-    const paragraphIndex = product.description.indexOf("\n\n");
+    const paragraphIndex = cleanDescription.indexOf("\n\n");
     if (paragraphIndex !== -1) {
-      shortDesc = product.description.substring(0, paragraphIndex).trim();
-      longDesc = product.description.substring(paragraphIndex).trim();
+      shortDesc = cleanDescription.substring(0, paragraphIndex).trim();
+      longDesc = cleanDescription.substring(paragraphIndex).trim();
     } else {
-      shortDesc = product.description;
+      shortDesc = cleanDescription;
       longDesc = "";
     }
   }
@@ -257,9 +258,9 @@ function ProductDetailContent() {
               <div>
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted/65 mb-3 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                  {language === "nl" ? "Product highlights" : "Product Highlights"}
+                  {language === "nl" ? "Productomschrijving" : "Product Description"}
                 </h3>
-                <div className="text-[15px] text-copy leading-relaxed font-bold space-y-4">
+                <div className="text-[15px] text-copy leading-relaxed font-bold space-y-4 whitespace-pre-line">
                   {shortDesc}
                 </div>
               </div>
@@ -369,7 +370,7 @@ function ProductDetailContent() {
             {longDesc && (
               <Reveal delay={180} className="bg-white border border-hairline rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
                 <h2 className="text-[10px] font-black uppercase tracking-widest text-muted/65 mb-4">
-                  {language === "nl" ? "Uitgebreide omschrijving" : "Detailed Description"}
+                  {language === "nl" ? "Meer informatie" : "More Information"}
                 </h2>
                 <div className="text-sm sm:text-[15px] text-copy leading-relaxed font-bold space-y-4 whitespace-pre-line font-bold">
                   {longDesc}
