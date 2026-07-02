@@ -39,6 +39,39 @@ const getProductSizes = (product: Product): string[] => {
   return ["Standaardmaat", "Op maat gemaakt"];
 };
 
+// Helper to resolve the correct default selected size matching the product name
+const resolveDefaultSize = (product: Product, sizes: string[]): string => {
+  if (!sizes || sizes.length === 0) return "";
+  
+  const name = (product.name || "").toLowerCase();
+  
+  for (const size of sizes) {
+    const cleanSize = size.toLowerCase();
+    
+    // Extract kW number (e.g. 2.5, 3.5, 5.0)
+    const kwMatch = cleanSize.match(/(\d+[\.,]\d+|\d+)\s*kw/);
+    if (kwMatch) {
+      const num = kwMatch[1];
+      const normalized = num.replace(",", "."); // e.g., "3.5"
+      if (name.includes(normalized + "kw") || name.includes(normalized + " kw") || name.includes(num + "kw") || name.includes(num + " kw")) {
+        return size;
+      }
+    }
+
+    // Extract BTU number (e.g. 9000, 12000, 18000)
+    const btuMatch = cleanSize.match(/(\d+[\.,]\d+|\d+)\s*btu/);
+    if (btuMatch) {
+      const num = btuMatch[1];
+      const cleanBtu = num.replace(/[\.,]/g, ""); // "12000"
+      if (name.includes(cleanBtu) || name.includes(num)) {
+        return size;
+      }
+    }
+  }
+  
+  return sizes[0];
+};
+
 function ProductDetailContent() {
   const { t, language } = useLanguage();
   const searchParams = useSearchParams();
@@ -56,7 +89,7 @@ function ProductDetailContent() {
       setActiveImage(product.image);
       const sizes = getProductSizes(product);
       if (sizes.length > 0) {
-        setSelectedSize(sizes[0]);
+        setSelectedSize(resolveDefaultSize(product, sizes));
       }
     }
   }, [product]);
