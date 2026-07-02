@@ -36,6 +36,7 @@ export interface Product {
   description: string;
   techSpecs: string[];
   image: string;
+  images?: string[];
 }
 
 export interface Service {

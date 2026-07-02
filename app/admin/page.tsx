@@ -61,12 +61,12 @@ function useImageUpload() {
   return { upload, uploading };
 }
 
-function ImageUpload({ value, onChange, label }: { value: string | null | undefined; onChange: (url: string) => void; label: string }) {
+function ImageUpload({ value, onChange, label }: { value: string | null | undefined; onChange: (url: string) => void; label?: string }) {
   const { upload, uploading } = useImageUpload();
   const safeValue = value ?? "";
   return (
     <div>
-      <label className="block text-label text-muted mb-2">{label}</label>
+      {label && <label className="block text-label text-muted mb-2">{label}</label>}
       <div className="flex items-start gap-3">
         <input
           type="text" value={safeValue} onChange={(e) => onChange(e.target.value)}
@@ -87,7 +87,7 @@ function ImageUpload({ value, onChange, label }: { value: string | null | undefi
           />
         </label>
       </div>
-      {safeValue && (
+      {safeValue && label && (
         <div className="mt-3 relative w-24 h-16 rounded-lg overflow-hidden border border-hairline bg-white">
           <img src={safeValue} alt="Preview" className="w-full h-full object-cover" />
         </div>
@@ -205,7 +205,7 @@ function ProductEditForm({
   toast: ReturnType<typeof useToast>["show"];
 }) {
   const { product, serviceSlug } = item;
-  const [form, setForm] = useState<Product>({ ...product, image: product.image ?? "" });
+  const [form, setForm] = useState<Product>({ ...product, image: product.image ?? "", images: product.images ?? [] });
   const [specInput, setSpecInput] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -263,6 +263,41 @@ function ProductEditForm({
       </div>
 
       <ImageUpload label="Productafbeelding" value={form.image} onChange={(url) => update("image", url)} />
+
+      <div>
+        <label className="block text-label text-muted mb-2">Extra afbeeldingen (Galerij)</label>
+        <div className="flex gap-3 mb-3">
+          <div className="flex-1">
+            <ImageUpload
+              value=""
+              onChange={(url) => {
+                if (url) {
+                  update("images", [...(form.images ?? []), url]);
+                }
+              }}
+            />
+          </div>
+        </div>
+        {form.images && form.images.length > 0 && (
+          <div className="grid grid-cols-4 gap-3 bg-concrete/50 border border-hairline p-3 rounded-2xl">
+            {form.images.map((img, i) => (
+              <div key={`gallery-${i}`} className="relative aspect-[4/3] rounded-xl overflow-hidden border border-hairline bg-white group">
+                <img src={img} alt="" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => update("images", form.images!.filter((_, idx) => idx !== i))}
+                  className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors"
+                  title="Verwijder afbeelding"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div>
         <label className="block text-label text-muted mb-2">Beschrijving</label>
@@ -539,7 +574,7 @@ function BrandsTab({ store, setStore, toast }: { store: AdminStore; setStore: (s
 // ── Add Product Tab ──
 function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore: (s: AdminStore) => void; toast: ReturnType<typeof useToast>["show"] }) {
   const [serviceSlug, setServiceSlug] = useState(baseServices[0].slug);
-  const [form, setForm] = useState<Omit<Product, "categoryId">>({ name: "", brand: "", price: null, description: "", techSpecs: [], image: "" });
+  const [form, setForm] = useState<Omit<Product, "categoryId">>({ name: "", brand: "", price: null, description: "", techSpecs: [], image: "", images: [] });
   const [specInput, setSpecInput] = useState("");
   const [newBrandMode, setNewBrandMode] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -556,7 +591,7 @@ function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore
       const next: AdminStore = { ...store, products: { ...store.products, [serviceSlug]: [...(store.products[serviceSlug] ?? []), product] } };
       setStore(next);
       toast("Product toegevoegd", "success");
-      setForm({ name: "", brand: "", price: null, description: "", techSpecs: [], image: "" });
+      setForm({ name: "", brand: "", price: null, description: "", techSpecs: [], image: "", images: [] });
       setNewBrandMode(false);
     } catch (e) {
       toast("Toevoegen mislukt: " + String(e), "error");
@@ -605,6 +640,41 @@ function AddProductTab({ store, setStore, toast }: { store: AdminStore; setStore
         </div>
         <div className="space-y-5">
           <ImageUpload label="Productafbeelding" value={form.image} onChange={(url) => update("image", url)} />
+          
+          <div>
+            <label className="block text-label text-muted mb-2">Extra afbeeldingen (Galerij)</label>
+            <div className="flex gap-3 mb-3">
+              <div className="flex-1">
+                <ImageUpload
+                  value=""
+                  onChange={(url) => {
+                    if (url) {
+                      update("images", [...(form.images ?? []), url]);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            {form.images && form.images.length > 0 && (
+              <div className="grid grid-cols-4 gap-3 bg-concrete/50 border border-hairline p-3 rounded-2xl">
+                {form.images.map((img, i) => (
+                  <div key={`gallery-add-${i}`} className="relative aspect-[4/3] rounded-xl overflow-hidden border border-hairline bg-white group">
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => update("images", form.images!.filter((_, idx) => idx !== i))}
+                      className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-md transition-colors"
+                      title="Verwijder afbeelding"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div>
             <label className="block text-label text-muted mb-2">Beschrijving</label>
             <textarea value={form.description} onChange={(e) => update("description", e.target.value)} rows={4} placeholder="Korte productbeschrijving..." className="w-full px-3 py-2.5 text-sm border border-hairline rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none" />

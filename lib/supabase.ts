@@ -14,6 +14,7 @@ export interface Product {
   price_range: string | null;
   service_slug: string;
   image_url: string | null;
+  images?: string[];
   created_at: string;
 }
 
