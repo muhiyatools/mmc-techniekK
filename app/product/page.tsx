@@ -192,7 +192,9 @@ function ProductDetailContent() {
   }
 
   // Parse descriptions: Support "short --- long" or first paragraph split
-  const cleanDescription = (product.description || "").replace(/\\n/g, "\n");
+  const cleanDescription = (product.description || "")
+    .replace(/\\n/g, "\n")
+    .replace(/\*\*/g, "");
   const descParts = cleanDescription.split("---");
   let shortDesc = "";
   let longDesc = "";

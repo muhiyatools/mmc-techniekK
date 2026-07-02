@@ -22,12 +22,17 @@ function useParallax(speed = 0.3) {
     }
   }, [speed]);
   useEffect(() => {
+    if (typeof window === "undefined") return;
     if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const onScroll = () => requestAnimationFrame(handleScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [handleScroll]);
   return { ref, offset };
 }
@@ -469,6 +474,10 @@ export default function AboutPage() {
               from { transform: rotate(0deg); }
               to { transform: rotate(360deg); }
             }
+            .windmill-blades {
+              transform-origin: 320px 110px;
+              transform-box: view-box;
+            }
           `}</style>
         </section>
 
@@ -497,6 +506,24 @@ export default function AboutPage() {
                     <p>
                       {m.story.p2}
                     </p>
+                    <div className="mt-8 pt-6 border-t border-hairline/60 space-y-3">
+                      {[
+                        language === "nl" ? "Vakkundig & professioneel installatiebedrijf" : "Skilled & professional installation company",
+                        language === "nl" ? "Betrouwbare installatiespecialist gespecialiseerd in duurzame installaties" : "Reliable installation specialist specialized in sustainable installations",
+                        language === "nl" ? "Ervaren installateur van airconditioning, zonnepanelen en elektrotechniek" : "Experienced installer of air conditioning, solar panels and electrical systems",
+                        language === "nl" ? "Wij werken volgens de geldende normen en voorschriften (NEN 1010)" : "We work according to the applicable standards and regulations (NEN 1010)",
+                        language === "nl" ? "Kwalitatieve installaties met oog voor veiligheid en duurzaamheid" : "Quality installations with a focus on safety and sustainability"
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-3">
+                          <span className="w-5 h-5 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0 mt-0.5">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                          </span>
+                          <span className="text-sm font-bold text-ink/80">{item}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </Reveal>
               </div>
@@ -568,9 +595,10 @@ export default function AboutPage() {
                   </span>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h3 className="font-display text-2xl lg:text-3xl font-black uppercase leading-tight text-ink mb-4">
-                    {m.certifications.title}
-                  </h3>
+                  <h3 
+                    className="font-display text-2xl lg:text-3xl font-black uppercase leading-tight text-ink mb-4"
+                    dangerouslySetInnerHTML={{ __html: m.certifications.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
+                  />
                 </Reveal>
                 <p className="text-sm text-muted/95 leading-relaxed font-medium">
                   {language === "nl" 

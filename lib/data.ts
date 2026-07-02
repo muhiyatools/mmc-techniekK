@@ -249,6 +249,7 @@ export const projectImages = [
 
 export const certifications = [
   { name: "NEN-3140", src: "/images/certifications/nen-3140.png", description: "Veilig werken aan elektrische installaties" },
+  { name: "NEN-1010", src: "/images/nen1010.png", description: "Veiligheidseisen voor laagspanningsinstallaties" },
   { name: "VCA", src: "/images/certifications/vca.png", description: "Veiligheid, gezondheid en milieu" },
 ];
 
