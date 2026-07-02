@@ -23,6 +23,11 @@ export const metadata: Metadata = {
     "Utrecht",
     "verduurzamen",
   ],
+  icons: {
+    icon: "/images/logo.png",
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
   openGraph: {
     type: "website",
     locale: "nl_NL",

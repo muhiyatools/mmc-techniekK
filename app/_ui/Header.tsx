@@ -261,7 +261,7 @@ export default function Header() {
               <div className="flex items-center gap-4">
                 {certifications.map((c) => (
                   <div key={c.name} className="flex items-center gap-1.5 group cursor-default">
-                    <div className="relative w-5 h-5">
+                    <div className="relative w-7 h-7">
                       <Image src={c.src} alt={c.name} fill className="object-contain brightness-0 opacity-50 group-hover:opacity-80 transition-opacity" />
                     </div>
                     <span className="text-[9px] font-bold text-muted/50 group-hover:text-muted/80 transition-colors tracking-wide">{c.name}</span>

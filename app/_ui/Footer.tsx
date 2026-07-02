@@ -8,6 +8,12 @@ import { contactInfo } from "@/lib/data";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
+const getCertImage = (name: string) => {
+  if (name === "NEN-3140") return "/images/certifications/nen-3140.png";
+  if (name === "NEN-1010") return "/images/nen1010.png";
+  return "/images/certifications/vca.png";
+};
+
 export default function Footer() {
   const { t, language } = useLanguage();
   const pathname = usePathname();
@@ -86,7 +92,7 @@ export default function Footer() {
                         <div key={c.name} className="flex items-center gap-5">
                           <div className="relative w-12 h-12 shrink-0">
                             <Image
-                              src={c.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"}
+                              src={getCertImage(c.name)}
                               alt={c.name}
                               fill
                               className="object-contain brightness-0 invert opacity-60"
@@ -230,7 +236,7 @@ export default function Footer() {
             {t.components.footer.certifications.map((c) => (
               <div key={c.name} className="relative w-10 h-10">
                 <Image
-                  src={c.name === "NEN-3140" ? "/images/certifications/nen-3140.png" : "/images/certifications/vca.png"}
+                  src={getCertImage(c.name)}
                   alt={c.name}
                   fill
                   className="object-contain brightness-0 invert opacity-60"

@@ -286,6 +286,7 @@ export const translations = {
         allRightsReserved: "Alle rechten voorbehouden.",
         certifications: [
           { name: "NEN-3140", description: "Veilig werken aan elektrische installaties" },
+          { name: "NEN-1010", description: "Veiligheidseisen voor laagspanningsinstallaties" },
           { name: "VCA", description: "Veiligheid, gezondheid en milieu" },
         ]
       }
@@ -606,6 +607,7 @@ export const translations = {
         allRightsReserved: "All rights reserved.",
         certifications: [
           { name: "NEN-3140", description: "Safe work on electrical installations" },
+          { name: "NEN-1010", description: "Low voltage installation standards" },
           { name: "VCA", description: "Safety, health and environment" },
         ]
       }
