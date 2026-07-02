@@ -37,6 +37,7 @@ export interface Product {
   techSpecs: string[];
   image: string;
   images?: string[];
+  sizes?: string[];
 }
 
 export interface Service {

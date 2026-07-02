@@ -67,6 +67,7 @@ function ContactForm() {
   const searchParams = useSearchParams();
   const serviceParam = searchParams.get("service");
   const productParam = searchParams.get("product");
+  const sizeParam = searchParams.get("size");
   const [services, setServices] = useState<Service[]>(baseServices);
 
   const [form, setForm] = useState({
@@ -75,7 +76,7 @@ function ContactForm() {
     phone: "",
     service: serviceParam || "",
     product: productParam || "",
-    message: "",
+    message: sizeParam ? (language === "nl" ? `Gewenste capaciteit/maat: ${sizeParam}\n\n` : `Desired capacity/size: ${sizeParam}\n\n`) : "",
   });
 
   const selectedService = services.find((s) => s.slug === form.service);
