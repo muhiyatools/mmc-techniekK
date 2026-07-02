@@ -410,21 +410,6 @@ function AanbodContent() {
             <MaintenancePlanner />
           ) : activeSlug && activeService ? (
             <>
-              <div className="compact-service-header mb-12">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 rounded-full -mr-32 -mt-32 blur-[100px] hidden md:block" />
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 p-8 lg:p-12">
-                  <div>
-                    <p className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/60 mb-3">{serviceTitleMap[activeService.slug]}</p>
-                    <h2 className="font-display font-black text-2xl md:text-5xl lg:text-6xl text-ink leading-[0.9] tracking-[-0.03em] uppercase">
-                      {serviceCaptionMap[activeService.slug]}
-                    </h2>
-                  </div>
-                  <Link href={`/contact?service=${activeService.slug}`} className="px-10 py-5 md:px-14 md:py-6 bg-ink text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.25em] text-white rounded-full hover:bg-brand transition-all duration-500 text-center shadow-2xl hover:shadow-brand/40 hover:-translate-y-1 active:translate-y-0 shrink-0">
-                    {t.pages.aanbod.requestQuote}
-                  </Link>
-                </div>
-              </div>
-
               <div className="flex items-center justify-between mb-8 md:mb-12 border-b-2 border-hairline/50 pb-6 md:pb-8">
                 <div className="flex items-center gap-5">
                   <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-black text-ink uppercase tracking-widest ml-2">

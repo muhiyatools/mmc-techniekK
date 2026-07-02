@@ -119,14 +119,16 @@ export default function ServiceContent({ slug }: { slug: string }) {
               {service.products.map((product, i) => (
                 <Reveal key={product.name} delay={i * 80}>
                   <div className="group bg-white border border-hairline hover:border-brand/40 transition-all duration-300 overflow-hidden flex flex-col rounded-xl">
-                    <div className="relative aspect-[4/3] overflow-hidden bg-concrete">
+                    <Link href={`/product/?name=${encodeURIComponent(product.name)}&service=${service.slug}`} className="relative aspect-[4/3] overflow-hidden bg-concrete block">
                       <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, 50vw" />
-                    </div>
+                    </Link>
                     <div className="p-5 flex flex-col flex-1">
                       <div className="mb-1.5 h-6 flex items-center">
                         <BrandLogo brand={product.brand} imageSrc={brandImagesState[product.brand] ?? ""} height={20} />
                       </div>
-                      <h4 className="text-base font-bold text-ink mb-2 group-hover:text-brand transition-colors">{product.name}</h4>
+                      <Link href={`/product/?name=${encodeURIComponent(product.name)}&service=${service.slug}`}>
+                        <h4 className="text-base font-bold text-ink mb-2 group-hover:text-brand transition-colors hover:underline">{product.name}</h4>
+                      </Link>
                       <p className="text-sm text-muted mb-4 leading-relaxed">{product.description}</p>
                       <ul className="space-y-1 mb-4">
                         {product.techSpecs.slice(0, 4).map((spec, idx) => (

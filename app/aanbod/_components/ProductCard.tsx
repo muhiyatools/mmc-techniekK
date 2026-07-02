@@ -21,7 +21,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   return (
     <Link
-      href={`/contact?product=${encodeURIComponent(product.name)}&service=${serviceSlug}`}
+      href={`/product/?name=${encodeURIComponent(product.name)}&service=${serviceSlug}`}
       className="group flex flex-col bg-surface border border-hairline rounded-2xl overflow-hidden hover:border-brand/40 hover:shadow-2xl hover:shadow-brand/5 transition-all duration-500 cursor-pointer h-full"
     >
       {/* Mobile: horizontal card layout */}
