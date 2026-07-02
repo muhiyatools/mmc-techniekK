@@ -248,9 +248,16 @@ export async function uploadImage(file: File): Promise<string> {
 // ── Merge helpers: admin OVERRIDES base by name ──
 export function mergeServices(adminStore: AdminStore): Service[] {
   return baseServices.map((service) => {
-    // Only return products from the admin store (database)
-    const adminProducts = adminStore.products[service.slug] ?? [];
-    return { ...service, products: adminProducts };
+    const deleted = adminStore.deletedProducts?.[service.slug] ?? [];
+    const baseList = service.products.filter((p) => !deleted.includes(p.name));
+    const dbList = adminStore.products[service.slug] ?? [];
+    
+    // De-duplicate by product name, letting database overrides take precedence
+    const mergedMap = new Map<string, Product>();
+    baseList.forEach((p) => mergedMap.set(p.name, p));
+    dbList.forEach((p) => mergedMap.set(p.name, p));
+    
+    return { ...service, products: Array.from(mergedMap.values()) };
   });
 }
 
