@@ -132,48 +132,45 @@ export const translations = {
         }
       },
       overOns: {
-        label: "Over ons",
-        title: "Vakmanschap<br /><brand>uit Oudewater</brand>",
-        description: "Sinds 2008 installeren wij duurzame systemen met vakmanschap dat u kunt zien en voelen. Een vast team van eigen mensen, geen onderaannemers, en een commitment dat niet ophoudt na oplevering.",
+        label: "Over MMC Techniek",
+        title: "Over <brand>MMC Techniek</brand>",
+        description: "Techniek met vakmanschap. Kwaliteit voor jarenlang comfort.",
+        intro: {
+          title: "Kwaliteit, betrouwbaarheid en persoonlijk contact",
+          p1: "Bij MMC Techniek draait alles om kwaliteit, betrouwbaarheid en persoonlijk contact. Al meer dan 16 jaar realiseren wij duurzame technische installaties voor particulieren en bedrijven door heel Nederland. Of het nu gaat om airconditioning, elektrotechniek, zonnepanelen, thuisbatterijen of warmtepompen: wij leveren oplossingen die perfect aansluiten op uw wensen én klaar zijn voor de toekomst.",
+          p2: "Wij geloven dat een goede installatie verder gaat dan alleen de montage. Daarom nemen wij de tijd om u eerlijk te adviseren, denken we met u mee en zorgen we voor een nette afwerking tot in de kleinste details. Onze klanten kiezen voor MMC Techniek omdat zij weten dat kwaliteit, service en vakmanschap bij ons altijd vooropstaan.",
+          p3: "Met meer dan 2.500 succesvol afgeronde projecten hebben wij een sterke reputatie opgebouwd als betrouwbare installatiepartner. Dankzij ons vaste team van ervaren monteurs kunnen wij iedere opdracht volledig in eigen beheer uitvoeren. Zo houden wij controle over de kwaliteit en bent u verzekerd van een installatie waar u jarenlang zorgeloos van kunt genieten."
+        },
+        mission: {
+          label: "Onze missie",
+          title: "Duurzame techniek <brand>toegankelijk voor iedereen</brand>",
+          description: "Wij maken duurzame techniek toegankelijk voor iedereen. Door hoogwaardige producten te combineren met vakmanschap en persoonlijk advies creëren wij installaties die niet alleen energie besparen, maar ook zorgen voor meer comfort, veiligheid en woonplezier."
+        },
+        whyChoose: {
+          label: "Waarom MMC",
+          title: "Waarom kiezen voor <brand>MMC Techniek?</brand>",
+          reasons: [
+            { title: "16+ Jaar Ervaring", description: "Meer dan 16 jaar ervaring in duurzame installaties." },
+            { title: "2.500+ Projecten", description: "Meer dan 2.500 succesvol afgeronde projecten." },
+            { title: "Eigen Vakteam", description: "Een vast team van ervaren en gecertificeerde monteurs." },
+            { title: "Persoonlijk Advies", description: "Persoonlijk advies afgestemd op uw situatie." },
+            { title: "A-Merk Kwaliteit", description: "Hoogwaardige materialen van gerenommeerde A-merken." },
+            { title: "Oog voor Detail", description: "Nette afwerking met oog voor detail." },
+            { title: "Transparant", description: "Transparante communicatie en duidelijke afspraken." },
+            { title: "Betrouwbare Service", description: "Betrouwbare service, ook na de oplevering." }
+          ]
+        },
         story: {
           label: "Ons verhaal",
-          title: "Van één idee<br /><brand>naar 16 vakmensen</brand>",
-          description: "Wat begon als een eenmanszaak in Oudewater groeide uit tot een team van gedreven vakmensen. Dezelfde waarden staan nog steeds centraal: vakmanschap, betrouwbaarheid, en nazorg die verder gaat dan de oplevering.",
-        },
-        milestones: [
-          { year: "2008", text: "MMC Techniek opgericht vanuit Oudewater als eenmanszaak" },
-          { year: "2012", text: "Eerste 500 projecten opgeleverd in de regio Utrecht" },
-          { year: "2016", text: "Uitbreiding van het dienstenpakket met zonnepanelen en warmtepompen" },
-          { year: "2020", text: "Gegroeid naar een vast team van eigen vakmensen" },
-          { year: "2024", text: "2500+ projecten, NEN-3140 en VCA gecertificeerd" },
-        ],
-        work: {
-          label: "Ons werk",
-          title: "Het werk spreekt<br /><brand>voor zichzelf</brand>",
-          description: "16 eigen vakmensen, geen onderaannemers. Elk project wordt door ons eigen team ontworpen, geïnstalleerd en opgeleverd.",
-          cta: "Bekijk alle projecten",
-          photos: [
-            { label: "Zonnepanelen installatie", location: "Oudewater" },
-            { label: "Elektrische installatie", location: "Woerden" },
-            { label: "Technisch onderhoud", location: "Oudewater" },
-            { label: "Renovatieproject", location: "Utrecht" },
-            { label: "Installatie", location: "Bodegraven" },
-            { label: "Service oplevering", location: "Oudewater" },
-          ]
+          title: "Gegroeid door <brand>vertrouwen</brand>",
+          p1: "Wat ooit begon als een klein installatiebedrijf is uitgegroeid tot een betrouwbare partner voor complete technische installaties. Door de jaren heen zijn wij blijven investeren in kennis, innovatie en kwaliteit, zonder onze belangrijkste waarde uit het oog te verliezen: tevreden klanten.",
+          p2: "Elke installatie die wij realiseren behandelen wij alsof deze voor onszelf is. Die mentaliteit ziet u terug in onze werkwijze, onze afwerking en de langdurige relaties die wij met onze klanten opbouwen.",
+          p3: "Bij MMC Techniek geloven wij dat vertrouwen verdiend wordt door vakmanschap, eerlijk advies en service waarop u altijd kunt rekenen. Daarom staan wij iedere dag klaar om woningen en bedrijfspanden duurzamer, comfortabeler en energiezuiniger te maken."
         },
         clients: {
           label: "Merken waar we mee werken",
           title: "Gecertificeerde<br /><brand>A-merken</brand>",
           description: "Wij installeren uitsluitend hoogwaardige materialen van gerenommeerde fabrikanten.",
-        },
-        values: {
-          label: "Waarom MMC",
-          title: "Het verschil zit in<br /><brand>de details</brand>",
-          reasons: [
-            { title: "16+ jaar ervaring", description: "Sinds 2008 actief vanuit Oudewater. Dezelfde betrokkenheid, jaar na jaar." },
-            { title: "Eigen vakmensen", description: "Een vast team van gecertificeerde monteurs. Kwaliteit in eigen hand." },
-            { title: "Service na oplevering", description: "Een installatie is een relatie van jaren. Wij staan paraat." },
-          ]
         },
         testimonials: {
           label: "Wat klanten zeggen",
@@ -455,48 +452,45 @@ export const translations = {
         }
       },
       overOns: {
-        label: "About us",
-        title: "Craftsmanship<br /><brand>from Oudewater</brand>",
-        description: "Since 2008, we have been installing sustainable systems with craftsmanship you can see and feel. A fixed team of our own people, no subcontractors, and a commitment that doesn't end after delivery.",
+        label: "About MMC Techniek",
+        title: "About <brand>MMC Techniek</brand>",
+        description: "Craftsmanship in technology. Quality for years of comfort.",
+        intro: {
+          title: "Quality, reliability, and personal contact",
+          p1: "At MMC Techniek, everything revolves around quality, reliability, and personal contact. For over 16 years, we have been realizing sustainable technical installations for residential and commercial clients across the Netherlands. Whether it is air conditioning, electrical engineering, solar panels, home battery storage, or heat pumps: we deliver solutions that align perfectly with your wishes and are ready for the future.",
+          p2: "We believe that a great installation goes beyond simple assembly. That is why we take the time to offer honest advice, think along with you, and ensure a neat finish down to the smallest detail. Our clients choose MMC Techniek because they know that quality, service, and craftsmanship are always our top priorities.",
+          p3: "With over 2,500 successfully completed projects, we have built a solid reputation as a trusted installation partner. Thanks to our permanent team of experienced technicians, we manage and execute every project entirely in-house. This gives us control over quality and guarantees you an installation you can enjoy worry-free for years."
+        },
+        mission: {
+          label: "Our mission",
+          title: "Sustainable tech <brand>accessible to everyone</brand>",
+          description: "We make sustainable technology accessible to everyone. By combining high-quality products with craftsmanship and personal advice, we create installations that not only save energy but also ensure more comfort, safety, and living pleasure."
+        },
+        whyChoose: {
+          label: "Why MMC",
+          title: "Why choose <brand>MMC Techniek?</brand>",
+          reasons: [
+            { title: "16+ Years Experience", description: "More than 16 years of experience in sustainable installations." },
+            { title: "2,500+ Projects", description: "Over 2,500 successfully completed projects." },
+            { title: "Certified Specialist Team", description: "A permanent team of experienced and certified technicians." },
+            { title: "Personal Advice", description: "Personal advice tailored to your specific situation." },
+            { title: "Premium A-Brands", description: "High-quality materials from renowned A-brands." },
+            { title: "Eye for Detail", description: "Neat finish with attention to detail." },
+            { title: "Transparent", description: "Transparent communication and clear agreements." },
+            { title: "Reliable Service", description: "Reliable service, even long after installation." }
+          ]
+        },
         story: {
           label: "Our story",
-          title: "From one idea<br /><brand>to 16 craftsmen</brand>",
-          description: "What started as a sole proprietorship in Oudewater grew into a team of dedicated craftsmen. The same values remain central: craftsmanship, reliability, and aftercare that goes beyond delivery.",
-        },
-        milestones: [
-          { year: "2008", text: "MMC Techniek founded in Oudewater as a sole proprietorship" },
-          { year: "2012", text: "First 500 projects completed in the Utrecht region" },
-          { year: "2016", text: "Expanded service portfolio with solar panels and heat pumps" },
-          { year: "2020", text: "Grew to a permanent team of our own craftsmen" },
-          { year: "2024", text: "2500+ projects, NEN-3140 and VCA certified" },
-        ],
-        work: {
-          label: "Our work",
-          title: "The work speaks<br /><brand>for itself</brand>",
-          description: "16 own craftsmen, no subcontractors. Each project is designed, installed, and delivered by our own team.",
-          cta: "View all projects",
-          photos: [
-            { label: "Heat pump installation", location: "Oudewater" },
-            { label: "Electrical installation", location: "Woerden" },
-            { label: "Technical maintenance", location: "Oudewater" },
-            { label: "Renovation project", location: "Utrecht" },
-            { label: "Installation", location: "Bodegraven" },
-            { label: "Service delivery", location: "Oudewater" },
-          ]
+          title: "Grown through <brand>trust</brand>",
+          p1: "What once began as a small installation company has grown into a reliable partner for complete technical installations. Over the years, we have continued to invest in knowledge, innovation, and quality, without ever losing sight of our most important value: satisfied customers.",
+          p2: "We treat every installation as if it were for ourselves. That mentality is reflected in our working methods, our neat finish, and the long-term relationships we build with our customers.",
+          p3: "At MMC Techniek, we believe trust is earned through craftsmanship, honest advice, and service you can always count on. That is why we are ready every day to make residential and commercial properties more sustainable, comfortable, and energy-efficient."
         },
         clients: {
           label: "Brands we work with",
           title: "Certified<br /><brand>A-brands</brand>",
           description: "We exclusively install high-quality materials from renowned manufacturers.",
-        },
-        values: {
-          label: "Why MMC",
-          title: "The difference is in<br /><brand>the details</brand>",
-          reasons: [
-            { title: "16+ years experience", description: "Active from Oudewater since 2008. The same commitment, year after year." },
-            { title: "Own craftsmen", description: "A fixed team of certified technicians. Quality in our own hands." },
-            { title: "Service after delivery", description: "An installation is a multi-year relationship. We are ready." },
-          ]
         },
         testimonials: {
           label: "What clients say",
