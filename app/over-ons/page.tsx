@@ -32,15 +32,13 @@ function useParallax(speed = 0.3) {
   return { ref, offset };
 }
 
-type SystemKey = "solar" | "battery" | "pump" | "airco" | "electrics";
+type SystemKey = "solar" | "wind" | "battery" | "pump" | "airco" | "electrics";
 
 export default function AboutPage() {
   const { t, language } = useLanguage();
   const m = t.pages.overOns;
   const [adminSettings, setAdminSettings] = useState<Record<string, string> | null>(null);
   const heroParallax = useParallax(0.25);
-  const [activePillar, setActivePillar] = useState<number>(0);
-  const [activeMilestone, setActiveMilestone] = useState<number>(0);
   const [hoveredSystem, setHoveredSystem] = useState<SystemKey>("solar");
 
   useEffect(() => {
@@ -57,11 +55,11 @@ export default function AboutPage() {
   const statsData: [string, string][] = [
     ["16+", m.stats[0]?.label || (language === "nl" ? "jaar ervaring" : "years experience")],
     ["2.500+", m.stats[1]?.label || (language === "nl" ? "projecten" : "projects")],
-    ["100%", m.stats[2]?.label || (language === "nl" ? "eigen personeel" : "in-house team")],
+    ["100%", m.stats[2]?.label || (language === "nl" ? "eigen monteurs" : "in-house team")],
     ["A-Merk", m.stats[3]?.label || (language === "nl" ? "kwaliteit" : "quality")],
   ];
 
-  // System details data for the blueprint section
+  // Systems data for the blueprint
   const systemsData: Record<SystemKey, { title: string; quote: string; text: string; color: string; rgb: string }> = {
     solar: {
       title: language === "nl" ? "Zonnepanelen (Generatie)" : "Solar Panels (Generation)",
@@ -71,6 +69,15 @@ export default function AboutPage() {
         : "MMC Techniek supplies and installs premium solar panels from trusted A-brands. No standard packages, but an installation precisely engineered for your specific roof layout and power consumption for maximum efficiency.",
       color: "text-amber-400",
       rgb: "250, 204, 21"
+    },
+    wind: {
+      title: language === "nl" ? "Windenergie (Generatie)" : "Wind Energy (Generation)",
+      quote: language === "nl" ? "Lokale windstroom als perfecte, constante aanvulling." : "Local wind power as the perfect, constant supplement.",
+      text: language === "nl"
+        ? "Windenergie vult zonnestroom perfect aan, vooral tijdens de wintermaanden en in de nacht. Wij koppelen kleinschalige windturbines aan uw thuisbatterij en meterkast voor een constante, duurzame stroomvoorziening."
+        : "Wind energy complements solar power perfectly, especially during winter months and nighttime. We connect small-scale wind turbines to your home battery and fuse box for a constant, sustainable energy supply.",
+      color: "text-teal-400",
+      rgb: "45, 212, 191"
     },
     battery: {
       title: language === "nl" ? "Thuisbatterijen (Opslag)" : "Home Batteries (Storage)",
@@ -110,87 +117,87 @@ export default function AboutPage() {
     }
   };
 
-  // SVG Icons for the 8 reasons
-  const getIconForReason = (index: number) => {
-    const icons = [
-      // 0: Experience (Star badge)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-      </svg>,
-      // 1: Projects (Building check)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 1.5 1.5v3m-3-12h.008v.008H12 9v-.008Zm0 3h.008v.008H12 9v-.008Z" />
-      </svg>,
-      // 2: Team (Wrench & Hammer)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766l.002-.001a3.005 3.005 0 0 0 1.9-1.9l.001-.003c.14-.468.382-.89.766-1.208l3.03-2.496m-12.42 9.4-4.887 4.887a3.075 3.075 0 1 1-4.35-4.35L7.05 11.42m4.37 4.37a3.075 3.075 0 0 0-4.37-4.37m4.37 4.37-2.185-2.185M7.05 11.42 2.874 7.245a3.075 3.075 0 0 1 4.183-4.183L11.23 7.24m-4.18 4.18 2.185 2.185" />
-      </svg>,
-      // 3: Advice (Chat support)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025 8.286 8.286 0 0 1-1.402-1.402C3.168 16.142 2.5 14.15 2.5 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-      </svg>,
-      // 4: Materials (Shield check)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-      </svg>,
-      // 5: Detail (Target scope)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M12 9.75A2.25 2.25 0 1 0 12 14.25 2.25 2.25 0 0 0 12 9.75Z" />
-      </svg>,
-      // 6: Transparency (Document check)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>,
-      // 7: Service (Support Headset)
-      <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v-2.15a8.25 8.25 0 0 0-16.5 0v2.15a3.25 3.25 0 0 0 3 3h.5a1.25 1.25 0 0 0 1.25-1.25v-3.5A1.25 1.25 0 0 0 7.25 9h-2.125A6.75 6.75 0 0 1 18.875 9H16.75a1.25 1.25 0 0 0-1.25 1.25v3.5a1.25 1.25 0 0 0 1.25 1.25h.5a3.25 3.25 0 0 0 3-3z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v.75a2 2 0 0 1-2 2H5" />
-      </svg>,
-    ];
-    return icons[index] || icons[0];
-  };
+  // 4 Core advantages for simplified display
+  const keyAdvantages = [
+    {
+      title: language === "nl" ? "16+ Jaar Ervaring" : "16+ Years Experience",
+      desc: language === "nl" ? "Sinds 2008 uw vertrouwde partner in duurzame installaties." : "Your trusted partner in sustainable installations since 2008.",
+      icon: (
+        <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+        </svg>
+      )
+    },
+    {
+      title: language === "nl" ? "2.500+ Projecten" : "2,500+ Projects",
+      desc: language === "nl" ? "Succesvolle verduurzamingsprojecten door heel Nederland." : "Successful sustainability projects throughout the Netherlands.",
+      icon: (
+        <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21" />
+        </svg>
+      )
+    },
+    {
+      title: language === "nl" ? "Vast Vakteam" : "In-House Specialists",
+      desc: language === "nl" ? "Ervaren, gecertificeerde eigen monteurs zonder onderaannemers." : "Experienced, certified staff without using subcontractors.",
+      icon: (
+        <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+      )
+    },
+    {
+      title: language === "nl" ? "Betrouwbare Service" : "Reliable Support",
+      desc: language === "nl" ? "Persoonlijk contact en nazorg waarop u kunt rekenen." : "Personal contact and aftercare you can always count on.",
+      icon: (
+        <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9.75h-4.5m4.5 4.5h-4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+      )
+    }
+  ];
 
   return (
     <>
       <div className="pt-[104px] lg:pt-[114px]">
         {/* ── Hero ── */}
-        <section className="relative min-h-[75vh] flex items-center bg-ink overflow-hidden">
+        <section className="relative min-h-[70vh] flex items-center bg-ink overflow-hidden">
           <div ref={heroParallax.ref} className="absolute inset-0" style={{ transform: `translateY(${heroParallax.offset}px)` }}>
-            <Image src="/images/solarbackground.webp" alt="" fill className="object-cover opacity-20 lg:opacity-25 scale-105" priority />
-            <div className="absolute inset-0 bg-gradient-to-b from-ink/65 via-ink/90 to-ink" />
+            <Image src="/images/solarbackground.webp" alt="" fill className="object-cover opacity-15 lg:opacity-20 scale-105" priority />
+            <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/90 to-ink" />
           </div>
 
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-1 via-brand to-aurora-2 animate-[aurora-drift_18s_linear_infinite] bg-[length:200%_100%] opacity-60" />
 
-          <div className="relative w-full max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-24 z-10">
+          <div className="relative w-full max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-20 z-10">
             <div className="max-w-4xl lg:max-w-[1000px]">
               <Reveal threshold={0.3}>
-                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.35em] text-brand mb-6 block">
+                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.35em] text-brand mb-4 block">
                   {m.label}
                 </span>
               </Reveal>
 
               <Reveal delay={100} threshold={0.3}>
                 <h1 
-                  className="font-display text-[clamp(2.75rem,8vw,7.5rem)] lg:text-[clamp(4.5rem,7vw,8.5rem)] font-black leading-[0.95] tracking-tight text-white mb-8 uppercase text-wrap-balance"
+                  className="font-display text-[clamp(2.5rem,7vw,6.5rem)] lg:text-[clamp(4rem,6vw,7.5rem)] font-black leading-[0.95] tracking-tight text-white mb-6 uppercase text-wrap-balance"
                   dangerouslySetInnerHTML={{ __html: heroTitle.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
                 />
               </Reveal>
 
-              <Reveal delay={200} threshold={0.3}>
-                <p className="text-[clamp(1.15rem,1.8vw,1.5rem)] text-white/75 font-medium leading-relaxed max-w-3xl mb-16">
+              <Reveal delay={180} threshold={0.3}>
+                <p className="text-lg lg:text-xl text-white/70 leading-relaxed max-w-2xl mb-12">
                   {heroDesc}
                 </p>
               </Reveal>
 
-              <Reveal delay={300} threshold={0.3}>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 lg:p-12 shadow-2xl">
-                  {statsData.map(([val, label]) => (
-                    <div key={`stat-${label}`} className="text-center md:text-left">
-                      <div className="font-display text-[clamp(2.5rem,4vw,4.5rem)] font-black text-white tabular-nums leading-none tracking-tighter">
+              <Reveal delay={260} threshold={0.3}>
+                <div className="flex flex-wrap gap-x-12 gap-y-6">
+                  {statsData.slice(0, 3).map(([val, label]) => (
+                    <div key={`stat-${label}`} className="border-l-2 border-brand/40 pl-4">
+                      <div className="font-display text-3xl font-black text-white tabular-nums leading-none">
                         {val}
                       </div>
-                      <p className="text-[0.6875rem] lg:text-[0.75rem] font-bold text-brand uppercase tracking-[0.2em] mt-3">
+                      <p className="text-[0.6875rem] font-bold text-muted uppercase tracking-wider mt-1">
                         {label}
                       </p>
                     </div>
@@ -203,172 +210,104 @@ export default function AboutPage() {
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-aurora-2/40 via-brand/20 to-aurora-1/40" />
         </section>
 
-        {/* ── Who We Are (Three Pillars of Quality) ── */}
-        <section className="py-24 lg:py-40 bg-bg relative">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-            <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-start">
-              <div className="lg:col-span-5 lg:sticky lg:top-40">
-                <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-6 block">
-                    {language === "nl" ? "Wie we zijn" : "Who we are"}
-                  </span>
-                </Reveal>
-                <Reveal delay={100}>
-                  <h2 className="font-display text-[clamp(2.5rem,4.5vw,4.5rem)] font-black leading-[0.9] tracking-tight text-ink mb-8 uppercase">
-                    {m.intro.title}
-                  </h2>
-                </Reveal>
-                <Reveal delay={200}>
-                  <div className="flex flex-col gap-4 mt-8">
-                    {[
-                      { title: language === "nl" ? "Persoonlijk & Betrouwbaar" : "Personal & Reliable", desc: m.intro.p1 },
-                      { title: language === "nl" ? "Echt Vakmanschap" : "True Craftsmanship", desc: m.intro.p2 },
-                      { title: language === "nl" ? "Alles In Eigen Beheer" : "Fully In-House", desc: m.intro.p3 }
-                    ].map((pill, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setActivePillar(idx)}
-                        className={`text-left p-6 rounded-2xl transition-all duration-300 border ${
-                          activePillar === idx
-                            ? "bg-white border-brand shadow-lg shadow-brand/5 translate-x-2"
-                            : "bg-transparent border-transparent hover:bg-white/50 hover:border-hairline"
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <span className={`font-display text-lg font-black transition-colors ${activePillar === idx ? "text-brand" : "text-muted"}`}>
-                            {String(idx + 1).padStart(2, "0")}
-                          </span>
-                          <span className={`font-display text-lg font-black uppercase tracking-wider transition-colors ${activePillar === idx ? "text-ink" : "text-copy/70"}`}>
-                            {pill.title}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </Reveal>
-              </div>
-
-              <div className="lg:col-span-7 bg-white border border-hairline/40 rounded-3xl p-8 lg:p-12 shadow-xl min-h-[350px] flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full blur-2xl" />
-                <div className="transition-all duration-500 ease-out transform opacity-100 translate-y-0">
-                  <p className="text-xl lg:text-2xl text-copy leading-relaxed font-medium">
-                    {[m.intro.p1, m.intro.p2, m.intro.p3][activePillar]}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Mission (Sustainable Energy Flow Blueprint) ── */}
-        <section className="py-24 lg:py-40 bg-ink text-white relative overflow-hidden">
-          {/* Ambient Blueprint Grids */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none">
+        {/* ── Mission (Sustainable Energy Flow Blueprint & Spinning Wind Turbine) ── */}
+        <section className="py-20 lg:py-32 bg-ink text-white relative overflow-hidden">
+          {/* Blueprint Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none select-none">
             <svg width="100%" height="100%">
               <defs>
-                <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                <pattern id="blueprintGridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
                   <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#gridPattern)" />
+              <rect width="100%" height="100%" fill="url(#blueprintGridPattern)" />
             </svg>
           </div>
           
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
 
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10">
-            <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
               
-              {/* Left Column: Mission text & Dynamic System Detail */}
-              <div className="lg:col-span-6">
+              {/* Left Column: Mission text & Active System Card */}
+              <div className="lg:col-span-5">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-6 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-4 block">
                     {m.mission.label}
                   </span>
                 </Reveal>
 
                 <Reveal delay={100}>
                   <h2 
-                    className="font-display text-[clamp(2.5rem,4.5vw,4rem)] font-black leading-[0.9] tracking-tight uppercase mb-8"
+                    className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-[0.95] tracking-tight uppercase mb-6"
                     dangerouslySetInnerHTML={{ __html: m.mission.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
                   />
                 </Reveal>
 
-                <Reveal delay={180}>
-                  <p className="text-lg lg:text-xl text-white/70 leading-relaxed mb-12 font-medium">
+                <Reveal delay={160}>
+                  <p className="text-base lg:text-lg text-white/60 leading-relaxed mb-8">
                     {m.mission.description}
                   </p>
                 </Reveal>
 
-                {/* System Detail Dashboard (Swaps based on blueprint hotspot hover) */}
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
-                  {/* Glowing active bar */}
-                  <div 
-                    className="absolute top-0 left-0 bottom-0 w-1.5 transition-colors duration-500" 
-                    style={{ backgroundColor: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
-                  />
-                  
-                  <div className="pl-4">
-                    <span 
-                      className={`text-[0.6875rem] font-black uppercase tracking-[0.3em] transition-colors duration-500`}
-                      style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
-                    >
-                      {language === "nl" ? "Systeemonderdeel" : "System Component"}
-                    </span>
-                    <h3 className="font-display text-2xl lg:text-3xl font-black uppercase text-white mt-2 mb-3 tracking-tight">
-                      {systemsData[hoveredSystem].title}
-                    </h3>
-                    <p 
-                      className="text-base font-bold italic mb-6 leading-snug transition-colors duration-500"
-                      style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 0.85)` }}
-                    >
-                      &ldquo;{systemsData[hoveredSystem].quote}&rdquo;
-                    </p>
-                    <p className="text-white/70 leading-relaxed font-medium">
-                      {systemsData[hoveredSystem].text}
-                    </p>
+                {/* System Detail Panel */}
+                <Reveal delay={220}>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden backdrop-blur-md">
+                    {/* Active color strip */}
+                    <div 
+                      className="absolute top-0 left-0 bottom-0 w-1 transition-colors duration-500" 
+                      style={{ backgroundColor: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
+                    />
+                    
+                    <div className="pl-3">
+                      <span 
+                        className="text-[0.625rem] font-black uppercase tracking-[0.25em] transition-colors duration-500"
+                        style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
+                      >
+                        {language === "nl" ? "Systeemonderdeel" : "System Component"}
+                      </span>
+                      <h3 className="font-display text-xl lg:text-2xl font-black uppercase text-white mt-1 mb-2 tracking-tight">
+                        {systemsData[hoveredSystem].title}
+                      </h3>
+                      <p 
+                        className="text-sm font-bold italic mb-4 transition-colors duration-500 leading-snug"
+                        style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 0.9)` }}
+                      >
+                        &ldquo;{systemsData[hoveredSystem].quote}&rdquo;
+                      </p>
+                      <p className="text-sm text-white/70 leading-relaxed font-medium">
+                        {systemsData[hoveredSystem].text}
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                {/* Micro selector buttons for mobile / screen readers */}
-                <div className="flex flex-wrap gap-3 mt-6 lg:hidden">
-                  {(Object.keys(systemsData) as SystemKey[]).map((key) => (
-                    <button 
-                      key={key}
-                      onClick={() => setHoveredSystem(key)}
-                      className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-full transition-all border ${
-                        hoveredSystem === key 
-                          ? "bg-white text-ink border-white" 
-                          : "bg-white/5 text-white/60 border-white/10 hover:bg-white/10"
-                      }`}
-                    >
-                      {systemsData[key].title.split(" (")[0]}
-                    </button>
-                  ))}
-                </div>
+                </Reveal>
               </div>
 
-              {/* Right Column: Architectural House Blueprint SVG */}
-              <div className="lg:col-span-6 flex justify-center items-center">
-                <Reveal variant="scale" className="w-full max-w-lg aspect-[4/3] bg-ink/40 border border-white/5 rounded-3xl p-6 lg:p-8 shadow-2xl relative">
+              {/* Right Column: Architectural House Blueprint & Physics Wind Turbine */}
+              <div className="lg:col-span-7 flex flex-col items-center">
+                {/* Discoverability Badge */}
+                <div className="mb-4 inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-black uppercase tracking-widest text-brand animate-[pulse_3s_infinite]">
+                  <span className="w-2 h-2 rounded-full bg-brand animate-ping" />
+                  <span>{language === "nl" ? "Interactieve Blauwdruk · Beweeg over de onderdelen" : "Interactive Blueprint · Hover components"}</span>
+                </div>
+
+                <Reveal variant="scale" className="w-full max-w-xl aspect-[4/3] bg-ink/50 border border-white/5 rounded-3xl p-4 lg:p-6 shadow-2xl relative">
                   
                   <svg viewBox="0 0 400 300" className="w-full h-full select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    {/* Blueprint grid lines */}
                     <defs>
-                      <pattern id="blueprintGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.03" />
+                      <pattern id="blueprintSubGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.02" />
                       </pattern>
                     </defs>
-                    <rect width="400" height="300" fill="url(#blueprintGrid)" rx="16" />
+                    <rect width="400" height="300" fill="url(#blueprintSubGrid)" rx="16" />
 
-                    {/* Conduit links (Conduit Lines) */}
+                    {/* Conduit links with animated dash offset */}
                     {/* Solar -> Meterkast */}
                     <path 
-                      d="M 130 70 L 130 110 L 140 110 L 140 215" 
+                      d="M 120 70 L 120 110 L 140 110 L 140 215" 
                       stroke={hoveredSystem === "solar" || hoveredSystem === "electrics" ? `rgba(${systemsData.solar.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
-                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "electrics" ? 2.5 : 1}
-                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "electrics" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "electrics" ? "5, 4" : "4, 4"}
                       className={hoveredSystem === "solar" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
                       fill="none"
                       style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
@@ -376,11 +315,22 @@ export default function AboutPage() {
 
                     {/* Solar -> Battery */}
                     <path 
-                      d="M 130 70 L 130 110 L 95 110 L 95 215" 
+                      d="M 120 70 L 120 110 L 95 110 L 95 215" 
                       stroke={hoveredSystem === "solar" || hoveredSystem === "battery" ? `rgba(${systemsData.battery.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
-                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "battery" ? 2.5 : 1}
-                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "battery" ? "6, 4" : "4, 4"}
+                      strokeWidth={hoveredSystem === "solar" || hoveredSystem === "battery" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "solar" || hoveredSystem === "battery" ? "5, 4" : "4, 4"}
                       className={hoveredSystem === "solar" || hoveredSystem === "battery" ? "animate-[dash_1.5s_linear_infinite]" : ""}
+                      fill="none"
+                      style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
+                    />
+
+                    {/* Windmill -> Meterkast */}
+                    <path 
+                      d="M 320 110 L 320 215 L 140 215" 
+                      stroke={hoveredSystem === "wind" || hoveredSystem === "electrics" ? `rgba(${systemsData.wind.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
+                      strokeWidth={hoveredSystem === "wind" || hoveredSystem === "electrics" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "wind" || hoveredSystem === "electrics" ? "5, 4" : "4, 4"}
+                      className={hoveredSystem === "wind" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
                       fill="none"
                       style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
                     />
@@ -389,8 +339,8 @@ export default function AboutPage() {
                     <path 
                       d="M 95 215 L 140 215" 
                       stroke={hoveredSystem === "battery" || hoveredSystem === "electrics" ? `rgba(${systemsData.battery.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
-                      strokeWidth={hoveredSystem === "battery" || hoveredSystem === "electrics" ? 2.5 : 1}
-                      strokeDasharray={hoveredSystem === "battery" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      strokeWidth={hoveredSystem === "battery" || hoveredSystem === "electrics" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "battery" || hoveredSystem === "electrics" ? "5, 4" : "4, 4"}
                       className={hoveredSystem === "battery" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
                       fill="none"
                       style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
@@ -398,10 +348,10 @@ export default function AboutPage() {
 
                     {/* Meterkast -> Airco */}
                     <path 
-                      d="M 140 215 L 140 180 L 260 180 L 260 145" 
+                      d="M 140 215 L 140 180 L 240 180 L 240 145" 
                       stroke={hoveredSystem === "airco" || hoveredSystem === "electrics" ? `rgba(${systemsData.airco.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
-                      strokeWidth={hoveredSystem === "airco" || hoveredSystem === "electrics" ? 2.5 : 1}
-                      strokeDasharray={hoveredSystem === "airco" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      strokeWidth={hoveredSystem === "airco" || hoveredSystem === "electrics" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "airco" || hoveredSystem === "electrics" ? "5, 4" : "4, 4"}
                       className={hoveredSystem === "airco" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
                       fill="none"
                       style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
@@ -409,86 +359,94 @@ export default function AboutPage() {
 
                     {/* Meterkast -> Heat Pump */}
                     <path 
-                      d="M 140 215 L 275 215" 
+                      d="M 140 215 L 255 215" 
                       stroke={hoveredSystem === "pump" || hoveredSystem === "electrics" ? `rgba(${systemsData.pump.rgb}, 0.8)` : "rgba(255,255,255,0.06)"}
-                      strokeWidth={hoveredSystem === "pump" || hoveredSystem === "electrics" ? 2.5 : 1}
-                      strokeDasharray={hoveredSystem === "pump" || hoveredSystem === "electrics" ? "6, 4" : "4, 4"}
+                      strokeWidth={hoveredSystem === "pump" || hoveredSystem === "electrics" ? 2 : 1}
+                      strokeDasharray={hoveredSystem === "pump" || hoveredSystem === "electrics" ? "5, 4" : "4, 4"}
                       className={hoveredSystem === "pump" || hoveredSystem === "electrics" ? "animate-[dash_1.5s_linear_infinite]" : ""}
                       fill="none"
                       style={{ transition: "stroke 0.4s, stroke-width 0.4s" }}
                     />
 
-                    {/* House Wireframe Drawing */}
-                    {/* Roof left & right */}
-                    <line x1="60" y1="110" x2="200" y2="30" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
-                    <line x1="200" y1="30" x2="340" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
-                    {/* Outer walls */}
-                    <line x1="80" y1="110" x2="80" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
-                    <line x1="320" y1="110" x2="320" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
-                    {/* Ceiling, floors */}
-                    <line x1="80" y1="110" x2="320" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
-                    <line x1="80" y1="180" x2="320" y2="180" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
-                    <line x1="80" y1="250" x2="320" y2="250" stroke="white" strokeWidth="1.2" strokeOpacity="0.25" />
-                    {/* Internal Room Dividers */}
-                    <line x1="200" y1="110" x2="200" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.08" />
+                    {/* Architectural house drawing */}
+                    <line x1="50" y1="110" x2="180" y2="30" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
+                    <line x1="180" y1="30" x2="310" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.15" />
+                    <line x1="70" y1="110" x2="70" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="290" y1="110" x2="290" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="70" y1="110" x2="290" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="70" y1="180" x2="290" y2="180" stroke="white" strokeWidth="1" strokeOpacity="0.1" />
+                    <line x1="70" y1="250" x2="290" y2="250" stroke="white" strokeWidth="1.2" strokeOpacity="0.25" />
+                    <line x1="180" y1="110" x2="180" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.08" />
 
-                    {/* Solar Panel Framing Outline */}
-                    <line x1="85" y1="95" x2="175" y2="45" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
-                    <line x1="85" y1="98" x2="175" y2="48" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
-                    {/* Panel divisions */}
-                    <line x1="107" y1="83" x2="107" y2="86" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
-                    <line x1="130" y1="70" x2="130" y2="73" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
-                    <line x1="152" y1="57" x2="152" y2="60" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+                    {/* Windmill Tower drawing */}
+                    <path d="M 305 250 L 315 110 L 325 110 L 335 250 Z" stroke="white" strokeWidth="1" strokeOpacity="0.15" fill="none" />
+                    <line x1="305" y1="250" x2="335" y2="250" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
 
-                    {/* Architectural Labels */}
-                    <text x="85" y="105" fill="white" fillOpacity="0.25" fontSize="6" fontFamily="var(--font-barlow)">LVL. 01</text>
-                    <text x="85" y="175" fill="white" fillOpacity="0.25" fontSize="6" fontFamily="var(--font-barlow)">LVL. 00</text>
-                    <text x="210" y="120" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">CLIMATE</text>
-                    <text x="210" y="190" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">COMBUSTION ROOM</text>
-                    <text x="90" y="245" fill="white" fillOpacity="0.15" fontSize="6" fontFamily="var(--font-barlow)">STORAGE</text>
+                    {/* Spinning Windmill fan blades (Interactive Hub) */}
+                    <g 
+                      className="windmill-blades cursor-pointer" 
+                      style={{ 
+                        transformOrigin: "320px 110px", 
+                        animation: `spin-clockwise ${hoveredSystem === "wind" ? "1.5s" : "6s"} linear infinite` 
+                      }}
+                      onMouseEnter={() => setHoveredSystem("wind")}
+                      onClick={() => setHoveredSystem("wind")}
+                    >
+                      {/* Blades */}
+                      <path d="M 318 110 Q 315 70 320 30 Q 325 70 322 110 Z" fill="currentColor" className="text-white/80" />
+                      <path d="M 318 110 Q 315 70 320 30 Q 325 70 322 110 Z" fill="currentColor" className="text-white/80" transform="rotate(120 320 110)" />
+                      <path d="M 318 110 Q 315 70 320 30 Q 325 70 322 110 Z" fill="currentColor" className="text-white/80" transform="rotate(240 320 110)" />
+                      {/* Center Hub */}
+                      <circle cx="320" cy="110" r="5" fill="#0f172a" stroke="currentColor" strokeWidth="1.5" />
+                    </g>
 
-                    {/* Pulsing circles behind hotspots */}
-                    {Object.keys(systemsData).map((key) => {
-                      const sysKey = key as SystemKey;
+                    {/* Solar Panel Framing */}
+                    <line x1="75" y1="95" x2="155" y2="45" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
+                    <line x1="75" y1="98" x2="155" y2="48" stroke="white" strokeWidth="1.5" strokeOpacity="0.2" />
+                    <line x1="95" y1="83" x2="95" y2="86" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+                    <line x1="120" y1="70" x2="120" y2="73" stroke="white" strokeWidth="1" strokeOpacity="0.2" />
+
+                    {/* Hotspots */}
+                    {[
+                      { key: "solar", x: 120, y: 70 },
+                      { key: "wind", x: 320, y: 110 },
+                      { key: "battery", x: 95, y: 215 },
+                      { key: "electrics", x: 140, y: 215 },
+                      { key: "pump", x: 255, y: 215 },
+                      { key: "airco", x: 240, y: 145 },
+                    ].map((spot) => {
+                      const sysKey = spot.key as SystemKey;
                       const active = hoveredSystem === sysKey;
-                      let coords = { x: 0, y: 0 };
-                      if (sysKey === "solar") coords = { x: 130, y: 70 };
-                      if (sysKey === "airco") coords = { x: 260, y: 145 };
-                      if (sysKey === "battery") coords = { x: 95, y: 215 };
-                      if (sysKey === "electrics") coords = { x: 140, y: 215 };
-                      if (sysKey === "pump") coords = { x: 275, y: 215 };
 
                       return (
-                        <g key={sysKey} className="cursor-pointer" onMouseEnter={() => setHoveredSystem(sysKey)} onClick={() => setHoveredSystem(sysKey)}>
-                          {/* Outer pulse */}
+                        <g 
+                          key={sysKey} 
+                          className="cursor-pointer" 
+                          onMouseEnter={() => setHoveredSystem(sysKey)} 
+                          onClick={() => setHoveredSystem(sysKey)}
+                        >
+                          {/* Pulsing ring */}
                           <circle 
-                            cx={coords.x} 
-                            cy={coords.y} 
-                            r={active ? 15 : 0} 
-                            fill={`rgba(${systemsData[sysKey].rgb}, 0.15)`}
-                            className={active ? "animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" : ""}
+                            cx={spot.x} 
+                            cy={spot.y} 
+                            r={active ? 14 : 0} 
+                            fill={`rgba(${systemsData[sysKey].rgb}, 0.18)`}
+                            className={active ? "animate-[ping_2s_infinite]" : ""}
                             style={{ transition: "r 0.3s" }}
                           />
-                          {/* Middle ring */}
+                          {/* Hub Ring */}
                           <circle 
-                            cx={coords.x} 
-                            cy={coords.y} 
-                            r={active ? 8 : 4} 
+                            cx={spot.x} 
+                            cy={spot.y} 
+                            r={active ? 7 : 4.5} 
                             stroke={`rgba(${systemsData[sysKey].rgb}, 1)`} 
                             strokeWidth="1.5" 
                             fill="#0f172a" 
                             style={{ transition: "r 0.3s" }}
                           />
-                          {/* Inner dot */}
-                          <circle 
-                            cx={coords.x} 
-                            cy={coords.y} 
-                            r="2" 
-                            fill={`rgba(${systemsData[sysKey].rgb}, 1)`} 
-                          />
-                          
-                          {/* Transparent hover catcher */}
-                          <circle cx={coords.x} cy={coords.y} r="18" fill="transparent" />
+                          <circle cx={spot.x} cy={spot.y} r="2" fill={`rgba(${systemsData[sysKey].rgb}, 1)`} />
+                          {/* Large trigger zone */}
+                          <circle cx={spot.x} cy={spot.y} r="18" fill="transparent" />
                         </g>
                       );
                     })}
@@ -507,177 +465,94 @@ export default function AboutPage() {
                 stroke-dashoffset: -20;
               }
             }
+            @keyframes spin-clockwise {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
           `}</style>
         </section>
 
-        {/* ── Our Story (Ons Verhaal Timeline) ── */}
-        <section className="py-24 lg:py-40 bg-bg relative">
+        {/* ── Vakmanschap & Story (Simplified split screen) ── */}
+        <section className="py-20 lg:py-32 bg-bg relative">
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
-              <div className="lg:col-span-5 order-2 lg:order-1">
+              
+              {/* Left Column: Short story narrative */}
+              <div className="lg:col-span-5">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-6 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-4 block">
                     {m.story.label}
                   </span>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h2 
-                    className="font-display text-[clamp(2.5rem,5.5vw,4.5rem)] font-black leading-[0.9] tracking-tight text-ink mb-12 uppercase"
-                    dangerouslySetInnerHTML={{ __html: m.story.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                  />
+                  <h2 className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-[0.9] tracking-tight text-ink mb-8 uppercase">
+                    {language === "nl" ? "Gegroeid door kwaliteit" : "Grown through quality"}
+                  </h2>
                 </Reveal>
+                <Reveal delay={180}>
+                  <div className="text-base text-copy/90 space-y-6 leading-relaxed">
+                    <p>
+                      {m.story.p1}
+                    </p>
+                    <p>
+                      {m.story.p2}
+                    </p>
+                  </div>
+                </Reveal>
+              </div>
 
-                {/* Staggered Timeline milestones */}
-                <div className="relative pl-8 border-l-2 border-hairline/60 space-y-12">
-                  {[
-                    { year: "2008", title: language === "nl" ? "De Oprichting" : "The Founding", text: m.story.p1 },
-                    { year: "2016", title: language === "nl" ? "Groei & Innovatie" : "Growth & Innovation", text: m.story.p2 },
-                    { year: "2026", title: language === "nl" ? "MMC Vandaag" : "MMC Today", text: m.story.p3 },
-                  ].map((mil, idx) => (
-                    <div 
-                      key={idx}
-                      className="relative cursor-pointer group"
-                      onMouseEnter={() => setActiveMilestone(idx)}
-                      onClick={() => setActiveMilestone(idx)}
-                    >
-                      {/* Timeline Node dot */}
-                      <span className={`absolute -left-[41px] top-1.5 w-6 h-6 rounded-full border-4 border-bg transition-all duration-300 ${
-                        activeMilestone === idx ? "bg-brand scale-110 shadow-lg shadow-brand/40" : "bg-hairline"
-                      }`} />
-
-                      <div className="group-hover:translate-x-2 transition-transform duration-300">
-                        <span className={`font-display text-xl font-black transition-colors ${activeMilestone === idx ? "text-brand" : "text-muted"}`}>
-                          {mil.year}
-                        </span>
-                        <h4 className="font-display text-lg font-bold uppercase text-ink tracking-tight mt-1 mb-2">
-                          {mil.title}
-                        </h4>
-                        <p className={`text-base leading-relaxed transition-colors duration-300 ${
-                          activeMilestone === idx ? "text-copy font-medium" : "text-muted"
-                        }`}>
-                          {mil.text.substring(0, 110)}...
+              {/* Right Column: Key highlights grid (4 clean cards) */}
+              <div className="lg:col-span-7">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {keyAdvantages.map((adv, i) => (
+                    <Reveal key={adv.title} delay={i * 80} threshold={0.1}>
+                      <div className="p-6 bg-white border border-hairline/35 rounded-2xl hover:border-brand/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div className="w-10 h-10 rounded-xl bg-brand/5 text-brand flex items-center justify-center mb-5">
+                          {adv.icon}
+                        </div>
+                        <h3 className="font-display text-lg font-bold uppercase text-ink tracking-tight mb-2">
+                          {adv.title}
+                        </h3>
+                        <p className="text-sm text-copy/70 leading-relaxed font-medium">
+                          {adv.desc}
                         </p>
                       </div>
-                    </div>
+                    </Reveal>
                   ))}
                 </div>
               </div>
 
-              {/* Stacked interactive gallery */}
-              <div className="lg:col-span-6 lg:col-start-7 order-1 lg:order-2 flex justify-center items-center h-[380px] lg:h-[450px] relative">
-                <Reveal variant="scale" className="w-full h-full flex justify-center items-center">
-                  <div className="relative w-full aspect-[4/3] max-w-md h-[300px] lg:h-[380px]">
-                    {[
-                      "/images/projects/PHOTO-2024-12-03-12-54-01.jpg", 
-                      "/images/projects/PHOTO-2024-12-08-15-05-58.jpg", 
-                      "/images/projects/PHOTO-2024-12-08-15-05-59.jpg"  
-                    ].map((src, i) => {
-                      let style: React.CSSProperties = {};
-                      if (i === activeMilestone) {
-                        style = { transform: "scale(1.05) rotate(-2deg)", zIndex: 30, opacity: 1 };
-                      } else if (i === (activeMilestone + 1) % 3) {
-                        style = { transform: "scale(0.95) translate(25px, 20px) rotate(4deg)", zIndex: 20, opacity: 0.6 };
-                      } else {
-                        style = { transform: "scale(0.9) translate(-25px, 15px) rotate(-6deg)", zIndex: 10, opacity: 0.4 };
-                      }
-                      return (
-                        <div 
-                          key={src}
-                          className="absolute inset-0 transition-all duration-700 ease-out rounded-2xl overflow-hidden shadow-2xl bg-ink border border-hairline/20"
-                          style={style}
-                        >
-                          <Image src={src} alt="MMC Project" fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-                          <div className="absolute bottom-6 left-6 right-6 text-white z-10">
-                            <span className="text-[0.625rem] font-bold text-brand uppercase tracking-[0.25em]">
-                              MMC Techniek
-                            </span>
-                            <p className="font-display font-bold uppercase text-sm tracking-wider mt-1">
-                              {language === "nl" ? "Gerealiseerd project" : "Completed installation"}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Reveal>
-              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Why MMC (Advantage Grid) ── */}
-        <section className="py-24 lg:py-40 bg-white relative">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hairline/50 to-transparent" />
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <Reveal>
-                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-6 block">
-                  {m.whyChoose.label}
-                </span>
-              </Reveal>
-              <Reveal delay={100}>
-                <h2 
-                  className="font-display text-[clamp(2.5rem,4.5vw,4.5rem)] font-black leading-[0.9] tracking-tight text-ink uppercase"
-                  dangerouslySetInnerHTML={{ __html: m.whyChoose.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                />
-              </Reveal>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {m.whyChoose.reasons.map((item: any, i: number) => (
-                <Reveal key={item.title} delay={i * 60} threshold={0.1}>
-                  <div className="group h-full flex flex-col justify-between p-8 bg-bg border border-hairline/35 rounded-3xl hover:border-brand/40 hover:bg-white hover:shadow-2xl hover:shadow-brand/5 hover:-translate-y-1.5 transition-all duration-500">
-                    <div>
-                      <div className="w-12 h-12 rounded-2xl bg-brand/5 text-brand flex items-center justify-center group-hover:bg-brand group-hover:text-white group-hover:shadow-lg group-hover:shadow-brand/20 transition-all duration-500 mb-8">
-                        {getIconForReason(i)}
-                      </div>
-                      <h3 className="font-display text-xl font-bold uppercase text-ink tracking-tight mb-4 group-hover:text-brand transition-colors duration-300">
-                        {item.title}
-                      </h3>
-                      <p className="text-base text-copy/75 leading-relaxed font-medium">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Testimonials ── */}
-        <section className="py-24 lg:py-40 bg-bg relative">
+        {/* ── Testimonials & Certifications ── */}
+        <section className="py-20 lg:py-32 bg-white relative">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hairline/50 to-transparent" />
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <Reveal>
-              <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-12 block">
+              <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-10 block">
                 {m.testimonials.label}
               </span>
             </Reveal>
 
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="grid lg:grid-cols-2 gap-8 mb-20">
               {testimonials.slice(0, 2).map((t, i) => (
                 <Reveal key={t.name} threshold={0.15} delay={i * 100}>
-                  <div className="relative p-10 lg:p-14 border border-hairline/40 transition-all duration-500 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/5 bg-white rounded-3xl">
-                    <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-aurora-1 via-brand/40 to-aurora-2 bg-[length:200%_100%] animate-[aurora-drift_18s_linear_infinite] rounded-t-3xl" />
-                    <svg className="w-12 h-12 text-brand/10 mb-8" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="relative p-8 lg:p-12 border border-hairline/40 bg-bg rounded-2xl transition-all hover:border-brand/35">
+                    <svg className="w-8 h-8 text-brand/10 mb-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11H10v10H0z" />
                     </svg>
-                    <p className="text-lg lg:text-xl text-copy/90 leading-relaxed font-bold mb-10 italic">
+                    <p className="text-base text-copy leading-relaxed font-bold mb-8 italic">
                       &ldquo;{t.text}&rdquo;
                     </p>
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center text-brand text-lg font-black shrink-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand text-base font-black shrink-0">
                         {t.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-lg font-black text-ink uppercase tracking-tight">
-                          {t.name}
-                        </p>
-                        <p className="text-[0.6875rem] lg:text-[0.75rem] text-brand font-black uppercase tracking-[0.2em] mt-1">
-                          {t.role}
-                        </p>
+                        <p className="text-base font-black text-ink uppercase tracking-tight">{t.name}</p>
+                        <p className="text-[0.625rem] text-brand font-black uppercase tracking-wider mt-1">{t.role}</p>
                       </div>
                     </div>
                   </div>
@@ -685,38 +560,34 @@ export default function AboutPage() {
               ))}
             </div>
 
-            <HairlineDivider draw aurora className="my-24 lg:my-36" />
-
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-16">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 border-t border-hairline/50 pt-16">
               <div className="max-w-xl">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-4 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-3 block">
                     {m.certifications.label}
                   </span>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h3 className="font-display text-3xl lg:text-4xl font-black uppercase leading-tight text-ink mb-6">
+                  <h3 className="font-display text-2xl lg:text-3xl font-black uppercase leading-tight text-ink mb-4">
                     {m.certifications.title}
                   </h3>
                 </Reveal>
-                <Reveal delay={200}>
-                  <p className="text-base text-muted/95 leading-relaxed font-medium">
-                    {language === "nl" 
-                      ? "Bij MMC Techniek staat veiligheid en professionaliteit voorop. Wij zijn volledig gecertificeerd volgens de landelijke normen zodat u gegarandeerd bent van een veilige installatie."
-                      : "Safety and professionalism are top priorities at MMC Techniek. We are fully certified according to national standards, guaranteeing you a safe and reliable installation."
-                    }
-                  </p>
-                </Reveal>
+                <p className="text-sm text-muted/95 leading-relaxed font-medium">
+                  {language === "nl" 
+                    ? "Wij zijn volledig gecertificeerd volgens de landelijke normen zodat u gegarandeerd bent van een veilige, gecertificeerde installatie."
+                    : "We are fully certified according to national standards, guaranteeing you a safe, certified installation."
+                  }
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6">
                 {certData.map((cert) => (
                   <Reveal key={cert.name} threshold={0.1}>
-                    <div className="flex items-center gap-6 px-8 py-5 border border-hairline/40 hover:border-brand/40 transition-all duration-500 bg-white rounded-2xl shadow-lg shadow-brand/5 shrink-0">
-                      <Image src={cert.src} alt={cert.name} width={40} height={40} className="object-contain shrink-0" />
+                    <div className="flex items-center gap-6 px-6 py-4 border border-hairline/40 bg-surface rounded-xl shadow-md shrink-0">
+                      <Image src={cert.src} alt={cert.name} width={32} height={32} className="object-contain shrink-0" />
                       <div>
-                        <p className="text-base font-black text-ink uppercase tracking-tight">{cert.name}</p>
-                        <p className="text-[0.625rem] lg:text-[0.6875rem] text-muted font-bold uppercase tracking-[0.1em] mt-1">{cert.description}</p>
+                        <p className="text-sm font-black text-ink uppercase tracking-tight">{cert.name}</p>
+                        <p className="text-[0.625rem] text-muted font-bold uppercase tracking-[0.1em] mt-1">{cert.description}</p>
                       </div>
                     </div>
                   </Reveal>
