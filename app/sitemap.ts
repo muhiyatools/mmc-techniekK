@@ -1,39 +1,36 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { publishedSlugs } from "@/lib/content";
+import { href, locales } from "@/lib/i18n/config";
+import { SITE_URL } from "@/lib/site";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://mmctechniek.nl";
-
-  // Static core routes
-  const routes = ["", "/aanbod", "/our-work", "/over-ons", "/veelgestelde-vragen", "/contact"];
-
-  const sitemapEntries = routes.map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: route === "" ? 1.0 : 0.8,
-  }));
-
-  // Dynamic service category routes
-  const services = [
-    "airconditioning",
-    "zonnepanelen",
-    "batterijopslag",
-    "warmtepompen",
-    "meterkast",
-    "onderhoud",
-    "renovaties",
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [services, products, projects, pages] = await Promise.all([
+    publishedSlugs("services"),
+    publishedSlugs("products"),
+    publishedSlugs("projects"),
+    publishedSlugs("pages"),
+  ]);
+  const legal = pages.filter((p) => ["privacy", "cookies", "algemene-voorwaarden"].includes(p));
+  const paths = [
+    "/",
+    "/aanbod",
+    "/projecten",
+    "/zakelijk",
+    "/over-ons",
+    "/veelgestelde-vragen",
+    "/offerte",
+    "/contact",
+    ...services.map((s) => `/diensten/${s}`),
+    ...products.map((s) => `/aanbod/${s}`),
+    ...projects.map((s) => `/projecten/${s}`),
+    ...legal.map((s) => `/${s}`),
   ];
-
-  services.forEach((slug) => {
-    sitemapEntries.push({
-      url: `${baseUrl}/diensten/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    });
-  });
-
-  return sitemapEntries;
+  return paths.map((path) => ({
+    url: SITE_URL + href("nl", path),
+    changeFrequency: path === "/" ? "weekly" : "monthly",
+    priority: path === "/" ? 1 : path.startsWith("/diensten") || path === "/offerte" ? 0.8 : 0.6,
+    alternates: { languages: Object.fromEntries(locales.map((l) => [l === "nl" ? "nl-NL" : "en", SITE_URL + href(l, path)])) },
+  }));
 }

@@ -1,14 +1,10 @@
-import { MetadataRoute } from "next";
-
-export const dynamic = "force-static";
+import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: "/admin",
-    },
-    sitemap: "https://mmctechniek.nl/sitemap.xml",
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/admin", "/api"] }],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

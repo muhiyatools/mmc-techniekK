@@ -30,6 +30,11 @@
   --color-error-line: #c2410c;
   --color-transparent: transparent;
 
+  /* Admin sidebar on ink */
+  --color-admin-text: #c9d3dc;
+  --color-admin-muted: #7f8d9a;
+  --color-admin-line: #22364a;
+
   /* Admin lead statuses: text / background */
   --color-st-new: #08508f;   --color-st-new-bg: #e7f3fd;
   --color-st-busy: #7a4e00;  --color-st-busy-bg: #fff4db;

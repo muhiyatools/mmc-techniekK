@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
 import { Footer } from "@/components/site/Footer";
@@ -51,6 +52,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
   const d = getDict(lang);
   const [services, settings, legal] = await Promise.all([getServices(), getSettings(), getPublishedPageSlugs()]);
   const nav = buildNav(lang, services, settings);
+  const preview = (await draftMode()).isEnabled;
 
   return (
     <html lang={htmlLang[lang]} className={`${archivo.variable} ${plexMono.variable}`}>
@@ -66,6 +68,11 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
         </ViewTransition>
         <Footer lang={lang} nav={nav} settings={settings} legal={legal} />
         <MobileActionBar lang={lang} nav={nav} />
+        {preview && (
+          <a href="/api/draft/disable" className="t-mono fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-4 py-2.5 text-white shadow-[var(--shadow-float)] lg:bottom-6">
+            Voorbeeld met concepten · stoppen
+          </a>
+        )}
         <RevealObserver />
         <JsonLd data={localBusiness(settings, services, lang)} />
       </body>
