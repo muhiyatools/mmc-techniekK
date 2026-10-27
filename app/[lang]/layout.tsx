@@ -17,7 +17,6 @@ import "../globals.css";
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: "500", variable: "--font-plex-mono", display: "swap" });
 
-export const dynamicParams = false;
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }

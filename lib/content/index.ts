@@ -62,15 +62,25 @@ const bySort = (a: { sort_order: number }, b: { sort_order: number }) => a.sort_
 function toProduct(r: Raw): Product {
   const imgs = ((r.product_images as { sort_order: number; media: Media }[]) ?? []).sort(bySort).map((i) => i.media);
   const brands = ((r.product_brands as { brands: Brand | null }[]) ?? []).map((b) => b.brands).filter(Boolean) as Brand[];
-  const { product_images: _i, product_brands: _b, ...rest } = r;
+  const rest = { ...r };
+  delete rest.product_images;
+  delete rest.product_brands;
   return { ...(rest as unknown as Product), images: imgs, brands };
 }
 
 function toProject(r: Raw): Project {
   const imgs = ((r.project_images as { sort_order: number; media: Media }[]) ?? []).sort(bySort).map((i) => i.media);
   const services = ((r.project_services as { services: Project["services"][number] | null }[]) ?? []).map((s) => s.services).filter(Boolean) as Project["services"];
-  const { project_images: _i, project_services: _s, ...rest } = r;
+  const rest = { ...r };
+  delete rest.project_images;
+  delete rest.project_services;
   return { ...(rest as unknown as Project), images: imgs, services };
+}
+
+/** Published slugs for generateStaticParams (runs at build time, so no draftMode). */
+export async function publishedSlugs(table: "services" | "products" | "projects" | "pages"): Promise<string[]> {
+  const rows = must(await publicDb.from(table).select("slug").eq("status", "published"), `${table} slugs`) as { slug: string }[];
+  return rows.map((r) => r.slug);
 }
 
 // ---------------------------------------------------------------- readers
@@ -101,7 +111,7 @@ export const getProductSlugForLegacy = cached("product-legacy", [TAGS.products],
   const row = must(
     await db.from("products").select("slug").eq("status", "published").contains("legacy_slugs", [slug]).limit(1).maybeSingle(),
     "product legacy",
-  );
+  ) as { slug: string } | null;
   return row?.slug ?? null;
 });
 

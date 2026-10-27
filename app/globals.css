@@ -459,6 +459,12 @@
 .pop { opacity: 0; transform: scale(0.6); transform-box: fill-box; transform-origin: center; }
 .in .pop, .pop.in { opacity: 1; transform: none; transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); transition-delay: var(--d, 0ms); }
 
+/* Same, but on first paint (no observer): keyframes instead of a transition. */
+.draw-now .draw { animation: draw var(--dur-draw) var(--ease-in-out) both; animation-delay: var(--d, 0ms); }
+.draw-now .pop { animation: pop 320ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+
 /* Running current along the active loop arc. */
 .flow { fill: none; stroke: var(--color-white); stroke-width: 3; stroke-dasharray: 1 14; stroke-linecap: round; animation: flow 1.1s linear infinite; }
 @keyframes flow { to { stroke-dashoffset: -15; } }
@@ -489,3 +495,7 @@
   .parallax { animation: none !important; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* The quote wizard has its own sticky action row; hide the global bar there. */
+body:has([data-wizard]) .mobile-bar { display: none; }
+body:has([data-wizard]) footer { padding-bottom: calc(32px + var(--safe-bottom)); }

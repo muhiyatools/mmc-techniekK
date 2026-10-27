@@ -11,7 +11,9 @@ const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), in
 export function useFocusTrap<T extends HTMLElement>(open: boolean, onClose: () => void) {
   const ref = useRef<T>(null);
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
     if (!open || !ref.current) return;

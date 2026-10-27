@@ -10,7 +10,7 @@ export function MobileActionBar({ lang, nav }: { lang: Locale; nav: NavModel }) 
   return (
     <nav
       aria-label={d.quickContact}
-      className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-line bg-white/95 px-[var(--gutter)] pb-[calc(12px+var(--safe-bottom))] pt-3 backdrop-blur-[14px] lg:hidden"
+      className="mobile-bar fixed inset-x-0 bottom-0 z-30 flex items-center gap-2 border-t border-line bg-white/95 px-[var(--gutter)] pb-[calc(12px+var(--safe-bottom))] pt-3 backdrop-blur-[14px] lg:hidden"
     >
       <a href={`tel:${nav.phone}`} aria-label={`${d.cta.call} ${nav.phoneDisplay}`} className="icon-btn size-[52px]">
         <Icon name="phone" size={20} />

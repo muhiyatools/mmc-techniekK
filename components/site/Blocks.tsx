@@ -27,21 +27,23 @@ export function sectorFilters(lang: Locale) {
 }
 
 /** Certifications and three facts in a hairline grid. */
-export function TrustStrip({ lang, settings }: { lang: Locale; settings: Settings }) {
+export function TrustStrip({ lang, settings, showCerts = true }: { lang: Locale; settings: Settings; showCerts?: boolean }) {
   const d = getDict(lang);
   const years = new Date().getFullYear() - settings.company.founded;
   const cell = "flex flex-col justify-center gap-1.5 border-line py-5 sm:py-6";
   return (
-    <div className="grid grid-cols-2 border-y border-line lg:grid-cols-[1.4fr_1fr_1fr_1fr]" data-reveal>
+    <div className={`grid grid-cols-2 border-y border-line ${showCerts ? "lg:grid-cols-[1.4fr_1fr_1fr_1fr]" : "lg:grid-cols-3"}`} data-reveal>
+      {showCerts && (
       <div className={`${cell} col-span-2 border-b lg:col-span-1 lg:border-b-0 lg:pr-7`}>
         <span className="t-mono text-graphite">{d.trust.certified}</span>
         <div className="flex items-center gap-4 pt-1">
-          <Image src="/brand/certs/nen-1010.png" alt="NEN 1010" width={100} height={30} className="h-[26px] w-auto sm:h-[30px]" />
+          <Image src="/brand/certs/nen-1010.png" alt="NEN 1010" width={100} height={30} className="h-[26px] sm:h-[30px]" style={{ width: "auto" }} />
           <Image src="/brand/certs/nen-3140.png" alt="NEN 3140" width={44} height={44} className="h-10 w-auto sm:h-11" />
           <Image src="/brand/certs/vca.png" alt="VCA" width={44} height={44} className="h-10 w-auto sm:h-11" />
         </div>
       </div>
-      <div className={`${cell} pr-4 lg:border-l lg:px-7`}>
+      )}
+      <div className={`${cell} pr-4 ${showCerts ? "lg:border-l lg:px-7" : "lg:pr-7"}`}>
         <span className="t-num text-[26px] leading-none sm:text-[30px]">
           <CountUp value={years} /> {lang === "nl" ? "jaar" : "years"}
         </span>

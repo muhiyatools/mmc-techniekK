@@ -281,9 +281,9 @@ All files were hashed with sha256 and checked visually on a contact sheet.
 | projects/PHOTO-…-54-08.jpg | Inverter in a technical room | Onderhoud hero | **keep** |
 | projects/PHOTO-…-54-08_2.jpg | Finished room with ceiling spots | Utility gallery | **keep** |
 | projects/PHOTO-2024-12-08-15-05-58.jpg | Data / server cabinet | Utility gallery | **keep** |
-| projects/PHOTO-…-15-05-59.jpg | Solar on new-build pitched roofs, scaffolding | New-build solar | **keep** (cover) |
-| projects/PHOTO-…-15-05-59-2.jpg | Garden with fence posts, no installation visible | — | **drop** → `_unused` |
-| projects/PHOTO-…-15-05-59-3.jpg | House in scaffolding and a van | New-build solar gallery | **keep** |
+| projects/PHOTO-…-15-05-59-2.jpg | Solar on new-build pitched roofs, scaffolding | New-build solar | **keep** (cover) |
+| projects/PHOTO-…-15-05-59-3.jpg | Garden with fence posts, no installation visible | — | **drop** → `_unused` |
+| projects/PHOTO-…-15-05-59.jpg | House in scaffolding and a van | New-build solar gallery | **keep** |
 | projects/PHOTO-…-15-06-00.jpg | Shop ceiling work from a scissor lift | Retail 2 | **keep** (cover) |
 | projects/PHOTO-…-15-06-01.jpg | Same shop, aisles | Retail 2 gallery | **keep** |
 | projects/PHOTO-…-15-12-08.jpg | New-build site with a crane | New-build | **keep** (cover) |

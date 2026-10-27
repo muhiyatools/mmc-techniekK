@@ -412,7 +412,7 @@ function AudienceCard({
 /** Decorative loop next to the hero headline, drawn on at first paint (wide screens only). */
 function HeroRing() {
   return (
-    <div aria-hidden="true" className="in pointer-events-none absolute right-[var(--gutter)] top-6 hidden size-[340px] xl:block">
+    <div aria-hidden="true" className="draw-now pointer-events-none absolute right-[var(--gutter)] top-6 hidden size-[340px] xl:block">
       <svg viewBox="0 0 400 400" className="size-full overflow-visible">
         <circle cx="200" cy="200" r="190" fill="none" stroke="var(--color-line)" strokeWidth="1.25" />
         <circle cx="200" cy="200" r="140" fill="none" stroke="var(--color-line)" strokeWidth="1.25" strokeDasharray="3 7" />

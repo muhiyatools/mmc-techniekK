@@ -37,7 +37,12 @@ export function Header({ lang, nav }: { lang: Locale; nav: NavModel }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setMenuOpen(false), [pathname]);
+  // Close the menu when the route changes (adjusting state during render, not in an effect).
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setMenuOpen(false);
+  }
 
   const isActive = (path: string) => bare === path || bare.startsWith(`${path}/`);
   const other: Locale = lang === "nl" ? "en" : "nl";

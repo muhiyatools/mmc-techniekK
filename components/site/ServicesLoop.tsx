@@ -63,10 +63,6 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDrawn(true);
-      return;
-    }
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setDrawn(true);

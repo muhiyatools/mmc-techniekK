@@ -15,12 +15,17 @@ type Props = {
   /** Decorative: empty alt (the caption already says what it is). */
   decorative?: boolean;
   quality?: 70 | 80;
+  /** `contain` for product shots on white (no placeholder colour). */
+  fit?: "cover" | "contain";
 };
 
 /** A photo from the media library: optimised, with its dominant colour as placeholder. */
-export function Photo({ media, lang, sizes, priority, className = "", fill = true, decorative, quality = 70 }: Props) {
+export function Photo({ media, lang, sizes, priority, className = "", fill = true, decorative, quality = 70, fit = "cover" }: Props) {
   const alt = decorative ? "" : t(media.alt, lang);
-  const style = { objectFit: "cover" as const, objectPosition: `${media.focal_x}% ${media.focal_y}%`, backgroundColor: media.dominant_color };
+  const style =
+    fit === "contain"
+      ? { objectFit: "contain" as const }
+      : { objectFit: "cover" as const, objectPosition: `${media.focal_x}% ${media.focal_y}%`, backgroundColor: media.dominant_color };
   if (fill) {
     return <Image src={mediaUrl(media)} alt={alt} fill sizes={sizes} priority={priority} quality={quality} className={className} style={style} />;
   }

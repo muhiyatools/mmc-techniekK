@@ -27,14 +27,8 @@ export function Footer({ lang, nav, settings, legal }: { lang: Locale; nav: NavM
   return (
     <footer className="on-dark bg-ink pb-[calc(32px+var(--bar-h)+var(--safe-bottom))] pt-16 text-white sm:pt-[88px] lg:pb-8">
       <div className="wrap flex flex-col gap-14 sm:gap-16">
-        <div className="flex flex-wrap items-end justify-between gap-8 border-b border-on-dark-line pb-12 sm:pb-14">
-          <Image src="/brand/logo-dark.svg" alt="MMC Techniek B.V." width={182} height={84} className="h-14 w-auto sm:h-[84px]" />
-          <p className="t-h3 max-w-[560px] text-[clamp(22px,2.4vw,32px)] font-[750] [font-stretch:118%]">
-            {d.footer.closing}{" "}
-            <Link href={href(lang, "/offerte")} className="text-signal underline decoration-[1.5px] underline-offset-[6px] transition-colors hover:text-signal-soft">
-              {d.cta.quote}
-            </Link>
-          </p>
+        <div className="border-b border-on-dark-line pb-12 sm:pb-14">
+          <Image src="/brand/logo-dark.svg" alt="MMC Techniek B.V." width={182} height={84} className="h-14 w-auto sm:h-[72px]" />
         </div>
 
         <div className="grid grid-cols-1 gap-10 xs:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr]">
