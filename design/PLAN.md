@@ -40,8 +40,8 @@ Branch: `redesign/kringloop`. Supabase project: **MMC Techniek B.V** (`stjmmlzyk
   - anon can't read drafts or leads, and can't write anything;
   - an editor can write content but can't read leads;
   - an admin can read and update leads.
-- [ ] The 21 kept photos are moved to `design/photos/` (originals). The 15 rejected files go to `public/images/_unused/`.
-- [ ] `scripts/seed-media.mjs` uploads the photos to the `media` bucket, with dimensions, sha256, dominant colour and alt text.
+- [ ] The 22 kept photos are moved to `design/photos/` (originals). The 15 rejected files go to `public/images/_unused/`.
+- [x] `scripts/seed-media.mjs` uploads the photos to the `media` bucket, with dimensions, sha256, dominant colour and alt text.
 - [ ] The content seed is real content only: services, products (no images, prices kept and flagged), brands, projects (photo groups, no invented places), the four reviews, the FAQ, legal page stubs, site settings and home sections.
 - [ ] `lib/supabase.ts` with its hard-coded key is deleted. `.env.example` documents every variable.
 

@@ -1,0 +1,479 @@
+-- MMC Techniek: run this whole file once in the Supabase SQL editor
+-- (Dashboard → SQL Editor → New query → paste → Run).
+-- It is the concatenation of these files in supabase/migrations/, in order:
+--   migrations/20261027120200_quote_requests_inbox.sql
+--   migrations/20261027120250_quote_requests_lockdown.sql
+--   migrations/20261027120300_storage.sql
+--   migrations/20261027120400_seed_content.sql
+-- No table and no row is removed. 20261027120000 and 20261027120100 are already applied.
+
+
+-- ================================================================ migrations/20261027120200_quote_requests_inbox.sql
+-- Leads inbox on the existing quote_requests table (name and rows kept; columns only added).
+-- Additive only. The status values and the removal of the old open policies are in
+-- 20261027120250_quote_requests_lockdown.sql, run by the owner in the SQL editor.
+
+alter table public.quote_requests
+  alter column status set default 'pending',
+  alter column status set not null,
+  alter column created_at set not null;
+
+create sequence if not exists public.lead_ref_seq;
+
+alter table public.quote_requests
+  add column if not exists ref text,
+  add column if not exists kind text not null default 'offerte' check (kind in ('offerte', 'contact')),
+  add column if not exists postcode text check (char_length(postcode) <= 10),
+  add column if not exists house_number text check (char_length(house_number) <= 12),
+  add column if not exists property_type text check (char_length(property_type) <= 40),
+  add column if not exists timing text check (char_length(timing) <= 40),
+  add column if not exists services text[] not null default '{}',
+  add column if not exists product_slug text,
+  add column if not exists answers jsonb not null default '{}',
+  add column if not exists source_page text,
+  add column if not exists utm jsonb not null default '{}',
+  add column if not exists locale text not null default 'nl' check (locale in ('nl', 'en')),
+  add column if not exists consent_at timestamptz,
+  add column if not exists assignee uuid references public.profiles (id) on delete set null,
+  add column if not exists last_activity_at timestamptz not null default now(),
+  add column if not exists updated_at timestamptz not null default now();
+
+-- Existing rows: copy the single service into services[], give each a reference.
+update public.quote_requests
+   set services = case when service_slug is not null then array[service_slug] else '{}' end,
+       ref = 'MMC-' || to_char(created_at, 'YYYY') || '-' || lpad(nextval('public.lead_ref_seq')::text, 4, '0'),
+       last_activity_at = created_at
+ where ref is null;
+
+alter table public.quote_requests
+  alter column ref set default (
+    'MMC-' || to_char(now(), 'YYYY') || '-' || lpad(nextval('public.lead_ref_seq')::text, 4, '0')
+  ),
+  alter column ref set not null,
+  add constraint quote_requests_ref_key unique (ref),
+  add constraint quote_requests_name_len check (char_length(name) between 1 and 120),
+  add constraint quote_requests_email_format check (email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$' and char_length(email) <= 200),
+  add constraint quote_requests_phone_len check (char_length(phone) <= 40),
+  add constraint quote_requests_message_len check (char_length(message) <= 4000);
+
+comment on table public.quote_requests is 'Leads inbox: quote and contact requests. Inserted only by the server (service role).';
+comment on column public.quote_requests.service_slug is 'Legacy single service; new requests use services[].';
+comment on column public.quote_requests.product_name is 'Legacy product name; new requests use product_slug.';
+comment on column public.quote_requests.consent_at is 'Set for every request from the new site; null on legacy rows.';
+
+-- Timeline and attachments ------------------------------------------------
+
+create type public.lead_event_type as enum ('created', 'status', 'note', 'call', 'email', 'whatsapp', 'assign', 'notify');
+
+create table public.lead_events (
+  id bigint generated always as identity primary key,
+  lead_id uuid not null references public.quote_requests (id) on delete cascade,
+  type public.lead_event_type not null,
+  from_status text,
+  to_status text,
+  body text check (char_length(body) <= 4000),
+  actor uuid default auth.uid() references public.profiles (id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+create table public.lead_files (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references public.quote_requests (id) on delete cascade,
+  path text not null unique,
+  mime text not null,
+  bytes integer not null check (bytes > 0),
+  created_at timestamptz not null default now()
+);
+
+insert into public.lead_events (lead_id, type, body, actor, created_at)
+select id, 'created', 'Bestaande aanvraag', null, created_at from public.quote_requests;
+
+create index if not exists quote_requests_status_created_idx on public.quote_requests (status, created_at desc);
+create index if not exists quote_requests_created_idx on public.quote_requests (created_at desc);
+create index if not exists quote_requests_assignee_idx on public.quote_requests (assignee);
+create index lead_events_lead_idx on public.lead_events (lead_id, created_at);
+create index lead_events_actor_idx on public.lead_events (actor);
+create index lead_files_lead_idx on public.lead_files (lead_id);
+
+create trigger quote_requests_touch before update on public.quote_requests
+  for each row execute function public.touch_row();
+
+-- Status and assignee changes write their own timeline entries.
+create or replace function public.log_lead_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.status is distinct from old.status then
+    insert into public.lead_events (lead_id, type, from_status, to_status, actor)
+    values (new.id, 'status', old.status, new.status, (select auth.uid()));
+  end if;
+  if new.assignee is distinct from old.assignee then
+    insert into public.lead_events (lead_id, type, body, actor)
+    values (new.id, 'assign', new.assignee::text, (select auth.uid()));
+  end if;
+  return new;
+end;
+$$;
+
+create trigger quote_requests_log_change after update on public.quote_requests
+  for each row execute function public.log_lead_change();
+
+create or replace function public.bump_lead_activity()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.quote_requests set last_activity_at = new.created_at where id = new.lead_id;
+  return new;
+end;
+$$;
+
+create trigger lead_events_bump after insert on public.lead_events
+  for each row execute function public.bump_lead_activity();
+
+alter table public.quote_requests enable row level security;
+alter table public.lead_events enable row level security;
+alter table public.lead_files enable row level security;
+
+-- No insert policy: new requests only come in through the server (service role).
+create policy "admin read" on public.quote_requests for select to authenticated using ((select public.has_role('admin')));
+create policy "admin update" on public.quote_requests for update to authenticated
+  using ((select public.has_role('admin'))) with check ((select public.has_role('admin')));
+create policy "owner delete" on public.quote_requests for delete to authenticated using ((select public.has_role('owner')));
+
+create policy "admin read" on public.lead_events for select to authenticated using ((select public.has_role('admin')));
+create policy "admin insert own" on public.lead_events for insert to authenticated
+  with check ((select public.has_role('admin')) and actor = (select auth.uid()) and type in ('note', 'call', 'email', 'whatsapp'));
+
+create policy "admin read" on public.lead_files for select to authenticated using ((select public.has_role('admin')));
+
+-- Rate limiting (fixed window), callable by the service role only -----------
+
+create table public.rate_limits (
+  key text not null,
+  window_start timestamptz not null,
+  hits integer not null default 1,
+  primary key (key, window_start)
+);
+
+alter table public.rate_limits enable row level security;
+
+create or replace function public.check_rate_limit(p_key text, p_max integer, p_window_seconds integer)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  w timestamptz := to_timestamp(floor(extract(epoch from now()) / p_window_seconds) * p_window_seconds);
+  n integer;
+begin
+  insert into public.rate_limits (key, window_start, hits)
+  values (p_key, w, 1)
+  on conflict (key, window_start) do update set hits = public.rate_limits.hits + 1
+  returning hits into n;
+  delete from public.rate_limits where window_start < now() - interval '1 day';
+  return n <= p_max;
+end;
+$$;
+
+revoke all on function public.check_rate_limit(text, integer, integer) from public, anon, authenticated;
+grant execute on function public.check_rate_limit(text, integer, integer) to service_role;
+
+-- Realtime for the inbox (RLS still applies to subscribers).
+alter publication supabase_realtime add table public.quote_requests;
+
+-- ================================================================ migrations/20261027120250_quote_requests_lockdown.sql
+-- Lockdown of the old open access. Run by the owner in the Supabase SQL editor
+-- (the MCP confirmation step declines statements that drop anything).
+-- No table and no row is removed. Only these go:
+--   * two policies that let anyone read every quote request (names, phones, emails) and insert unvalidated rows;
+--   * the "Allow public write" policies on the four admin_* tables and the product-images bucket;
+--   * the old status check on quote_requests, replaced by one with the new inbox statuses.
+
+begin;
+
+-- quote_requests: new statuses (old ones mapped).
+alter table public.quote_requests drop constraint if exists quote_requests_status_check;
+
+update public.quote_requests
+   set status = case status
+     when 'contacted' then 'in_progress'
+     when 'quoted' then 'quote_sent'
+     when 'completed' then 'won'
+     when 'pending' then 'new'
+     else coalesce(status, 'new')
+   end;
+
+alter table public.quote_requests
+  alter column status set default 'new',
+  add constraint quote_requests_status_check
+    check (status in ('new', 'in_progress', 'quote_sent', 'won', 'lost'));
+
+-- quote_requests: role-based policies (from the inbox migration) replace these.
+drop policy if exists "Allow public read access quotes" on public.quote_requests;
+drop policy if exists "Allow public insert" on public.quote_requests;
+
+-- product-images: keep the bucket and any files; reads stay public, writes need an editor.
+drop policy if exists "Allow public write images" on storage.objects;
+drop policy if exists "Allow public delete images" on storage.objects;
+create policy "product-images: editor insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'product-images' and (select public.has_role('editor')));
+create policy "product-images: editor delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'product-images' and (select public.has_role('editor')));
+
+-- Legacy tables: keep rows, readable as before, writes only for editors.
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['admin_products', 'admin_brands', 'admin_services', 'admin_settings']
+  loop
+    execute format('drop policy if exists %I on public.%I', 'Allow public write ' || replace(t, 'admin_', ''), t);
+    execute format($p$create policy "editor write" on public.%I for all to authenticated
+      using ((select public.has_role('editor'))) with check ((select public.has_role('editor')))$p$, t);
+    execute format('comment on table public.%I is %L', t,
+      'Legacy table from the previous site. Kept with its rows; the new site reads the new tables. Rows are copied over by the seed migration.');
+  end loop;
+end;
+$$;
+
+commit;
+
+-- ================================================================ migrations/20261027120300_storage.sql
+-- Storage buckets and policies (additive). Closing the old open write access on the
+-- legacy admin_* tables and the product-images bucket is in 20261027120250_quote_requests_lockdown.sql.
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values
+  ('media', 'media', true, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml']),
+  ('lead-attachments', 'lead-attachments', false, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'])
+on conflict (id) do update
+  set public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+-- Public files are served through the public URL, so anon needs no select policy
+-- (and gets none, which keeps the bucket from being listed).
+create policy "media: editor insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'media' and (select public.has_role('editor')));
+create policy "media: editor update" on storage.objects for update to authenticated
+  using (bucket_id = 'media' and (select public.has_role('editor')))
+  with check (bucket_id = 'media' and (select public.has_role('editor')));
+create policy "media: editor delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'media' and (select public.has_role('editor')));
+create policy "media: editor list" on storage.objects for select to authenticated
+  using (bucket_id = 'media' and (select public.has_role('editor')));
+
+create policy "lead-attachments: admin read" on storage.objects for select to authenticated
+  using (bucket_id = 'lead-attachments' and (select public.has_role('admin')));
+
+-- The old trigger function still serves the legacy tables; pin its search_path.
+create or replace function public.handle_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+-- ================================================================ migrations/20261027120400_seed_content.sql
+-- Content seed: real content only, taken from lib/data.ts, lib/i18n/translations.ts and
+-- supabase/seed.sql, with the copy rewritten. Idempotent (on conflict do nothing).
+-- Photos are linked by scripts/seed-media.mjs, which uploads them to Storage first.
+-- TODO(owner) items are listed in design/PLAN.md section 8.
+
+
+-- Services
+insert into public.services (slug, status, sort_order, title, kicker, summary, body, audience, steps, tags, seo_description) values
+  ($t$zonnepanelen$t$, 'published', 1, $j${"nl": "Zonnepanelen", "en": "Solar panels"}$j$::jsonb, $j${"nl": "Opwekken", "en": "Generate"}$j$::jsonb, $j${"nl": "Panelen, omvormer en monitoring voor een schuin of plat dak, afgestemd op uw verbruik.", "en": "Panels, inverter and monitoring for a pitched or flat roof, sized to what you use."}$j$::jsonb, $j${"nl": "We bekijken uw dak, uw jaarverbruik en de meterkast. Daarna rekenen we uit hoeveel panelen zinvol zijn en waar ze het best liggen.\n\nOp een schuin dak monteren we de panelen op een railsysteem boven de pannen. Op een plat dak plaatsen we een onderconstructie. Panelen, omvormer en monitoring leveren we als één installatie. Na de oplevering ziet u in een app wat uw dak opwekt.", "en": "We look at your roof, your annual usage and your consumer unit. Then we work out how many panels make sense and where they perform best.\n\nOn a pitched roof the panels sit on rails above the tiles. On a flat roof we fit a mounting frame. Panels, inverter and monitoring come as one installation, and after handover an app shows you what your roof produces."}$j$::jsonb, $j${"nl": "Voor huiseigenaren met een eigen dak, en voor bedrijven met een groot plat dak.", "en": "For homeowners with their own roof, and for businesses with a large flat roof."}$j$::jsonb, $j$[{"title": {"nl": "Dak en verbruik bekijken", "en": "Roof and usage check"}, "text": {"nl": "We komen langs, meten het dak op en kijken naar uw verbruik.", "en": "We visit, measure the roof and look at your usage."}}, {"title": {"nl": "Legplan en offerte", "en": "Layout and quote"}, "text": {"nl": "U krijgt het aantal panelen, de verwachte opbrengst en de prijs.", "en": "You get the number of panels, the expected yield and the price."}}, {"title": {"nl": "Montage", "en": "Installation"}, "text": {"nl": "Onze monteurs plaatsen de panelen en sluiten de omvormer aan.", "en": "Our fitters mount the panels and connect the inverter."}}, {"title": {"nl": "Oplevering", "en": "Handover"}, "text": {"nl": "We zetten de monitoring aan en laten zien hoe u de opbrengst volgt.", "en": "We switch on monitoring and show you how to follow the yield."}}]$j$::jsonb, $j${"nl": ["Schuin en plat dak", "Monitoring"], "en": ["Pitched and flat roofs", "Monitoring"]}$j$::jsonb, $j${"nl": "Zonnepanelen laten plaatsen in Oudewater en omgeving. Panelen, omvormer en monitoring door eigen monteurs.", "en": "Solar panels installed in Oudewater and the surrounding area by our own fitters."}$j$::jsonb),
+  ($t$thuisbatterij$t$, 'published', 2, $j${"nl": "Thuisbatterij", "en": "Home battery"}$j$::jsonb, $j${"nl": "Opslaan", "en": "Store"}$j$::jsonb, $j${"nl": "Bewaar de stroom die u overdag opwekt voor de avond.", "en": "Keep the power you generate during the day for the evening."}$j$::jsonb, $j${"nl": "Een thuisbatterij slaat de stroom van uw zonnepanelen op die u overdag niet gebruikt. 's Avonds en 's nachts gebruikt u die zelf, in plaats van hem terug te leveren aan het net. De batterij regelt dat automatisch.\n\nOf een batterij voor u uitkomt, hangt af van uw panelen, uw verbruik en uw energiecontract. Dat rekenen we met u door voordat u iets besluit.", "en": "A home battery stores the solar power you don't use during the day. In the evening and at night you use it yourself instead of sending it back to the grid. The battery handles this automatically.\n\nWhether a battery pays off for you depends on your panels, your usage and your energy contract. We work that out with you before you decide."}$j$::jsonb, $j${"nl": "Voor huishoudens met zonnepanelen die meer van hun eigen stroom willen gebruiken.", "en": "For households with solar panels who want to use more of their own power."}$j$::jsonb, $j$[{"title": {"nl": "Situatie bekijken", "en": "Check your setup"}, "text": {"nl": "We kijken naar uw panelen, omvormer en meterkast.", "en": "We look at your panels, inverter and consumer unit."}}, {"title": {"nl": "Advies en offerte", "en": "Advice and quote"}, "text": {"nl": "U hoort welke capaciteit past en wat het kost.", "en": "You hear which capacity fits and what it costs."}}, {"title": {"nl": "Plaatsen", "en": "Installation"}, "text": {"nl": "We hangen de batterij op en sluiten hem aan.", "en": "We mount the battery and connect it."}}, {"title": {"nl": "Instellen", "en": "Set-up"}, "text": {"nl": "We stellen de sturing in en leggen uit hoe het werkt.", "en": "We configure the control and explain how it works."}}]$j$::jsonb, $j${"nl": ["Slimme sturing", "Uitbreidbaar"], "en": ["Smart control", "Expandable"]}$j$::jsonb, $j${"nl": "Thuisbatterij laten installeren bij uw zonnepanelen. Advies, plaatsing en instellen door MMC Techniek.", "en": "Home battery installation alongside your solar panels, by MMC Techniek."}$j$::jsonb),
+  ($t$meterkast$t$, 'published', 3, $j${"nl": "Meterkast & elektra", "en": "Consumer unit & wiring"}$j$::jsonb, $j${"nl": "Verdelen", "en": "Distribute"}$j$::jsonb, $j${"nl": "Vervangen of uitbreiden, met ruimte voor laadpaal, warmtepomp en inductie.", "en": "Replace or extend, ready for an EV charger, heat pump and induction hob."}$j$::jsonb, $j${"nl": "Een warmtepomp, een laadpaal of een inductiekookplaat vraagt meer van uw meterkast. Vaak zijn er extra groepen nodig, of een aansluiting op drie fasen.\n\nWe vervangen of breiden uw groepenkast uit volgens NEN 1010. Ook voor andere elektra kunt u bij ons terecht: extra wandcontactdozen, verlichting of een nieuwe installatie bij een verbouwing.", "en": "A heat pump, an EV charger or an induction hob asks more of your consumer unit. You often need extra circuits, or a three-phase connection.\n\nWe replace or extend your consumer unit to the NEN 1010 standard. We also handle other electrical work: extra sockets, lighting or a full rewire during a renovation."}$j$::jsonb, $j${"nl": "Voor wie gaat verduurzamen of verbouwen, en voor woningen met een verouderde groepenkast.", "en": "For anyone making their home more efficient or renovating, and for homes with an outdated consumer unit."}$j$::jsonb, $j$[{"title": {"nl": "Inspectie", "en": "Inspection"}, "text": {"nl": "We bekijken de meterkast en wat u erop wilt aansluiten.", "en": "We look at the consumer unit and what you want to connect."}}, {"title": {"nl": "Offerte", "en": "Quote"}, "text": {"nl": "U krijgt een voorstel met het aantal groepen en de prijs.", "en": "You get a proposal with the number of circuits and the price."}}, {"title": {"nl": "Uitvoering", "en": "Installation"}, "text": {"nl": "We vervangen of breiden de kast uit volgens NEN 1010.", "en": "We replace or extend the unit to NEN 1010."}}, {"title": {"nl": "Oplevering", "en": "Handover"}, "text": {"nl": "We testen elke groep en lopen de kast met u door.", "en": "We test every circuit and walk you through the unit."}}]$j$::jsonb, $j${"nl": ["Laadpaal-klaar", "3-fase", "NEN 1010"], "en": ["EV-charger ready", "3-phase", "NEN 1010"]}$j$::jsonb, $j${"nl": "Meterkast vervangen of uitbreiden volgens NEN 1010. Klaar voor laadpaal, warmtepomp en inductie.", "en": "Consumer unit replacement or extension to NEN 1010, ready for EV charging and heat pumps."}$j$::jsonb),
+  ($t$warmtepompen$t$, 'published', 4, $j${"nl": "Warmtepompen", "en": "Heat pumps"}$j$::jsonb, $j${"nl": "Verwarmen", "en": "Heat"}$j$::jsonb, $j${"nl": "Hybride of all-electric, afgestemd op uw woning.", "en": "Hybrid or all-electric, matched to your home."}$j$::jsonb, $j${"nl": "Een hybride warmtepomp werkt samen met uw cv-ketel. Die past goed bij een woning die nog niet volledig is geïsoleerd. Een all-electric warmtepomp vervangt de ketel helemaal en past bij een goed geïsoleerde woning.\n\nEen warmtepomp verwarmt het zuinigst met lage temperaturen, zoals bij vloerverwarming. Vaak kunt u ISDE-subsidie krijgen. We helpen u met de aanvraag.", "en": "A hybrid heat pump works alongside your gas boiler and suits a home that isn't fully insulated yet. An all-electric heat pump replaces the boiler and suits a well-insulated home.\n\nA heat pump is most efficient at low temperatures, as with underfloor heating. You can often get the Dutch ISDE subsidy, and we help you apply."}$j$::jsonb, $j${"nl": "Voor huiseigenaren die van het gas af willen of minder gas willen gebruiken.", "en": "For homeowners who want to use less gas or stop using it."}$j$::jsonb, $j$[{"title": {"nl": "Woning bekijken", "en": "Home survey"}, "text": {"nl": "We kijken naar isolatie, afgiftesysteem en meterkast.", "en": "We look at insulation, heating system and consumer unit."}}, {"title": {"nl": "Advies en offerte", "en": "Advice and quote"}, "text": {"nl": "U hoort of hybride of all-electric past, en wat het kost.", "en": "You hear whether hybrid or all-electric fits, and what it costs."}}, {"title": {"nl": "Installatie", "en": "Installation"}, "text": {"nl": "We plaatsen de binnen- en buitenunit en sluiten alles aan.", "en": "We fit the indoor and outdoor unit and connect everything."}}, {"title": {"nl": "Inregelen", "en": "Commissioning"}, "text": {"nl": "We stellen de warmtepomp af op uw woning en leggen de bediening uit.", "en": "We tune the heat pump to your home and explain the controls."}}]$j$::jsonb, $j${"nl": ["Hybride", "All-electric", "ISDE-subsidie"], "en": ["Hybrid", "All-electric", "ISDE subsidy"]}$j$::jsonb, $j${"nl": "Hybride of all-electric warmtepomp laten installeren. Advies, plaatsing en hulp bij ISDE-subsidie.", "en": "Hybrid or all-electric heat pump installation, with help applying for the ISDE subsidy."}$j$::jsonb),
+  ($t$airconditioning$t$, 'published', 5, $j${"nl": "Airconditioning", "en": "Air conditioning"}$j$::jsonb, $j${"nl": "Koelen", "en": "Cool"}$j$::jsonb, $j${"nl": "Koelen in de zomer, zuinig verwarmen in het voor- en najaar.", "en": "Cooling in summer, efficient heating in spring and autumn."}$j$::jsonb, $j${"nl": "Een airco met warmtepomptechniek koelt in de zomer en verwarmt zuinig als het buiten niet te koud is. We plaatsen split-units: een binnenunit aan de wand en een buitenunit buiten of op het dak.\n\nWe werken met Daikin, Mitsubishi Electric en LG. Een enkele unit plaatsen we meestal binnen één dag.", "en": "An air conditioner with heat-pump technology cools in summer and heats efficiently when it isn't too cold outside. We install split units: an indoor unit on the wall and an outdoor unit outside or on the roof.\n\nWe work with Daikin, Mitsubishi Electric and LG. A single unit is usually installed within a day."}$j$::jsonb, $j${"nl": "Voor slaapkamers, zolders en kantoren die in de zomer te warm worden.", "en": "For bedrooms, attics and offices that get too hot in summer."}$j$::jsonb, $j$[{"title": {"nl": "Ruimte bekijken", "en": "Room survey"}, "text": {"nl": "We kijken naar de ruimte, de plek voor de buitenunit en de leidingroute.", "en": "We look at the room, the outdoor unit position and the pipe route."}}, {"title": {"nl": "Offerte", "en": "Quote"}, "text": {"nl": "U krijgt een voorstel met het juiste vermogen en de prijs.", "en": "You get a proposal with the right capacity and the price."}}, {"title": {"nl": "Montage", "en": "Installation"}, "text": {"nl": "We plaatsen binnen- en buitenunit en vullen het systeem.", "en": "We fit both units and charge the system."}}, {"title": {"nl": "Uitleg", "en": "Walkthrough"}, "text": {"nl": "We laten zien hoe u de airco bedient en onderhoudt.", "en": "We show you how to use and look after it."}}]$j$::jsonb, $j${"nl": ["Koelen en verwarmen", "Binnen één dag"], "en": ["Cooling and heating", "Within a day"]}$j$::jsonb, $j${"nl": "Airco laten plaatsen in Oudewater en omgeving. Split-units van Daikin, Mitsubishi Electric en LG.", "en": "Air conditioning installation with Daikin, Mitsubishi Electric and LG split units."}$j$::jsonb),
+  ($t$onderhoud$t$, 'published', 6, $j${"nl": "Onderhoud & service", "en": "Maintenance & service"}$j$::jsonb, $j${"nl": "Onderhouden", "en": "Maintain"}$j$::jsonb, $j${"nl": "Jaarlijkse controle en hulp bij storingen.", "en": "Annual checks and help when something breaks down."}$j$::jsonb, $j${"nl": "Onderhoud houdt installaties zuinig en voorkomt storingen. We reinigen en controleren airco's en warmtepompen, kijken zonnepanelen en omvormers na en testen uw groepenkast.\n\nVoor bedrijven voeren we NEN 3140-inspecties uit. Heeft u een storing aan een installatie die wij hebben geplaatst? Bel ons, ook buiten kantooruren.", "en": "Maintenance keeps installations efficient and prevents breakdowns. We clean and check air conditioners and heat pumps, inspect solar panels and inverters, and test your consumer unit.\n\nFor businesses we carry out NEN 3140 inspections. Is something we installed not working? Call us, also outside office hours."}$j$::jsonb, $j${"nl": "Voor iedereen met een airco, warmtepomp of zonnepanelen, en voor bedrijven met een inspectieplicht.", "en": "For anyone with air conditioning, a heat pump or solar panels, and for businesses that need periodic inspections."}$j$::jsonb, $j$[{"title": {"nl": "Afspraak", "en": "Appointment"}, "text": {"nl": "We plannen het onderhoud op een moment dat u uitkomt.", "en": "We schedule maintenance at a time that suits you."}}, {"title": {"nl": "Controle", "en": "Check"}, "text": {"nl": "We reinigen, meten en testen de installatie.", "en": "We clean, measure and test the installation."}}, {"title": {"nl": "Verslag", "en": "Report"}, "text": {"nl": "U hoort wat we hebben gedaan en of er iets aandacht nodig heeft.", "en": "You hear what we did and whether anything needs attention."}}]$j$::jsonb, $j${"nl": ["Jaarlijkse controle", "Storingen", "NEN 3140"], "en": ["Annual check", "Breakdowns", "NEN 3140"]}$j$::jsonb, $j${"nl": "Onderhoud en service voor airco, warmtepomp, zonnepanelen en meterkast. NEN 3140-inspecties voor bedrijven.", "en": "Maintenance for air conditioning, heat pumps, solar panels and consumer units. NEN 3140 inspections for businesses."}$j$::jsonb),
+  ($t$verduurzaming$t$, 'published', 7, $j${"nl": "Verduurzaming", "en": "Whole-home upgrade"}$j$::jsonb, $j${"nl": "Alles samen", "en": "All together"}$j$::jsonb, $j${"nl": "Eén plan voor de hele woning, in een volgorde die bij u past.", "en": "One plan for the whole home, in an order that suits you."}$j$::jsonb, $j${"nl": "Zonnepanelen, een thuisbatterij, een warmtepomp en een nieuwe meterkast werken het best als ze op elkaar zijn afgestemd. We maken één plan en voeren het uit in stappen die passen bij uw woning en uw budget.\n\nGaat u over op een warmtepomp, dan kan vloerverwarming daar onderdeel van zijn. U heeft één aanspreekpunt, van het eerste advies tot het onderhoud.", "en": "Solar panels, a home battery, a heat pump and a new consumer unit work best when they're planned together. We make one plan and carry it out in steps that fit your home and budget.\n\nIf you switch to a heat pump, underfloor heating can be part of it. You have one point of contact, from the first advice to maintenance."}$j$::jsonb, $j${"nl": "Voor wie meerdere stappen wil zetten en dat in één keer goed wil plannen.", "en": "For anyone planning several upgrades who wants to plan them properly in one go."}$j$::jsonb, $j$[{"title": {"nl": "Opname", "en": "Survey"}, "text": {"nl": "We brengen uw woning, verbruik en wensen in kaart.", "en": "We map out your home, usage and wishes."}}, {"title": {"nl": "Plan", "en": "Plan"}, "text": {"nl": "U krijgt een plan met volgorde, prijzen en wat elke stap oplevert.", "en": "You get a plan with the order, prices and what each step achieves."}}, {"title": {"nl": "Uitvoering", "en": "Work"}, "text": {"nl": "We voeren de stappen uit wanneer het u uitkomt.", "en": "We carry out the steps when it suits you."}}, {"title": {"nl": "Nazorg", "en": "Aftercare"}, "text": {"nl": "Alles staat in één overzicht, en we blijven uw aanspreekpunt.", "en": "Everything is in one overview, and we stay your contact."}}]$j$::jsonb, $j${"nl": ["Eén plan", "Vloerverwarming"], "en": ["One plan", "Underfloor heating"]}$j$::jsonb, $j${"nl": "Uw woning verduurzamen met één plan: zonnepanelen, batterij, warmtepomp en meterkast van één installateur.", "en": "One plan for your home: solar, battery, heat pump and consumer unit from one installer."}$j$::jsonb)
+on conflict (slug) do nothing;
+
+-- Brands (suppliers we install) and clients
+insert into public.brands (slug, status, sort_order, kind, name, logo_path, show_in_strip) values
+  ($t$daikin$t$, 'published', 1, 'supplier', $t$Daikin$t$, $t$/brand/logos/daikin.png$t$, true),
+  ($t$mitsubishi-electric$t$, 'published', 2, 'supplier', $t$Mitsubishi Electric$t$, $t$/brand/logos/mitsubishi_electric.png$t$, true),
+  ($t$lg$t$, 'published', 3, 'supplier', $t$LG$t$, $t$/brand/logos/lg.png$t$, false),
+  ($t$trina-solar$t$, 'published', 4, 'supplier', $t$Trina Solar$t$, $t$/brand/logos/trina_solar.png$t$, true),
+  ($t$jinko$t$, 'published', 5, 'supplier', $t$Jinko Solar$t$, $t$/brand/logos/jinko.png$t$, true),
+  ($t$enphase$t$, 'published', 6, 'supplier', $t$Enphase$t$, $t$/brand/logos/enphase.png$t$, true),
+  ($t$growatt$t$, 'published', 7, 'supplier', $t$Growatt$t$, $t$/brand/logos/growatt.png$t$, true),
+  ($t$alphaess$t$, 'published', 8, 'supplier', $t$AlphaESS$t$, $t$/brand/logos/alphaess.png$t$, false),
+  ($t$sigenergy$t$, 'published', 9, 'supplier', $t$Sigenergy$t$, null, false),
+  ($t$weheat$t$, 'published', 10, 'supplier', $t$Weheat$t$, $t$/brand/logos/weheat.png$t$, true),
+  ($t$remeha$t$, 'published', 11, 'supplier', $t$Remeha$t$, $t$/brand/logos/remeha.png$t$, true),
+  ($t$nefit-bosch$t$, 'published', 12, 'supplier', $t$Nefit Bosch$t$, null, false),
+  ($t$hager$t$, 'published', 13, 'supplier', $t$Hager$t$, $t$/brand/logos/hager.png$t$, true),
+  ($t$abb$t$, 'published', 14, 'supplier', $t$ABB$t$, $t$/brand/logos/abb.png$t$, true),
+  ($t$aldi$t$, 'published', 1, 'client', $t$Aldi$t$, $t$/brand/logos/aldi.png$t$, true),
+  ($t$afas$t$, 'published', 2, 'client', $t$AFAS Software$t$, $t$/brand/logos/afas.png$t$, true),
+  ($t$homij$t$, 'published', 3, 'client', $t$Homij$t$, $t$/brand/logos/homij.png$t$, true),
+  ($t$pets-place$t$, 'published', 4, 'client', $t$Pets Place$t$, $t$/brand/logos/pets-place.png$t$, true),
+  ($t$ssh$t$, 'published', 5, 'client', $t$SSH$t$, $t$/brand/logos/ssh.png$t$, true)
+on conflict (slug) do nothing;
+
+-- Products (from supabase/seed.sql; stock image URLs dropped, prices kept for owner review)
+insert into public.products (slug, status, sort_order, service_id, name, tier, summary, specs, price_from, price_to, price_note) values
+  ($t$lg-artcool-gallery$t$, 'published', 1, (select id from public.services where slug = $t$airconditioning$t$), $t$LG Artcool Gallery$t$, $t$premium$t$, $j${"nl": "Wandmodel met design-front, ionisator en wifi. Draait op 19 dB.", "en": "Wall unit with a design front, ioniser and Wi-Fi. Runs at 19 dB."}$j$::jsonb, $j${"nl": ["A+++ energielabel", "19 dB geluidsniveau", "Ionisator luchtzuivering", "WiFi bediening", "Dual Inverter Compressor", "Tot 60% energiebesparing"], "en": ["A+++ energy label", "19 dB sound level", "Ioniser air purification", "Wi-Fi control", "Dual Inverter Compressor", "Up to 60% energy saving"]}$j$::jsonb, 2800, 5000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$lg-prestige$t$, 'published', 2, (select id from public.services where slug = $t$airconditioning$t$), $t$LG Prestige$t$, $t$midden$t$, $j${"nl": "Slank wandmodel met Dual Inverter. Koelt en verwarmt snel.", "en": "Slim wall unit with Dual Inverter. Cools and heats quickly."}$j$::jsonb, $j${"nl": ["A++ energielabel", "22 dB geluidsniveau", "Dual Inverter Compressor", "WiFi bediening", "Snelkoelfunctie", "Slaapmodus"], "en": ["A++ energy label", "22 dB sound level", "Dual Inverter Compressor", "Wi-Fi control", "Rapid cooling", "Sleep mode"]}$j$::jsonb, 2200, 3800, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$mitsubishi-electric-msz-ap$t$, 'published', 3, (select id from public.services where slug = $t$airconditioning$t$), $t$Mitsubishi Electric MSZ-AP$t$, $t$midden$t$, $j${"nl": "Stil en betrouwbaar wandmodel voor elke ruimte.", "en": "Quiet, reliable wall unit for any room."}$j$::jsonb, $j${"nl": ["A++ energielabel", "20 dB geluidsniveau", "3D i-See Sensor", "Jet Airflow", "Snelle installatie", "5 jaar garantie"], "en": ["A++ energy label", "20 dB sound level", "3D i-See Sensor", "Jet Airflow", "Quick installation", "5 year warranty"]}$j$::jsonb, 2500, 4200, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$mitsubishi-electric-msz-ln$t$, 'published', 4, (select id from public.services where slug = $t$airconditioning$t$), $t$Mitsubishi Electric MSZ-LN$t$, $t$premium$t$, $j${"nl": "Topmodel met Plasma Quad-filter en 3D i-See-sensor.", "en": "Top model with Plasma Quad filter and 3D i-See sensor."}$j$::jsonb, $j${"nl": ["A+++ energielabel", "19 dB geluidsniveau", "Plasma Quad Filter", "3D i-See Sensor", "Natural Colour finish", "7 jaar garantie"], "en": ["A+++ energy label", "19 dB sound level", "Plasma Quad Filter", "3D i-See Sensor", "Natural Colour finish", "7 year warranty"]}$j$::jsonb, 3200, 5500, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$daikin-perfera$t$, 'published', 5, (select id from public.services where slug = $t$airconditioning$t$), $t$Daikin Perfera$t$, $t$midden$t$, $j${"nl": "Stil en zuinig, met Flash Streamer-luchtreiniging.", "en": "Quiet and efficient, with Flash Streamer air purification."}$j$::jsonb, $j${"nl": ["A++ energielabel", "21 dB geluidsniveau", "Flash Streamer technologie", "3D luchtstroom", "Vochtigheidsregeling", "Online controller"], "en": ["A++ energy label", "21 dB sound level", "Flash Streamer technology", "3D airflow", "Humidity control", "Online controller"]}$j$::jsonb, 2800, 4500, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$daikin-stylish$t$, 'published', 6, (select id from public.services where slug = $t$airconditioning$t$), $t$Daikin Stylish$t$, $t$premium$t$, $j${"nl": "Design-wandmodel met Coanda-luchtstroom en zilver-ionfilter.", "en": "Design wall unit with Coanda airflow and a silver-ion filter."}$j$::jsonb, $j${"nl": ["A+++ energielabel", "19 dB geluidsniveau", "Coanda Airflow", "Zilver-ion filter", "3D luchtstroom", "Online controller"], "en": ["A+++ energy label", "19 dB sound level", "Coanda Airflow", "Silver-ion filter", "3D airflow", "Online controller"]}$j$::jsonb, 3500, 6000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$trina-solar-vertex$t$, 'published', 7, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Trina Solar Vertex$t$, $t$basis$t$, $j${"nl": "Monokristallijne panelen met 21% rendement.", "en": "Monocrystalline panels with 21% efficiency."}$j$::jsonb, $j${"nl": ["21% rendement", "600W vermogen", "25 jaar productgarantie", "Half-cut cell technologie", "PID-bestendig", "Tot -0.35%/C temperatuurscoefficient"], "en": ["21% efficiency", "600W output", "25 year product warranty", "Half-cut cell technology", "PID resistant", "Temperature coefficient down to -0.35%/°C"]}$j$::jsonb, 4500, 7500, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$trina-solar-duomax$t$, 'published', 8, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Trina Solar Duomax$t$, $t$midden$t$, $j${"nl": "Glas-glaspanelen met 22% rendement en 30 jaar productgarantie.", "en": "Glass-glass panels with 22% efficiency and a 30-year product warranty."}$j$::jsonb, $j${"nl": ["22% rendement", "650W vermogen", "30 jaar productgarantie", "Dubbelglas technologie", "PID-bestendig", "Hagelbestendig tot 35mm"], "en": ["22% efficiency", "650W output", "30 year product warranty", "Glass-glass technology", "PID resistant", "Hail resistant up to 35 mm"]}$j$::jsonb, 5500, 9000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$jinko-solar-tiger-neo$t$, 'published', 9, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Jinko Solar Tiger Neo$t$, $t$basis$t$, $j${"nl": "TOPCon-panelen met 22,5% rendement.", "en": "TOPCon panels with 22.5% efficiency."}$j$::jsonb, $j${"nl": ["22.5% rendement", "620W vermogen", "25 jaar productgarantie", "TOPCon technologie", "Half-cut cell", "Excellent low-light prestatie"], "en": ["22.5% efficiency", "620W output", "25 year product warranty", "TOPCon technology", "Half-cut cell", "Strong low-light performance"]}$j$::jsonb, 5000, 8000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$jinko-solar-n-type$t$, 'published', 10, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Jinko Solar N-Type$t$, $t$midden$t$, $j${"nl": "N-type panelen met 23% rendement en 30 jaar productgarantie.", "en": "N-type panels with 23% efficiency and a 30-year product warranty."}$j$::jsonb, $j${"nl": ["23% rendement", "670W vermogen", "30 jaar productgarantie", "N-type TOPCon", "Dubbelglas", "0.3%/C temperatuurscoefficient"], "en": ["23% efficiency", "670W output", "30 year product warranty", "N-type TOPCon", "Glass-glass", "Temperature coefficient 0.3%/°C"]}$j$::jsonb, 6500, 10000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$growatt-mic$t$, 'published', 11, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Growatt MIC$t$, $t$basis$t$, $j${"nl": "Stringomvormer met wifi-monitoring.", "en": "String inverter with Wi-Fi monitoring."}$j$::jsonb, $j${"nl": ["98.4% max efficiëntie", "WiFi monitoring", "IP65 bescherming", "Dubbele MPPT", "5 jaar garantie", "Natuurlijke koeling"], "en": ["98.4% max efficiency", "Wi-Fi monitoring", "IP65 protection", "Dual MPPT", "5 year warranty", "Natural cooling"]}$j$::jsonb, null, null, $j${}$j$::jsonb),
+  ($t$enphase-iq8$t$, 'published', 12, (select id from public.services where slug = $t$zonnepanelen$t$), $t$Enphase IQ8$t$, $t$premium$t$, $j${"nl": "Micro-omvormer met monitoring per paneel en back-upfunctie.", "en": "Microinverter with per-panel monitoring and backup."}$j$::jsonb, $j${"nl": ["97.6% CEC efficiëntie", "Per-paneel monitoring", "Sunlight back-up", "25 jaar garantie", "Stroomuitval bescherming", "Module-level optimalisatie"], "en": ["97.6% CEC efficiency", "Per-panel monitoring", "Sunlight backup", "25 year warranty", "Power-cut protection", "Module-level optimisation"]}$j$::jsonb, null, null, $j${}$j$::jsonb),
+  ($t$alphaess-smile$t$, 'published', 13, (select id from public.services where slug = $t$thuisbatterij$t$), $t$AlphaESS Smile$t$, $t$basis$t$, $j${"nl": "Thuisbatterij van 5,7 kWh, uit te breiden in modules.", "en": "5.7 kWh home battery that expands in modules."}$j$::jsonb, $j${"nl": ["5.7 kWh basiscapaciteit", "Modulair tot 34.2 kWh", "LFP batterijtechnologie", "6000+ cycli", "10 jaar garantie", "IP65 bescherming"], "en": ["5.7 kWh base capacity", "Modular up to 34.2 kWh", "LFP battery chemistry", "6000+ cycles", "10 year warranty", "IP65 protection"]}$j$::jsonb, 5500, 8000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$alphaess-storion$t$, 'published', 14, (select id from public.services where slug = $t$thuisbatterij$t$), $t$AlphaESS Storion$t$, $t$midden$t$, $j${"nl": "Thuisbatterij van 13,3 kWh met hybride omvormer.", "en": "13.3 kWh home battery with a hybrid inverter."}$j$::jsonb, $j${"nl": ["13.3 kWh capaciteit", "LFP batterijtechnologie", "8000+ cycli", "Hybride omvormer", "10 jaar garantie", "Slimme energiemanagement"], "en": ["13.3 kWh capacity", "LFP battery chemistry", "8000+ cycles", "Hybrid inverter", "10 year warranty", "Smart energy management"]}$j$::jsonb, 8000, 12000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$sigenergy-sigenstor$t$, 'published', 15, (select id from public.services where slug = $t$thuisbatterij$t$), $t$Sigenergy SigenStor$t$, $t$premium$t$, $j${"nl": "Modulaire batterij van 5 tot 48 kWh, met koppeling voor laden van een elektrische auto.", "en": "Modular 5 to 48 kWh battery with EV-charging integration."}$j$::jsonb, $j${"nl": ["5-48 kWh configuratie", "LFP batterijtechnologie", "AI energieoptimalisatie", "EV-laden integratie", "15 jaar garantie", "97% round-trip efficiëntie"], "en": ["5-48 kWh configuration", "LFP battery chemistry", "AI energy optimisation", "EV charging integration", "15 year warranty", "97% round-trip efficiency"]}$j$::jsonb, 7000, 10000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$nefit-bosch-compress-7000i$t$, 'published', 16, (select id from public.services where slug = $t$warmtepompen$t$), $t$Nefit Bosch Compress 7000i$t$, $t$basis$t$, $j${"nl": "Lucht/water-warmtepomp voor woningen met een bestaande cv-installatie.", "en": "Air-to-water heat pump for homes with an existing central heating system."}$j$::jsonb, $j${"nl": ["A+ energielabel", "COP tot 4.5", "Lucht/water technologie", "Ingebouwde boiler", "Modulerend vermogen", "Stil: 48 dB"], "en": ["A+ energy label", "COP up to 4.5", "Air-to-water", "Built-in hot water tank", "Modulating output", "Quiet: 48 dB"]}$j$::jsonb, 4500, 7500, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb),
+  ($t$daikin-altherma-3$t$, 'published', 17, (select id from public.services where slug = $t$warmtepompen$t$), $t$Daikin Altherma 3$t$, $t$premium$t$, $j${"nl": "All-electric warmtepomp met geïntegreerde boiler.", "en": "All-electric heat pump with an integrated hot water tank."}$j$::jsonb, $j${"nl": ["A+++ energielabel", "COP tot 5.0", "Lucht/water", "230L geïntegreerde boiler", "Smart grid ready", "Stil: 42 dB"], "en": ["A+++ energy label", "COP up to 5.0", "Air-to-water", "230L integrated hot water tank", "Smart grid ready", "Quiet: 42 dB"]}$j$::jsonb, 8000, 12000, $j${"nl": "Indicatie inclusief installatie. De exacte prijs hangt af van uw situatie.", "en": "Indication including installation. The exact price depends on your situation."}$j$::jsonb)
+on conflict (slug) do nothing;
+insert into public.product_brands (product_id, brand_id)
+select p.id, b.id from (values
+  ($t$lg-artcool-gallery$t$, $t$lg$t$),
+  ($t$lg-prestige$t$, $t$lg$t$),
+  ($t$mitsubishi-electric-msz-ap$t$, $t$mitsubishi-electric$t$),
+  ($t$mitsubishi-electric-msz-ln$t$, $t$mitsubishi-electric$t$),
+  ($t$daikin-perfera$t$, $t$daikin$t$),
+  ($t$daikin-stylish$t$, $t$daikin$t$),
+  ($t$trina-solar-vertex$t$, $t$trina-solar$t$),
+  ($t$trina-solar-duomax$t$, $t$trina-solar$t$),
+  ($t$jinko-solar-tiger-neo$t$, $t$jinko$t$),
+  ($t$jinko-solar-n-type$t$, $t$jinko$t$),
+  ($t$growatt-mic$t$, $t$growatt$t$),
+  ($t$enphase-iq8$t$, $t$enphase$t$),
+  ($t$alphaess-smile$t$, $t$alphaess$t$),
+  ($t$alphaess-storion$t$, $t$alphaess$t$),
+  ($t$sigenergy-sigenstor$t$, $t$sigenergy$t$),
+  ($t$nefit-bosch-compress-7000i$t$, $t$nefit-bosch$t$),
+  ($t$daikin-altherma-3$t$, $t$daikin$t$)
+) v(product, brand)
+join public.products p on p.slug = v.product
+join public.brands b on b.slug = v.brand
+on conflict do nothing;
+
+-- Projects (titles describe what the photos show; place left empty for the owner)
+insert into public.projects (slug, status, sort_order, title, summary, year, sector, featured) values
+  ($t$supermarkt-verlichting-en-elektra$t$, 'published', 1, $j${"nl": "Supermarkt: verlichting en elektra", "en": "Supermarket: lighting and electrics"}$j$::jsonb, $j${"nl": "Nieuwe verlichting, kabelgoten en elektra in een supermarkt, en de aansluiting van de gevelreclame.", "en": "New lighting, cable trays and electrics in a supermarket, plus the connection for the façade sign."}$j$::jsonb, 2024, 'retail', true),
+  ($t$zonnepanelen-plat-bedrijfsdak$t$, 'published', 2, $j${"nl": "Zonnepanelen op een plat bedrijfsdak", "en": "Solar panels on a flat commercial roof"}$j$::jsonb, $j${"nl": "Onderconstructie en zonnepanelen op een groot plat dak.", "en": "Mounting frame and solar panels on a large flat roof."}$j$::jsonb, 2024, 'utiliteit', true),
+  ($t$omvormers-en-thuisbatterij$t$, 'published', 3, $j${"nl": "Omvormers en thuisbatterij", "en": "Inverters and home battery"}$j$::jsonb, $j${"nl": "Twee omvormers en een batterij, netjes aan de wand gemonteerd en aangesloten.", "en": "Two inverters and a battery, neatly wall-mounted and connected."}$j$::jsonb, 2024, 'particulier', true),
+  ($t$hoofdverdeler-bedrijfspand$t$, 'published', 4, $j${"nl": "Hoofdverdeler voor een bedrijfspand", "en": "Main distribution board for a commercial building"}$j$::jsonb, $j${"nl": "Aanleg en aansluiting van een grote hoofdverdeler.", "en": "Installation and connection of a large main distribution board."}$j$::jsonb, 2024, 'utiliteit', true),
+  ($t$groepenkast-vernieuwd$t$, 'published', 5, $j${"nl": "Groepenkast vernieuwd", "en": "Consumer unit replaced"}$j$::jsonb, $j${"nl": "Een nieuwe groepenkast met aardlekautomaten per groep.", "en": "A new consumer unit with an RCBO on every circuit."}$j$::jsonb, 2024, 'particulier', true),
+  ($t$nieuwbouw-elektra-houtskeletbouw$t$, 'published', 6, $j${"nl": "Nieuwbouw: elektra in houtskeletbouw", "en": "New build: wiring in a timber-frame building"}$j$::jsonb, $j${"nl": "Elektra en groepenkast in een nieuwbouwproject in houtskeletbouw.", "en": "Wiring and consumer unit in a timber-frame new-build project."}$j$::jsonb, 2024, 'nieuwbouw', true),
+  ($t$zonnepanelen-nieuwbouwwoningen$t$, 'published', 7, $j${"nl": "Zonnepanelen op nieuwbouwwoningen", "en": "Solar panels on new-build homes"}$j$::jsonb, $j${"nl": "Zonnepanelen op een rij nieuwbouwwoningen, geplaatst vanaf de steiger.", "en": "Solar panels on a row of new-build homes, fitted from the scaffolding."}$j$::jsonb, 2024, 'nieuwbouw', true),
+  ($t$bedrijfshal-elektra-en-verlichting$t$, 'published', 8, $j${"nl": "Bedrijfshal: elektra en verlichting", "en": "Commercial hall: electrics and lighting"}$j$::jsonb, $j${"nl": "Elektra, verlichting en datavoorzieningen in een nieuwe bedrijfshal.", "en": "Electrics, lighting and data cabling in a new commercial hall."}$j$::jsonb, 2024, 'utiliteit', false),
+  ($t$winkel-plafondverlichting$t$, 'published', 9, $j${"nl": "Winkel: plafondverlichting", "en": "Shop: ceiling lighting"}$j$::jsonb, $j${"nl": "Nieuwe plafondverlichting in een winkel, aangelegd vanaf een hoogwerker.", "en": "New ceiling lighting in a shop, installed from a scissor lift."}$j$::jsonb, 2024, 'retail', false),
+  ($t$renovatie-woongebouw$t$, 'published', 10, $j${"nl": "Renovatie van een woongebouw", "en": "Renovation of a residential building"}$j$::jsonb, $j${"nl": "Elektra tijdens de renovatie van een woongebouw.", "en": "Electrical work during the renovation of a residential building."}$j$::jsonb, 2024, 'nieuwbouw', false),
+  ($t$technische-ruimte-omvormer$t$, 'published', 11, $j${"nl": "Omvormer in een technische ruimte", "en": "Inverter in a plant room"}$j$::jsonb, $j${"nl": "Een omvormer geplaatst tussen de ventilatie in een technische ruimte.", "en": "An inverter fitted alongside the ventilation in a plant room."}$j$::jsonb, 2024, 'particulier', false)
+on conflict (slug) do nothing;
+insert into public.project_services (project_id, service_id)
+select p.id, s.id from (values
+  ($t$supermarkt-verlichting-en-elektra$t$, $t$meterkast$t$),
+  ($t$zonnepanelen-plat-bedrijfsdak$t$, $t$zonnepanelen$t$),
+  ($t$omvormers-en-thuisbatterij$t$, $t$thuisbatterij$t$),
+  ($t$omvormers-en-thuisbatterij$t$, $t$zonnepanelen$t$),
+  ($t$hoofdverdeler-bedrijfspand$t$, $t$meterkast$t$),
+  ($t$groepenkast-vernieuwd$t$, $t$meterkast$t$),
+  ($t$nieuwbouw-elektra-houtskeletbouw$t$, $t$meterkast$t$),
+  ($t$zonnepanelen-nieuwbouwwoningen$t$, $t$zonnepanelen$t$),
+  ($t$bedrijfshal-elektra-en-verlichting$t$, $t$meterkast$t$),
+  ($t$winkel-plafondverlichting$t$, $t$meterkast$t$),
+  ($t$renovatie-woongebouw$t$, $t$meterkast$t$),
+  ($t$technische-ruimte-omvormer$t$, $t$onderhoud$t$),
+  ($t$technische-ruimte-omvormer$t$, $t$zonnepanelen$t$)
+) v(project, service)
+join public.projects p on p.slug = v.project
+join public.services s on s.slug = v.service
+on conflict do nothing;
+
+-- Reviews (already on the current site; consent = false until the owner confirms permission)
+insert into public.reviews (status, sort_order, author, place, body, rating, source, consent)
+select * from (values
+  ('published'::public.content_status, 1, $t$Sabina Zondag$t$, $t$Oudewater$t$, $j${"nl": "Heel goed geholpen, enorm blij met het oplossen van een lastige klus. Professioneel en netjes opgeleverd.", "en": "Really well helped, very happy they solved a tricky job. Professional and neatly finished."}$j$::jsonb, 5::smallint, 'Google', false),
+  ('published'::public.content_status, 2, $t$Ben Ryan$t$, $t$Woerden$t$, $j${"nl": "MMC zijn de enige elektriciens die we vertrouwen. Vriendelijk, vakkundig en altijd een eerlijke prijs.", "en": "MMC are the only electricians we trust. Friendly, skilled and always a fair price."}$j$::jsonb, 5::smallint, 'Google', false),
+  ('published'::public.content_status, 3, $t$D. Jansen$t$, $t$Utrecht$t$, $j${"nl": "Betrouwbaar en goed. Afspraken nagekomen, werk netjes opgeleverd. Dankjewel.", "en": "Reliable and good. They kept their promises and finished the work neatly. Thank you."}$j$::jsonb, 5::smallint, 'Google', false),
+  ('published'::public.content_status, 4, $t$Sophie de Jager$t$, $t$Bodegraven$t$, $j${"nl": "Snel ingepland, snel opgelost. Blij met het resultaat en met het gemak waarmee het ging.", "en": "Scheduled quickly, fixed quickly. Happy with the result and how easy it was."}$j$::jsonb, 5::smallint, 'Google', false)
+) v(status, sort_order, author, place, body, rating, source, consent)
+where not exists (select 1 from public.reviews r where r.author = v.author);
+
+-- FAQ
+insert into public.faqs (status, sort_order, service_id, featured, question, answer)
+select 'published', v.sort_order, s.id, v.featured, v.question, v.answer from (values
+  (1, null::text, true, $j${"nl": "Hoe snel krijg ik een offerte?", "en": "How quickly will I get a quote?"}$j$::jsonb, $j${"nl": "Na het eerste gesprek, en zo nodig een bezoek bij u thuis, krijgt u binnen 24 uur een offerte met een duidelijke prijsopbouw.", "en": "After the first conversation, and a visit to your home if needed, you get a quote with a clear price breakdown within 24 hours."}$j$::jsonb),
+  (2, null::text, true, $j${"nl": "Werken jullie ook buiten Oudewater?", "en": "Do you work outside Oudewater?"}$j$::jsonb, $j${"nl": "Ja. We werken in de regio Utrecht, Woerden, Bodegraven en omgeving. Twijfelt u of uw adres in ons werkgebied ligt? Bel of app ons even.", "en": "Yes. We work across the Utrecht region, Woerden, Bodegraven and the surrounding area. Not sure whether your address is in our area? Call or message us."}$j$::jsonb),
+  (3, null::text, false, $j${"nl": "Werken jullie ook voor bedrijven?", "en": "Do you work for businesses?"}$j$::jsonb, $j${"nl": "Ja. Naast woningen werken we in winkels, kantoren, bedrijfshallen en nieuwbouwprojecten. Op de pagina Zakelijk leest u wat we voor bedrijven doen.", "en": "Yes. Besides homes we work in shops, offices, commercial halls and new-build projects. The Business page explains what we do for companies."}$j$::jsonb),
+  (4, null::text, false, $j${"nl": "Welke garantie krijg ik?", "en": "What warranty do I get?"}$j$::jsonb, $j${"nl": "U krijgt de fabrieksgarantie op alle producten, plus onze eigen garantie op de installatie. Afhankelijk van het product is dat 2 tot 15 jaar.", "en": "You get the manufacturer's warranty on every product, plus our own warranty on the installation. Depending on the product that is 2 to 15 years."}$j$::jsonb),
+  (5, null::text, false, $j${"nl": "Kan ik ook op zaterdag of bij een storing bellen?", "en": "Can I call on Saturdays or when something breaks down?"}$j$::jsonb, $j${"nl": "Installaties plannen we op werkdagen. In overleg kan het op zaterdag. Bij een storing aan een installatie die wij hebben geplaatst, kunt u ons ook buiten kantooruren bellen.", "en": "We schedule installations on weekdays, and Saturdays by arrangement. If something we installed breaks down, you can also call us outside office hours."}$j$::jsonb),
+  (6, $t$warmtepompen$t$, true, $j${"nl": "Wat is het verschil tussen hybride en all-electric?", "en": "What is the difference between hybrid and all-electric?"}$j$::jsonb, $j${"nl": "Een hybride warmtepomp werkt samen met uw cv-ketel en past bij een woning die nog niet volledig is geïsoleerd. Een all-electric warmtepomp vervangt de ketel helemaal en past bij een goed geïsoleerde woning.", "en": "A hybrid heat pump works alongside your gas boiler and suits a home that isn't fully insulated yet. An all-electric heat pump replaces the boiler and suits a well-insulated home."}$j$::jsonb),
+  (7, $t$warmtepompen$t$, false, $j${"nl": "Wat kost een warmtepomp?", "en": "How much does a heat pump cost?"}$j$::jsonb, $j${"nl": "Reken op €4.500 tot €8.500, afhankelijk van het type en wat er in uw woning moet gebeuren. In het aanbod staan prijsindicaties per model. Voor een exacte prijs komen we langs.", "en": "Expect €4,500 to €8,500, depending on the type and the work your home needs. The catalogue lists indicative prices per model. For an exact price we visit you."}$j$::jsonb),
+  (8, $t$warmtepompen$t$, true, $j${"nl": "Kan ik subsidie krijgen?", "en": "Can I get a subsidy?"}$j$::jsonb, $j${"nl": "Voor een warmtepomp kunt u vaak ISDE-subsidie krijgen, en soms is er een regeling van uw gemeente. We bespreken de mogelijkheden bij het eerste gesprek en helpen met de aanvraag.", "en": "You can often get the ISDE subsidy for a heat pump, and sometimes your municipality has a scheme too. We go through the options at the first meeting and help you apply."}$j$::jsonb),
+  (9, $t$warmtepompen$t$, false, $j${"nl": "Werkt vloerverwarming goed met een warmtepomp?", "en": "Does underfloor heating work well with a heat pump?"}$j$::jsonb, $j${"nl": "Ja, dat is de beste combinatie. Vloerverwarming verwarmt met een lage temperatuur, en daar werkt een warmtepomp het zuinigst mee.", "en": "Yes, it's the best combination. Underfloor heating runs at a low temperature, which is where a heat pump is most efficient."}$j$::jsonb),
+  (10, $t$zonnepanelen$t$, false, $j${"nl": "Is mijn dak geschikt voor zonnepanelen?", "en": "Is my roof suitable for solar panels?"}$j$::jsonb, $j${"nl": "De meeste daken zijn geschikt, zowel schuin als plat. Bij het adviesbezoek kijken we naar de draagkracht, de ligging en schaduw.", "en": "Most roofs are, both pitched and flat. At the survey we check the load capacity, orientation and shade."}$j$::jsonb),
+  (11, $t$zonnepanelen$t$, false, $j${"nl": "Wat kosten zonnepanelen?", "en": "How much do solar panels cost?"}$j$::jsonb, $j${"nl": "Een installatie van zes tot tien panelen kost meestal €4.500 tot €9.000, inclusief montage en omvormer. U krijgt altijd een offerte op basis van uw dak en verbruik.", "en": "An installation of six to ten panels usually costs €4,500 to €9,000, including mounting and the inverter. Your quote is always based on your roof and usage."}$j$::jsonb),
+  (12, $t$zonnepanelen$t$, false, $j${"nl": "Heb ik een vergunning nodig?", "en": "Do I need a permit?"}$j$::jsonb, $j${"nl": "Voor zonnepanelen op een schuin dak meestal niet. Op een plat dak of bij een monument kan een melding of vergunning nodig zijn. Dat zoeken we voor u uit.", "en": "Usually not for panels on a pitched roof. On a flat roof or a listed building a notification or permit may be needed. We check that for you."}$j$::jsonb),
+  (13, $t$thuisbatterij$t$, false, $j${"nl": "Hoe werkt een thuisbatterij?", "en": "How does a home battery work?"}$j$::jsonb, $j${"nl": "De batterij slaat stroom van uw zonnepanelen op die u overdag niet gebruikt. 's Avonds en 's nachts gebruikt u die zelf. De batterij regelt dat automatisch.", "en": "The battery stores solar power you don't use during the day. You use it yourself in the evening and at night, and the battery handles this automatically."}$j$::jsonb),
+  (14, $t$airconditioning$t$, false, $j${"nl": "Hoe lang duurt het plaatsen van een airco?", "en": "How long does installing air conditioning take?"}$j$::jsonb, $j${"nl": "Een enkele unit plaatsen we meestal binnen één dag. Een warmtepomp of een grotere zonnepaneleninstallatie duurt één tot twee dagen.", "en": "A single unit is usually installed within a day. A heat pump or a larger solar installation takes one to two days."}$j$::jsonb),
+  (15, $t$airconditioning$t$, false, $j${"nl": "Hoe onderhoud ik mijn airco?", "en": "How do I look after my air conditioner?"}$j$::jsonb, $j${"nl": "Laat de airco één keer per jaar nakijken. We reinigen de filters, controleren het koudemiddel en testen alle onderdelen.", "en": "Have it serviced once a year. We clean the filters, check the refrigerant and test every part."}$j$::jsonb),
+  (16, $t$onderhoud$t$, true, $j${"nl": "Doen jullie ook onderhoud na de installatie?", "en": "Do you also do maintenance after installation?"}$j$::jsonb, $j${"nl": "Ja. U kunt een onderhoudscontract afsluiten, of los een onderhoudsbeurt laten doen.", "en": "Yes. You can take out a maintenance contract or book a one-off service."}$j$::jsonb)
+) v(sort_order, service, featured, question, answer)
+left join public.services s on s.slug = v.service
+where not exists (select 1 from public.faqs f where f.question ->> 'nl' = v.question ->> 'nl');
+
+-- Pages (terms stay draft until the owner supplies them)
+insert into public.pages (slug, status, sort_order, title, body, seo_description) values
+  ($t$privacy$t$, 'published', 1, $j${"nl": "Privacyverklaring", "en": "Privacy statement"}$j$::jsonb, $j${"nl": "MMC Techniek B.V. (Heemraadsingel 11, 3421 VG Oudewater, KvK 95551255) gaat zorgvuldig om met uw gegevens. Op deze pagina leest u welke gegevens we verwerken en waarom.\n\n## Welke gegevens\n\nAls u een offerte of contact aanvraagt, vragen we uw naam, e-mailadres en telefoonnummer. Daarnaast vraagt het formulier naar uw postcode, huisnummer, type woning en de diensten waarin u interesse heeft. Een toelichting is optioneel.\n\n## Waarvoor\n\nWe gebruiken deze gegevens alleen om contact met u op te nemen over uw aanvraag, een bezoek in te plannen en een offerte te maken. We verkopen uw gegevens niet en delen ze niet met anderen voor marketing.\n\n## Waar we ze bewaren\n\nAanvragen worden opgeslagen in een database van Supabase in Frankfurt (EU). Meldingen per e-mail gaan via onze e-mailprovider. TODO(owner): naam van de e-mailprovider invullen.\n\n## Hoe lang\n\nTODO(owner): bewaartermijn vaststellen, bijvoorbeeld twee jaar na het laatste contact, of langer als u klant wordt (fiscale bewaarplicht).\n\n## Uw rechten\n\nU kunt ons vragen welke gegevens we van u hebben, en die laten aanpassen of verwijderen. Mail naar info@mmctechniek.nl. Heeft u een klacht, dan kunt u terecht bij de Autoriteit Persoonsgegevens.", "en": "MMC Techniek B.V. (Heemraadsingel 11, 3421 VG Oudewater, Chamber of Commerce 95551255) handles your data with care. This page explains what we process and why.\n\n## What we collect\n\nWhen you request a quote or contact us, we ask for your name, email address and phone number. The form also asks for your postcode, house number, type of property and the services you're interested in. A message is optional.\n\n## Why\n\nWe only use this information to contact you about your request, schedule a visit and prepare a quote. We don't sell your data or share it with others for marketing.\n\n## Where it's stored\n\nRequests are stored in a Supabase database in Frankfurt (EU). Email notifications go through our email provider. TODO(owner): name the email provider.\n\n## How long\n\nTODO(owner): set a retention period, for example two years after the last contact, or longer if you become a customer (tax record-keeping).\n\n## Your rights\n\nYou can ask us which data we hold about you and have it corrected or deleted. Email info@mmctechniek.nl. If you have a complaint, you can contact the Dutch Data Protection Authority (Autoriteit Persoonsgegevens)."}$j$::jsonb, $j${"nl": "Welke gegevens MMC Techniek verwerkt als u een offerte of contact aanvraagt, en waarom.", "en": "What data MMC Techniek processes when you request a quote or contact us, and why."}$j$::jsonb),
+  ($t$cookies$t$, 'published', 2, $j${"nl": "Cookies", "en": "Cookies"}$j$::jsonb, $j${"nl": "Deze website plaatst geen cookies voor statistieken of advertenties, en volgt u niet over andere websites.\n\nAlleen als u inlogt in het beheer van de website wordt een functionele cookie geplaatst om u ingelogd te houden. Daar is geen toestemming voor nodig.\n\nGebruikt u de knop WhatsApp of de link naar Google Maps, dan gaat u naar die dienst. Daar gelden hun eigen voorwaarden.", "en": "This website doesn't set cookies for analytics or advertising, and doesn't track you across other websites.\n\nOnly when you sign in to the site's admin is a functional cookie set to keep you signed in. That doesn't require consent.\n\nIf you use the WhatsApp button or the Google Maps link, you go to that service, and its own terms apply."}$j$::jsonb, $j${"nl": "Deze website plaatst geen tracking- of advertentiecookies.", "en": "This website sets no tracking or advertising cookies."}$j$::jsonb),
+  ($t$algemene-voorwaarden$t$, 'draft', 3, $j${"nl": "Algemene voorwaarden", "en": "Terms and conditions"}$j$::jsonb, $j${"nl": "TODO(owner): plaats hier de algemene voorwaarden van MMC Techniek B.V., of een link naar de PDF.", "en": "TODO(owner): add the terms and conditions of MMC Techniek B.V., or a link to the PDF."}$j$::jsonb, $j${}$j$::jsonb)
+on conflict (slug) do nothing;
+
+-- Home sections
+insert into public.home_sections (key, content) values
+  ($t$hero$t$, $j${"title": {"nl": "Van dak tot\nmeterkast.", "en": "From roof to\nconsumer unit."}, "lead": {"nl": "We installeren zonnepanelen, thuisbatterijen, warmtepompen en airco's in Oudewater en omgeving. Eén team van eigen monteurs, van advies tot onderhoud.", "en": "We install solar panels, home batteries, heat pumps and air conditioning in Oudewater and the surrounding area. One team of our own fitters, from advice to maintenance."}}$j$::jsonb),
+  ($t$services$t$, $j${"title": {"nl": "Alles voor uw energie, door één installateur.", "en": "Everything for your home's energy, from one installer."}, "lead": {"nl": "Elk onderdeel werkt beter als het op de rest is afgestemd. Kies een dienst om te zien wat we doen.", "en": "Each part works better when it's planned with the rest. Pick a service to see what we do."}}$j$::jsonb),
+  ($t$audience$t$, $j${"title": {"nl": "Voor woningen en bedrijven", "en": "For homes and businesses"}, "home_title": {"nl": "Voor uw woning", "en": "For your home"}, "home_points": {"nl": ["Gratis adviesgesprek bij u thuis", "Hulp bij ISDE-subsidie", "Eén aanspreekpunt, ook na de oplevering"], "en": ["Free advice visit at your home", "Help with the ISDE subsidy", "One point of contact, also after handover"]}, "business_title": {"nl": "Voor uw bedrijf", "en": "For your business"}, "business_points": {"nl": ["Elektra voor winkels, kantoren en nieuwbouw", "NEN 3140-inspecties en periodiek onderhoud", "Zonnepanelen op bedrijfsdaken"], "en": ["Electrics for shops, offices and new builds", "NEN 3140 inspections and periodic maintenance", "Solar panels on commercial roofs"]}}$j$::jsonb),
+  ($t$process$t$, $j${"title": {"nl": "Wat er gebeurt na uw aanvraag", "en": "What happens after you get in touch"}, "steps": [{"title": {"nl": "Bezoek en advies", "en": "Visit and advice"}, "text": {"nl": "We komen langs, meten op en bespreken wat u wilt.", "en": "We visit, take measurements and talk through what you want."}}, {"title": {"nl": "Offerte", "en": "Quote"}, "text": {"nl": "U krijgt een offerte met een duidelijke prijsopbouw.", "en": "You get a quote with a clear price breakdown."}}, {"title": {"nl": "Installatie", "en": "Installation"}, "text": {"nl": "Onze eigen monteurs werken volgens NEN 1010 en VCA.", "en": "Our own fitters work to NEN 1010 and VCA."}}, {"title": {"nl": "Oplevering en nazorg", "en": "Handover and aftercare"}, "text": {"nl": "U krijgt uitleg en alle documentatie. Daarna blijven we bereikbaar.", "en": "You get a walkthrough and all documentation, and we stay available afterwards."}}]}$j$::jsonb),
+  ($t$quote$t$, $j${"title": {"nl": "Offerte binnen 24 uur", "en": "A quote within 24 hours"}, "lead": {"nl": "Vertel kort wat u wilt laten doen. We nemen binnen één werkdag contact op en plannen een gratis adviesbezoek.", "en": "Tell us briefly what you'd like done. We get back to you within one working day and plan a free advice visit."}}$j$::jsonb)
+on conflict (key) do nothing;
+
+-- Site settings
+insert into public.site_settings (key, value) values
+  ($t$company$t$, $j${"name": "MMC Techniek B.V.", "founded": 2008, "kvk": "95551255", "btw": "NL867177536B01"}$j$::jsonb),
+  ($t$contact$t$, $j${"street": "Heemraadsingel 11", "postcode": "3421 VG", "city": "Oudewater", "phone": "+31634311225", "phone_display": "06 3431 1225", "whatsapp": "31634311225", "email": "info@mmctechniek.nl", "maps_url": "https://maps.google.com/?q=Heemraadsingel+11,+3421+VG+Oudewater"}$j$::jsonb),
+  ($t$hours$t$, $j${"nl": "Ma – vr · 08:00 – 17:00", "en": "Mon – Fri · 08:00 – 17:00", "todo": "Confirm with owner: code said 09:00 – 18:00"}$j$::jsonb),
+  ($t$area$t$, $j${"nl": "Oudewater, Woerden, Bodegraven, Utrecht en omgeving", "en": "Oudewater, Woerden, Bodegraven, Utrecht and the surrounding area"}$j$::jsonb),
+  ($t$certifications$t$, $j$["NEN 1010", "NEN 3140", "VCA"]$j$::jsonb),
+  ($t$social$t$, $j${"google_reviews_url": null, "instagram_url": null}$j$::jsonb),
+  ($t$whatsapp_messages$t$, $j${"nl": "Hallo MMC Techniek, ik heb een vraag over ", "en": "Hello MMC Techniek, I have a question about "}$j$::jsonb)
+on conflict (key) do nothing;
+
+-- Carry over anything that was added to the legacy admin_* tables (kept as they are).
+insert into public.brands (slug, status, kind, name, logo_path)
+select trim(both '-' from regexp_replace(lower(name), '[^a-z0-9]+', '-', 'g')), 'published', 'supplier', name, nullif(logo_url, '')
+from public.admin_brands
+on conflict (slug) do nothing;
+
+insert into public.products (slug, status, service_id, name, summary, specs)
+select trim(both '-' from regexp_replace(lower(ap.name), '[^a-z0-9]+', '-', 'g')), 'draft', s.id, ap.name,
+       jsonb_build_object('nl', ap.description), jsonb_build_object('nl', to_jsonb(ap.tech_specs), 'en', '[]'::jsonb)
+from public.admin_products ap
+join public.services s on s.slug = case ap.service_slug when 'batterijopslag' then 'thuisbatterij' else ap.service_slug end
+on conflict (slug) do nothing;
+
