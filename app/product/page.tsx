@@ -152,7 +152,7 @@ function ProductDetailContent() {
       <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin" />
-          <p className="text-[11px] font-black text-muted uppercase tracking-widest animate-pulse">
+          <p className="text-[11px] font-extrabold text-muted uppercase tracking-widest animate-pulse">
             {language === "nl" ? "Product laden..." : "Loading product..."}
           </p>
         </div>
@@ -162,9 +162,9 @@ function ProductDetailContent() {
 
   if (!product) {
     return (
-      <div className="min-h-[80vh] bg-bg flex items-center justify-center px-6">
+      <div className="min-h-[80dvh] bg-bg flex items-center justify-center px-6">
         <div className="text-center max-w-md bg-white border border-hairline p-8 rounded-3xl shadow-sm">
-          <div className="w-12 h-12 bg-brand/5 text-brand rounded-full flex items-center justify-center mx-auto mb-6 border border-brand/10">
+          <div className="w-12 h-12 bg-brand/5 text-brand-ink rounded-full flex items-center justify-center mx-auto mb-6 border border-brand/10">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -224,11 +224,11 @@ function ProductDetailContent() {
         {/* Breadcrumb / Back Link */}
         <Reveal>
           <div className="flex items-center gap-2 text-[10px] text-muted/70 font-semibold uppercase tracking-wider mb-6 lg:mb-10">
-            <Link href="/aanbod/" className="hover:text-brand transition-colors">
+            <Link href="/aanbod/" className="hover:text-brand-ink transition-colors">
               {language === "nl" ? "Aanbod" : "Catalog"}
             </Link>
             <span className="text-muted/40">/</span>
-            <Link href={`/aanbod/?dienst=${product.categoryId}`} className="hover:text-brand transition-colors">
+            <Link href={`/aanbod/?dienst=${product.categoryId}`} className="hover:text-brand-ink transition-colors">
               {resolvedCategoryTitle}
             </Link>
             <span className="text-muted/40">/</span>
@@ -291,7 +291,7 @@ function ProductDetailContent() {
               
               {/* Product Highlights Section */}
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted/65 mb-3 flex items-center gap-2">
+                <h3 className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-muted/65 mb-3 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                   {language === "nl" ? "Productomschrijving" : "Product Description"}
                 </h3>
@@ -305,7 +305,7 @@ function ProductDetailContent() {
 
               {/* Sizes Available Selector */}
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted/65 mb-3 flex items-center gap-2">
+                <h3 className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-muted/65 mb-3 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand" />
                   {language === "nl" ? "Beschikbare maten / capaciteiten" : "Available Sizes & Capacities"}
                 </h3>
@@ -345,7 +345,7 @@ function ProductDetailContent() {
             {/* Header Block: Category & Brand Logo */}
             <Reveal className="bg-white border border-hairline rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-hairline">
-                <span className="text-[10px] font-black uppercase tracking-[0.22em] text-brand">
+                <span className="text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-ink">
                   {resolvedCategoryTitle}
                 </span>
                 {brandImages[product.brand] && (
@@ -364,15 +364,15 @@ function ProductDetailContent() {
             {/* Price tag card */}
             <Reveal delay={60} className="bg-white border border-hairline rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.01)] flex items-center justify-between">
               <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted/60">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-muted/60">
                   {product.price ? (language === "nl" ? "Richtprijs incl. montage" : "Guide price incl. installation") : (language === "nl" ? "Kostenindicatie" : "Estimated Cost")}
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-ink tracking-tight tabular-nums">
+                <span className="text-2xl sm:text-3xl font-extrabold text-ink tracking-tight tabular-nums">
                   {product.price || (language === "nl" ? "Prijs op aanvraag" : "Price on request")}
                 </span>
               </div>
               <div className="w-10 h-10 rounded-full bg-brand/5 border border-brand/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-brand-ink" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h.007m-.007 3h.007m-.007 3h.007m-1.5-6h15.75c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125H3.75a1.125 1.125 0 01-1.125-1.125V5.625c0-.621.504-1.125 1.125-1.125z" />
                 </svg>
               </div>
@@ -382,7 +382,7 @@ function ProductDetailContent() {
             <Reveal delay={120} className="flex flex-col gap-3">
               <Link
                 href={quoteUrl}
-                className="w-full py-4.5 bg-brand text-white text-xs font-black uppercase tracking-[0.2em] rounded-full hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 transition-all duration-300 text-center flex items-center justify-center gap-3 active:scale-[0.99] cursor-pointer"
+                className="w-full py-4.5 bg-brand text-white text-xs font-extrabold uppercase tracking-[0.2em] rounded-full hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 transition-all duration-300 text-center flex items-center justify-center gap-3 active:scale-[0.99] cursor-pointer"
               >
                 <span>{language === "nl" ? "Offerte Aanvragen" : "Request Quote"}</span>
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
@@ -392,7 +392,7 @@ function ProductDetailContent() {
 
               <a
                 href={`tel:${contactInfo.phone}`}
-                className="w-full py-4 border border-ink/20 hover:border-brand hover:text-brand bg-white text-ink text-xs font-black uppercase tracking-[0.2em] rounded-full transition-all duration-300 text-center flex items-center justify-center gap-3 active:scale-[0.99]"
+                className="w-full py-4 border border-ink/20 hover:border-brand hover:text-brand-ink bg-white text-ink text-xs font-extrabold uppercase tracking-[0.2em] rounded-full transition-all duration-300 text-center flex items-center justify-center gap-3 active:scale-[0.99]"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -404,7 +404,7 @@ function ProductDetailContent() {
             {/* Detailed Description Block */}
             {longDesc && (
               <Reveal delay={180} className="bg-white border border-hairline rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)]">
-                <h2 className="text-[10px] font-black uppercase tracking-widest text-muted/65 mb-4">
+                <h2 className="text-[10px] font-extrabold uppercase tracking-widest text-muted/65 mb-4">
                   {language === "nl" ? "Meer informatie" : "More Information"}
                 </h2>
                 <div className="text-sm sm:text-[15px] text-copy leading-relaxed font-bold space-y-4 whitespace-pre-line font-bold">
@@ -436,12 +436,12 @@ function ProductDetailContent() {
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-brand/5 border border-brand/15 flex items-center justify-center shrink-0 mt-0.5">
-                      <svg className="w-3 h-3 text-brand" fill="none" stroke="currentColor" strokeWidth={3.5} viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 text-brand-ink" fill="none" stroke="currentColor" strokeWidth={3.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-[10px] font-black text-ink uppercase tracking-tight leading-tight">
+                      <h4 className="text-[10px] font-extrabold text-ink uppercase tracking-tight leading-tight">
                         {item.label}
                       </h4>
                       <p className="text-[9px] text-muted leading-tight mt-0.5 font-medium">
@@ -470,11 +470,11 @@ function ProductDetailContent() {
               {product.techSpecs.map((spec, idx) => (
                 <div key={idx} className="bg-white border border-hairline rounded-2xl p-4.5 hover:border-brand/40 transition-colors duration-300 flex items-center gap-3.5 shadow-[0_4px_20px_rgb(0,0,0,0.005)]">
                   <div className="w-6 h-6 rounded-lg bg-concrete border border-hairline/50 flex items-center justify-center shrink-0">
-                    <svg className="w-3.5 h-3.5 text-brand" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 text-brand-ink" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                   </div>
-                  <span className="text-[11px] lg:text-xs font-black text-ink uppercase tracking-tight leading-snug font-bold">
+                  <span className="text-[11px] lg:text-xs font-extrabold text-ink uppercase tracking-tight leading-snug font-bold">
                     {spec}
                   </span>
                 </div>
@@ -486,18 +486,18 @@ function ProductDetailContent() {
       </div>
 
       {/* Mobile Sticky Bottom CTA Bar */}
-      <div className="fixed bottom-[var(--bottom-nav-height)] md:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-hairline p-4 flex items-center justify-between shadow-[0_-8px_30px_rgba(0,0,0,0.03)] md:hidden safe-bottom">
+      <div className="fixed bottom-[var(--bottom-nav-height)] md:bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-hairline p-4 flex items-center justify-between shadow-[0_-8px_30px_rgba(0,0,0,0.03)] md:hidden safe-bottom">
         <div className="flex flex-col min-w-0 pr-3">
-          <span className="text-[9px] font-black text-muted uppercase tracking-widest truncate max-w-[140px]">
+          <span className="text-[9px] font-extrabold text-muted uppercase tracking-widest truncate max-w-[140px]">
             {product.name}
           </span>
-          <span className="text-xs font-black text-brand tracking-tight leading-none mt-1">
+          <span className="text-xs font-extrabold text-brand-ink tracking-tight leading-none mt-1">
             {product.price || (language === "nl" ? "Prijs op aanvraag" : "Price on request")}
           </span>
         </div>
         <Link
           href={quoteUrl}
-          className="px-5 py-3 bg-brand text-white text-[10px] font-black uppercase tracking-wider rounded-full hover:bg-brand-deep active:scale-98 transition-all shrink-0 cursor-pointer"
+          className="px-5 py-3 bg-brand text-white text-[10px] font-extrabold uppercase tracking-wider rounded-full hover:bg-brand-deep active:scale-98 transition-all shrink-0 cursor-pointer"
         >
           {language === "nl" ? "Offerte Aanvragen" : "Request Quote"}
         </Link>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { renderRich } from "./richText";
 
 const partnerLogos = [
   { name: "Daikin", src: "/images/brands/daikin.png" },
@@ -37,13 +38,14 @@ export default function ClientStrip() {
         <Reveal>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
-              <span className="text-label text-brand font-black tracking-[0.3em] mb-6 block">
+              <span className="text-label text-brand-ink font-extrabold tracking-[0.3em] mb-6 block">
                 {t.pages.overOns.clients.label}
               </span>
-              <h2 
-                className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-black leading-[0.85] tracking-[-0.04em] text-ink uppercase"
-                dangerouslySetInnerHTML={{ __html: t.pages.overOns.clients.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-              />
+              <h2
+                className="font-display text-[clamp(2.5rem,5vw,4.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em] text-ink uppercase"
+              >
+                {renderRich(t.pages.overOns.clients.title)}
+              </h2>
             </div>
             <p className="text-lg md:text-xl text-muted/80 font-medium max-w-md leading-relaxed">
               {t.pages.overOns.clients.description}
@@ -54,7 +56,7 @@ export default function ClientStrip() {
 
       <div className="relative group">
         <div className="flex overflow-hidden select-none mask-fade">
-          <div className="flex items-center gap-16 lg:gap-32 animate-marquee py-4">
+          <div className="flex items-center gap-16 lg:gap-32 animate-marquee motion-reduce:animate-none py-4" aria-hidden="true">
             {[...partnerLogos, ...partnerLogos].map((logo, i) => (
               <div key={`${logo.name}-${i}`} className="relative w-32 md:w-48 lg:w-64 h-16 md:h-24 lg:h-32 shrink-0">
                 <Image

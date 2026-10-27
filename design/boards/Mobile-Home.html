@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>MMC Techniek — Home mobiel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#0A6BC2}a:hover{color:#08508F}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+.r{font-family:'Archivo',system-ui,sans-serif;color:#0F1B26;-webkit-font-smoothing:antialiased}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;line-height:14px;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+.disp{font-stretch:125%;font-weight:800;letter-spacing:-.04em;line-height:.95;margin:0}
+.h2{font-stretch:118%;font-weight:750;letter-spacing:-.025em;line-height:1.05;margin:0;font-size:32px}
+.h3{font-stretch:108%;font-weight:650;letter-spacing:-.01em;line-height:1.2;margin:0}
+.ic{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sc{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding-bottom:104px;scrollbar-width:none}
+.sc::-webkit-scrollbar{display:none}
+.top{position:sticky;top:0;z-index:5;height:64px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #DCE3EA}
+.ib{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 1.5px #C5D0DA;display:grid;place-items:center;color:#0F1B26;text-decoration:none}
+.btn{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding:0 8px 0 24px;border-radius:999px;font-family:'Archivo',sans-serif;font-size:16px;font-weight:600;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn .knob{width:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+.btn-p{background:#0A6BC2;color:#fff}.btn-p:hover{background:#08508F;color:#fff}.btn-p .knob{background:#fff;color:#0A6BC2}
+.btn-w{background:#fff;color:#0A6BC2}.btn-w .knob{background:#0A6BC2;color:#fff}
+.pill{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px 0 10px;border-radius:999px;background:#E7F3FD;color:#08508F}
+.dot{width:7px;height:7px;border-radius:50%;background:#0A6BC2}
+.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.hs > *{scroll-snap-align:start;flex:none}
+.tile{position:relative;border-radius:20px;overflow:hidden;background:#DCE3EA}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tag{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 9px;border-radius:6px;background:rgba(255,255,255,.95);color:#0F1B26}
+.tag i{width:6px;height:6px;border-radius:50%;background:#41A7F2;display:block}
+.grp{display:inline-flex;align-items:center;gap:10px;color:#44525F}
+.fuse{width:12px;height:19px;border:1.5px solid currentColor;border-radius:3px;position:relative;flex:none}
+.fuse::after{content:"";position:absolute;left:2px;right:2px;top:2px;height:7px;border-radius:1.5px;background:#41A7F2}
+.wire{width:36px;height:1.5px;background:currentColor;opacity:.35;position:relative}
+.wire::after{content:"";position:absolute;right:-3px;top:-2.5px;width:6.5px;height:6.5px;border-radius:50%;background:currentColor}
+.row{border-top:1px solid #DCE3EA}
+.rh{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 36px;align-items:center;gap:12px;padding:14px 0;min-height:72px}
+.ico{width:44px;height:44px;border-radius:12px;background:#F3F6F9;display:grid;place-items:center;transition:all .2s}
+.row.on .ico{background:#0A6BC2;color:#fff}
+.chev{width:36px;height:36px;border-radius:50%;box-shadow:inset 0 0 0 1.5px #C5D0DA;display:grid;place-items:center;transition:transform .2s}
+.row.on .chev{transform:rotate(180deg);background:#0F1B26;color:#fff;box-shadow:none}
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:#F3F6F9}
+.seg button{height:44px;border-radius:999px;font-size:15px;font-weight:600;color:#44525F;text-align:center;transition:all .2s}
+.seg button.on{background:#0F1B26;color:#fff}
+.tick{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.5}
+.tick svg{margin-top:3px}
+.bar{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px 26px;display:flex;gap:10px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #DCE3EA}
+.star{color:#F2B634;letter-spacing:2px;font-size:15px}
+:focus-visible{outline:2px solid #0A6BC2;outline-offset:3px}
+</style>
+</helmet>
+<div class="r" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #fff">
+  <div class="sc">
+    <header class="top">
+      <img src="../assets/logo.svg" alt="MMC Techniek B.V." style="height: 34px; width: auto">
+      <div style="display: flex; gap: 8px">
+        <a class="ib" href="#" aria-label="NL / EN"><span class="mono" style="font-size: 11px">NL</span></a>
+        <a class="ib" href="Mobile-Menu.html" aria-label="Menu openen" style="background: #0F1B26; color: #fff; box-shadow: none"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h16M4 16h16"></path></svg></a>
+      </div>
+    </header>
+
+    <section style="padding: 24px 16px 0; display: flex; flex-direction: column; gap: 20px">
+      <span class="pill mono"><span class="dot"></span>Oudewater · sinds 2008</span>
+      <h1 class="disp" style="font-size: 44px">Van dak tot<br><span style="color: #0A6BC2">meterkast.</span></h1>
+      <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #44525F">Zonnepanelen, thuisbatterij, warmtepomp en airco — als één systeem ontworpen en geïnstalleerd door onze eigen gecertificeerde monteurs.</p>
+      <a class="btn btn-p" href="Mobile-Offerte.html">Gratis offerte binnen 24 uur<span class="knob"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+    </section>
+
+    <div class="hs" style="margin-top: 24px">
+      <div class="tile" style="width: 270px; height: 340px"><img src="/images/projects/PHOTO-2024-12-03-12-54-01.jpg" alt="Zonnepanelen op schuin dak"><span class="tag mono" style="position: absolute; left: 10px; bottom: 10px"><i></i>Zonnepanelen · Oudewater</span></div>
+      <div class="tile" style="width: 270px; height: 340px"><img src="/images/projects/20240920_112524-scaled.jpg" alt="Nieuwe groepenkast"><span class="tag mono" style="position: absolute; left: 10px; bottom: 10px"><i></i>Meterkast · NEN 1010</span></div>
+      <div class="tile" style="width: 270px; height: 340px"><img src="/images/projects/PHOTO-2024-12-03-12-54-04_2.jpg" alt="Zonnepanelen plat dak"><span class="tag mono" style="position: absolute; left: 10px; bottom: 10px"><i></i>Plat dak · utiliteit</span></div>
+    </div>
+
+    <section style="padding: 24px 16px 0">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #DCE3EA">
+        <div style="padding: 16px 12px 16px 0; border-bottom: 1px solid #DCE3EA; border-right: 1px solid #DCE3EA"><div class="h3" style="font-size: 24px; font-stretch: 125%; font-weight: 800">16+ jaar</div><div style="font-size: 13px; color: #44525F">ervaring</div></div>
+        <div style="padding: 16px 0 16px 16px; border-bottom: 1px solid #DCE3EA"><div class="h3" style="font-size: 24px; font-stretch: 125%; font-weight: 800">24 uur</div><div style="font-size: 13px; color: #44525F">tot uw offerte</div></div>
+        <div style="padding: 16px 12px 16px 0; border-bottom: 1px solid #DCE3EA; border-right: 1px solid #DCE3EA"><div class="h3" style="font-size: 24px; font-stretch: 125%; font-weight: 800">100%</div><div style="font-size: 13px; color: #44525F">eigen monteurs</div></div>
+        <div style="padding: 12px 0 12px 16px; border-bottom: 1px solid #DCE3EA; display: flex; align-items: center; gap: 8px"><img src="/images/certifications/nen-3140.png" alt="NEN 3140" style="height: 40px"><img src="/images/certifications/vca.png" alt="VCA" style="height: 40px"></div>
+      </div>
+    </section>
+
+    <div class="hs" style="margin-top: 20px; gap: 36px; align-items: center; height: 40px">
+      <img src="../assets/brands-mono/daikin.png" alt="Daikin" style="height: 20px; opacity: .55">
+      <img src="../assets/brands-mono/mitsubishi_electric.png" alt="Mitsubishi Electric" style="height: 24px; opacity: .55">
+      <img src="../assets/brands-mono/trina_solar.png" alt="Trina Solar" style="height: 20px; opacity: .55">
+      <img src="../assets/brands-mono/weheat.png" alt="Weheat" style="height: 18px; opacity: .55">
+      <img src="../assets/brands-mono/hager.png" alt="Hager" style="height: 20px; opacity: .55">
+    </div>
+
+    <section style="padding: 56px 16px 0; display: flex; flex-direction: column; gap: 20px">
+      <div class="grp"><span class="fuse"></span><span class="mono">Groep 01</span><span class="wire"></span><span class="mono">Diensten</span></div>
+      <h2 class="h2">Eén installateur voor uw hele energie&shy;huishouding.</h2>
+      <div style="margin-top: 4px; border-bottom: 1px solid #DCE3EA">
+        <sc-for list="{{services}}" as="s" hint-placeholder-count="7">
+          <div class="row {{s.cls}}">
+            <button class="rh" onClick="{{s.pick}}" aria-expanded="{{s.exp}}">
+              <span class="ico"><span class="mono" style="font-size: 12px">{{s.n}}</span></span>
+              <span style="display: flex; flex-direction: column; gap: 2px"><span class="h3" style="font-size: 19px">{{s.t}}</span><span class="mono" style="color: #66737F">{{s.v}}</span></span>
+              <span class="chev"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span>
+            </button>
+            <sc-if value="{{s.on}}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 0 0 20px; display: flex; flex-direction: column; gap: 14px">
+                <div style="height: 180px; border-radius: 16px; overflow: hidden; position: relative"><img src="{{s.img}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></div>
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #44525F">{{s.d}}</p>
+                <a href="#" style="font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; min-height: 44px">Meer over {{s.lower}}<svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="padding: 56px 16px 0; display: flex; flex-direction: column; gap: 20px">
+      <div class="grp"><span class="fuse"></span><span class="mono">Groep 02</span><span class="wire"></span><span class="mono">Voor wie</span></div>
+      <h2 class="h2">Voor thuis. En voor de zaak.</h2>
+      <div class="seg" role="tablist" aria-label="Doelgroep">
+        <button role="tab" class="{{segP}}" aria-selected="{{selP}}" onClick="{{toP}}">Particulier</button>
+        <button role="tab" class="{{segZ}}" aria-selected="{{selZ}}" onClick="{{toZ}}">Zakelijk</button>
+      </div>
+      <sc-if value="{{isP}}" hint-placeholder-val="{{ true }}">
+        <div style="border-radius: 22px; overflow: hidden; background: #F3F6F9">
+          <div style="height: 200px; position: relative"><img src="/images/background.avif" alt="Duurzame woning" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></div>
+          <div style="padding: 22px; display: flex; flex-direction: column; gap: 14px">
+            <h3 class="h3" style="font-size: 22px; font-stretch: 115%; font-weight: 750">Lagere energierekening, meer comfort.</h3>
+            <span class="tick" style="color: #44525F"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="color: #0A6BC2"><path d="M20 6 9 17l-5-5"></path></svg>Gratis adviesgesprek bij u thuis</span>
+            <span class="tick" style="color: #44525F"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="color: #0A6BC2"><path d="M20 6 9 17l-5-5"></path></svg>Hulp bij ISDE-subsidie</span>
+            <span class="tick" style="color: #44525F"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="color: #0A6BC2"><path d="M20 6 9 17l-5-5"></path></svg>Eén aanspreekpunt, ook na oplevering</span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{isZ}}" hint-placeholder-val="{{ false }}">
+        <div style="border-radius: 22px; overflow: hidden; background: #0F1B26; color: #fff">
+          <div style="height: 200px; position: relative"><img src="/images/projects/20240920_120951-scaled.jpg" alt="Winkelpand" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></div>
+          <div style="padding: 22px; display: flex; flex-direction: column; gap: 14px">
+            <h3 class="h3" style="font-size: 22px; font-stretch: 115%; font-weight: 750">Installatiepartner voor utiliteit en retail.</h3>
+            <span class="tick" style="color: #C9D3DC"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="color: #41A7F2"><path d="M20 6 9 17l-5-5"></path></svg>Winkels, kantoren en nieuwbouw</span>
+            <span class="tick" style="color: #C9D3DC"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="color: #41A7F2"><path d="M20 6 9 17l-5-5"></path></svg>NEN 3140-inspecties</span>
+            <div style="display: flex; gap: 20px; align-items: center; padding-top: 10px; border-top: 1px solid #2C3D4E">
+              <img src="../assets/brands-mono/aldi.png" alt="Aldi" style="height: 18px; filter: invert(1); opacity: .75">
+              <img src="../assets/brands-mono/afas.png" alt="AFAS" style="height: 28px; filter: invert(1); opacity: .75">
+              <img src="../assets/brands-mono/homij.png" alt="Homij" style="height: 28px; filter: invert(1); opacity: .75">
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </section>
+
+    <section style="padding: 56px 0 0; display: flex; flex-direction: column; gap: 20px">
+      <div style="padding: 0 16px; display: flex; flex-direction: column; gap: 20px">
+        <div class="grp"><span class="fuse"></span><span class="mono">Groep 03</span><span class="wire"></span><span class="mono">Projecten</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end"><h2 class="h2">Recent opgeleverd.</h2><a href="#" style="font-weight: 600; font-size: 15px; min-height: 44px; display: inline-flex; align-items: center">Alle</a></div>
+      </div>
+      <div class="hs">
+        <a class="tile" href="#" style="width: 290px; height: 360px; display: block"><img src="/images/projects/20240920_120951-scaled.jpg" alt="Winkelverlichting en elektra"><span style="position: absolute; left: 10px; right: 10px; bottom: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; color: #0F1B26"><span class="h3" style="font-size: 16px">Winkelverlichting en elektra</span><span class="mono" style="color: #66737F">Retail · 2024</span></span></a>
+        <a class="tile" href="#" style="width: 290px; height: 360px; display: block"><img src="/images/projects/PHOTO-2024-12-03-12-54-02_1.jpg" alt="Omvormers en opslag"><span style="position: absolute; left: 10px; right: 10px; bottom: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; color: #0F1B26"><span class="h3" style="font-size: 16px">Omvormers en opslag</span><span class="mono" style="color: #66737F">Woerden · 2024</span></span></a>
+        <a class="tile" href="#" style="width: 290px; height: 360px; display: block"><img src="/images/projects/PHOTO-2024-12-08-15-12-08.jpg" alt="Nieuwbouwproject"><span style="position: absolute; left: 10px; right: 10px; bottom: 10px; background: #fff; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; color: #0F1B26"><span class="h3" style="font-size: 16px">Installaties nieuwbouw</span><span class="mono" style="color: #66737F">Bodegraven · 2024</span></span></a>
+      </div>
+    </section>
+
+    <section style="margin-top: 56px; padding: 48px 16px; background: #0F1B26; color: #fff; display: flex; flex-direction: column; gap: 28px">
+      <div class="grp" style="color: #9AA7B3"><span class="fuse"></span><span class="mono">Groep 04</span><span class="wire"></span><span class="mono">Werkwijze</span></div>
+      <h2 class="h2">Zo werken we. <span style="color: #41A7F2">En daarna blijven we.</span></h2>
+      <div style="display: flex; flex-direction: column; position: relative; padding-left: 64px; gap: 26px">
+        <span style="position: absolute; left: 21px; top: 8px; bottom: 30px; width: 1.5px; background: #2C3D4E"></span>
+        <div style="position: relative"><span style="position: absolute; left: -64px; top: -6px; width: 44px; height: 44px; border-radius: 50%; background: #0F1B26; box-shadow: inset 0 0 0 1.5px #3A4B5C; display: grid; place-items: center"><span class="mono">01</span></span><div class="h3" style="font-size: 18px">Bezoek en advies</div><div style="font-size: 15px; color: #B4C0CB; line-height: 1.5; margin-top: 4px">We komen langs en meten op.</div></div>
+        <div style="position: relative"><span style="position: absolute; left: -64px; top: -6px; width: 44px; height: 44px; border-radius: 50%; background: #0F1B26; box-shadow: inset 0 0 0 1.5px #3A4B5C; display: grid; place-items: center"><span class="mono">02</span></span><div class="h3" style="font-size: 18px">Offerte binnen 24 uur</div><div style="font-size: 15px; color: #B4C0CB; line-height: 1.5; margin-top: 4px">Helder, zonder verborgen posten.</div></div>
+        <div style="position: relative"><span style="position: absolute; left: -64px; top: -6px; width: 44px; height: 44px; border-radius: 50%; background: #0F1B26; box-shadow: inset 0 0 0 1.5px #3A4B5C; display: grid; place-items: center"><span class="mono">03</span></span><div class="h3" style="font-size: 18px">Installatie</div><div style="font-size: 15px; color: #B4C0CB; line-height: 1.5; margin-top: 4px">Door eigen monteurs, volgens NEN 1010.</div></div>
+        <div style="position: relative"><span style="position: absolute; left: -64px; top: -6px; width: 44px; height: 44px; border-radius: 50%; background: #41A7F2; color: #0F1B26; display: grid; place-items: center"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 4v5h-5"></path></svg></span><div class="h3" style="font-size: 18px">Oplevering en nazorg</div><div style="font-size: 15px; color: #B4C0CB; line-height: 1.5; margin-top: 4px">Daarna blijven wij bereikbaar.</div></div>
+      </div>
+    </section>
+
+    <section style="padding: 48px 16px 0">
+      <figure style="margin: 0; background: #F3F6F9; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <span class="star" aria-label="5 van 5 sterren">★★★★★</span>
+        <blockquote style="margin: 0; font-size: 21px; line-height: 1.3; font-weight: 650; font-stretch: 108%">“MMC zijn de enige elektriciens die we vertrouwen.”</blockquote>
+        <figcaption class="mono" style="color: #66737F">Ben Ryan · Woerden</figcaption>
+      </figure>
+    </section>
+
+    <section style="padding: 16px 16px 0">
+      <div style="background: #0A6BC2; border-radius: 22px; padding: 28px 22px; color: #fff; display: flex; flex-direction: column; gap: 16px; position: relative; overflow: hidden">
+        <img src="../assets/mark-white.svg" alt="" aria-hidden="true" style="position: absolute; right: -50px; top: -40px; width: 180px; opacity: .14">
+        <h2 class="h2" style="font-size: 30px; position: relative">Offerte binnen 24&nbsp;uur.</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #E3EFFA; position: relative">Drie korte vragen, daarna nemen wij binnen één werkdag contact op.</p>
+        <a class="btn btn-w" href="Mobile-Offerte.html" style="position: relative">Start aanvraag<span class="knob"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+      </div>
+    </section>
+
+    <footer style="margin-top: 48px; padding: 40px 16px 24px; background: #0F1B26; color: #fff; display: flex; flex-direction: column; gap: 24px">
+      <img src="../assets/logo-dark.svg" alt="MMC Techniek B.V." style="height: 56px; width: auto; align-self: flex-start">
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: #C9D3DC">
+        <span>Heemraadsingel 11, 3421 VG Oudewater</span>
+        <a href="tel:+31634311225" style="color: #fff; font-weight: 600; text-decoration: none">06 3431 1225</a>
+        <a href="mailto:info@mmctechniek.nl" style="color: #fff; font-weight: 600; text-decoration: none">info@mmctechniek.nl</a>
+        <span>Ma – vr · 08:00 – 17:00</span>
+      </div>
+      <span class="mono" style="color: #9AA7B3; line-height: 1.6">© 2026 MMC Techniek B.V.<br>KvK 95551255 · BTW NL867177536B01</span>
+    </footer>
+  </div>
+
+  <nav class="bar" aria-label="Snel contact">
+    <a class="ib" href="tel:+31634311225" aria-label="Bellen" style="width: 52px; height: 52px; flex: none"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"></path></svg></a>
+    <a class="ib" href="#" aria-label="WhatsApp" style="width: 52px; height: 52px; flex: none"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"></path></svg></a>
+    <a class="btn btn-p" href="Mobile-Offerte.html" style="flex: 1; height: 52px; padding: 0 6px 0 20px">Offerte aanvragen<span class="knob" style="width: 40px; height: 40px"><svg class="ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { svc: 0, aud: 'p' }; }
+  renderVals() {
+    const st = this.state, B = '/_blob/';
+    const S = [
+      ['01', 'Zonnepanelen', 'Opwekken', 'd315215bdae52666acf09d50031a4159', 'Maatwerk op uw dak, schuin of plat — met omvormer en monitoring als één geheel.'],
+      ['02', 'Thuisbatterij', 'Opslaan', 'b356d59a99ecec6966093e2a816dbbc7', 'Bewaar uw zonnestroom voor de avond, slim gestuurd.'],
+      ['03', 'Meterkast & elektra', 'Verdelen', '811e718c90b970524ad5bb264521844a', 'Vervangen of uitbreiden, klaar voor laadpaal en warmtepomp.'],
+      ['04', 'Warmtepompen', 'Verwarmen', '4c8b69fb6d97157a80964652b603d3d2', 'Hybride of all-electric, afgestemd op uw woning.'],
+      ['05', 'Airconditioning', 'Koelen', 'f13f13871681d96a5f26fd80e6f39f16', 'Stil koelen in de zomer, zuinig verwarmen in de winter.'],
+      ['06', 'Onderhoud & service', 'Onderhouden', 'dbff13a6bd96e69bcae7bac4e66c8278', 'Onderhoudscontracten en snelle hulp bij storingen.'],
+      ['07', 'Verduurzaming', 'Alles samen', 'ec2e2a0d3007bf82c98aee4dabf31d70', 'Eén plan voor de hele woning, stap voor stap naar label A++.']
+    ];
+    const services = S.map(([n, t, v, img, d], i) => ({ n, t, v, d, img: B + img, lower: t.toLowerCase(), on: st.svc === i, cls: st.svc === i ? 'on' : '', exp: st.svc === i ? 'true' : 'false', pick: () => this.setState({ svc: st.svc === i ? -1 : i }) }));
+    const isP = st.aud === 'p';
+    return {
+      services, isP, isZ: !isP,
+      segP: isP ? 'on' : '', segZ: isP ? '' : 'on', selP: isP ? 'true' : 'false', selZ: isP ? 'false' : 'true',
+      toP: () => this.setState({ aud: 'p' }), toZ: () => this.setState({ aud: 'z' })
+    };
+  }
+}
+</script>
+</body>
+</html>

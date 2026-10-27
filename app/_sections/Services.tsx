@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { services } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { renderRich } from "../_ui/richText";
 
 export default function Services() {
   const { t } = useLanguage();
@@ -13,13 +14,12 @@ export default function Services() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24 lg:mb-36">
           <div className="max-w-3xl">
-            <span className="text-label text-brand font-black tracking-[0.4em] mb-8 block">
+            <span className="text-label text-brand-ink font-extrabold tracking-[0.4em] mb-8 block">
               {t.sections.services.label}
             </span>
-            <h2 
-              className="font-display text-[clamp(3rem,6vw,5.5rem)] font-black leading-[0.85] tracking-[-0.04em] text-ink uppercase"
-              dangerouslySetInnerHTML={{ __html: t.sections.services.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-            />
+            <h2 className="font-display text-[clamp(3rem,6vw,5.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em] text-ink uppercase">
+              {renderRich(t.sections.services.title)}
+            </h2>
           </div>
           <p className="text-xl lg:text-3xl text-muted/80 font-bold max-w-xl leading-relaxed">
             {t.sections.services.subtitle}
@@ -43,10 +43,10 @@ export default function Services() {
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/40 to-transparent transition-colors duration-700 group-hover:from-ink/90" />
                   <div className="absolute inset-0 flex flex-col justify-end p-8 z-10">
                      <div className="w-16 h-1 bg-brand mb-6 group-hover:w-full transition-all duration-700" />
-                     <span className="text-[10px] font-black uppercase tracking-[0.25em] text-brand mb-2 block opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-500">
+                     <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-brand mb-2 block opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-500">
                        {t.nav.aanbod} &rarr;
                      </span>
-                     <h3 className="font-display text-2xl lg:text-3xl font-black text-white uppercase tracking-tight mb-2 group-hover:translate-x-2 transition-transform duration-500">
+                     <h3 className="font-display text-2xl lg:text-3xl font-extrabold text-white uppercase tracking-tight mb-2 group-hover:translate-x-2 transition-transform duration-500">
                       {itemTranslation.title}
                      </h3>
                      <p className="text-white/60 text-sm font-medium line-clamp-2 group-hover:translate-x-2 transition-all duration-500 delay-100">

@@ -9,6 +9,7 @@ import BrandLogo from "../../_ui/BrandLogo";
 import StickyCTA from "../../_ui/StickyCTA";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { fetchAdminStore, mergeServices, mergeBrandImages } from "@/lib/adminStore";
+import { renderRich } from "../../_ui/richText";
 
 export default function ServiceContent({ slug }: { slug: string }) {
   const { t } = useLanguage();
@@ -88,13 +89,13 @@ export default function ServiceContent({ slug }: { slug: string }) {
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <Reveal>
               <div className="mb-8 max-w-xl">
-                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand mb-3">
+                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-ink mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand" />
                   {t.pages.diensten.products}
                 </span>
-                <h2 className="font-display text-[2rem] sm:text-[2.5rem] font-extrabold text-ink mb-3"
-                  dangerouslySetInnerHTML={{ __html: t.pages.diensten.whatWeSupply.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                />
+                <h2 className="font-display text-[2rem] sm:text-[2.5rem] font-extrabold text-ink mb-3">
+                  {renderRich(t.pages.diensten.whatWeSupply)}
+                </h2>
                 <p className="text-muted leading-relaxed">{t.pages.diensten.productsDescription}</p>
               </div>
             </Reveal>
@@ -127,7 +128,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
                         <BrandLogo brand={product.brand} imageSrc={brandImagesState[product.brand] ?? ""} height={20} />
                       </div>
                       <Link href={`/product/?name=${encodeURIComponent(product.name)}&service=${service.slug}`}>
-                        <h4 className="text-base font-bold text-ink mb-2 group-hover:text-brand transition-colors hover:underline">{product.name}</h4>
+                        <h3 className="text-base font-bold text-ink mb-2 group-hover:text-brand-ink transition-colors hover:underline">{product.name}</h3>
                       </Link>
                       <p className="text-sm text-muted mb-4 leading-relaxed">{product.description}</p>
                       <ul className="space-y-1 mb-4">
@@ -144,7 +145,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
                         ) : (
                           <span className="text-sm text-muted italic">{t.pages.diensten.priceOnRequest}</span>
                         )}
-                        <Link href={`/contact/?service=${service.slug}&product=${encodeURIComponent(product.name)}`} className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand hover:text-brand-deep transition-colors">
+                        <Link href={`/contact/?service=${service.slug}&product=${encodeURIComponent(product.name)}`} className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-ink hover:text-brand-deep transition-colors">
                           {t.pages.diensten.quote}
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                         </Link>
@@ -173,9 +174,9 @@ export default function ServiceContent({ slug }: { slug: string }) {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <Reveal>
             <div className="mb-10">
-              <h2 className="font-display text-[1.75rem] sm:text-[2rem] font-extrabold text-ink"
-                dangerouslySetInnerHTML={{ __html: t.pages.diensten.relatedServices.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-              />
+              <h2 className="font-display text-[1.75rem] sm:text-[2rem] font-extrabold text-ink">
+                {renderRich(t.pages.diensten.relatedServices)}
+              </h2>
             </div>
           </Reveal>
 
@@ -188,7 +189,7 @@ export default function ServiceContent({ slug }: { slug: string }) {
                     <div className="absolute inset-0 bg-ink/40 group-hover:bg-ink/50 transition-colors" />
                   </div>
                   <div className="p-5">
-                    <h3 className="text-base font-bold text-ink mb-1 group-hover:text-brand transition-colors">{related.title}</h3>
+                    <h3 className="text-base font-bold text-ink mb-1 group-hover:text-brand-ink transition-colors">{related.title}</h3>
                     <p className="text-sm text-muted line-clamp-2">{related.summary}</p>
                   </div>
                 </Link>

@@ -3,6 +3,8 @@ export const contactInfo = {
   email: "info@mmctechniek.nl",
   phone: "+31 6 3431 1225",
   phoneDisplay: "06 3431 1225",
+  phoneHref: "+31634311225", // canonical tel: target
+  whatsapp: "31634311225", // canonical wa.me target
   hours: "Maandag t/m vrijdag, 09:00 – 18:00",
   kvk: "95551255",
   btw: "NL867177536B01",

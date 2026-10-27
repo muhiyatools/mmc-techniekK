@@ -119,7 +119,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden bg-bg min-h-[92vh] lg:min-h-screen pt-[114px] pb-16 lg:pb-24">
+    <section className="relative flex flex-col justify-center overflow-hidden bg-bg min-h-[92dvh] lg:min-h-screen pt-[114px] pb-16 lg:pb-24">
       
       {/* Background image & gradient overlay (re-enabled in high fidelity) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
@@ -144,7 +144,7 @@ export default function HeroSection() {
           <div className="lg:col-span-7 xl:col-span-6 flex flex-col items-start text-left">
             
             {/* Regional Badge */}
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-brand mb-4 block">
+            <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-[0.25em] text-brand-ink mb-4 block">
               {t.hero.region}
             </span>
 
@@ -154,7 +154,7 @@ export default function HeroSection() {
               style={{ fontSize: "clamp(2.8rem, 6.5vw + 0.5rem, 7.5rem)" }}
             >
               <span 
-                className="font-light block tracking-wide lowercase italic text-muted"
+                className="font-normal block tracking-wide lowercase italic text-muted"
                 style={{ fontSize: "clamp(1.3rem, 2.8vw + 0.3rem, 3.2rem)" }}
               >
                 Precisie in
@@ -325,9 +325,9 @@ export default function HeroSection() {
                       />
                       
                       {/* Project Tag info overlay */}
-                      <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 shadow-md flex items-center justify-between">
+                      <div className="absolute bottom-4 left-4 right-4 bg-white/90 px-4 py-3 rounded-2xl border border-white/20 shadow-md flex items-center justify-between">
                         <div className="min-w-0">
-                          <span className="text-[9px] font-black uppercase tracking-widest text-brand block mb-0.5">MMC Projecten</span>
+                          <span className="text-[9px] font-extrabold uppercase tracking-widest text-brand-ink block mb-0.5">MMC Projecten</span>
                           <p className="text-xs font-bold text-ink truncate">{service.projectTag}</p>
                         </div>
                         <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white shrink-0 shadow-sm">

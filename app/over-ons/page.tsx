@@ -8,6 +8,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { fetchAdminStore } from "@/lib/adminStore";
 import Reveal from "@/app/_ui/Reveal";
 import HairlineDivider from "@/app/_ui/HairlineDivider";
+import { renderRich } from "@/app/_ui/richText";
 
 function useParallax(speed = 0.3) {
   const ref = useRef<HTMLDivElement>(null);
@@ -72,8 +73,8 @@ export default function AboutPage() {
       text: language === "nl" 
         ? "MMC Techniek levert en installeert hoogwaardige zonnepanelen van betrouwbare A-merken. Geen standaardpakketten, maar een installatie die nauwkeurig is berekend op uw daksituatie en stroomverbruik voor een optimaal rendement."
         : "MMC Techniek supplies and installs premium solar panels from trusted A-brands. No standard packages, but an installation precisely engineered for your specific roof layout and power consumption for maximum efficiency.",
-      color: "text-amber-400",
-      rgb: "250, 204, 21"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     },
     wind: {
       title: language === "nl" ? "Windenergie (Generatie)" : "Wind Energy (Generation)",
@@ -81,8 +82,8 @@ export default function AboutPage() {
       text: language === "nl"
         ? "Windenergie vult zonnestroom perfect aan, vooral tijdens de wintermaanden en in de nacht. Wij koppelen kleinschalige windturbines aan uw thuisbatterij en meterkast voor een constante, duurzame stroomvoorziening."
         : "Wind energy complements solar power perfectly, especially during winter months and nighttime. We connect small-scale wind turbines to your home battery and fuse box for a constant, sustainable energy supply.",
-      color: "text-teal-400",
-      rgb: "45, 212, 191"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     },
     battery: {
       title: language === "nl" ? "Thuisbatterijen (Opslag)" : "Home Batteries (Storage)",
@@ -90,8 +91,8 @@ export default function AboutPage() {
       text: language === "nl" 
         ? "Sla uw overtollige zonnestroom op voor gebruik tijdens de avond- en nachturen. Met een slimme thuisbatterij verhoogt u uw zelfconsumptie, verlaagt u uw afhankelijkheid van het net en bent u voorbereid op dynamische energietarieven."
         : "Store your excess solar power for use during evening and night hours. With a smart home battery, you increase your self-consumption, reduce grid dependency, and prepare for dynamic energy tariffs.",
-      color: "text-emerald-400",
-      rgb: "52, 211, 153"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     },
     pump: {
       title: language === "nl" ? "Warmtepompen (Verwarming)" : "Heat Pumps (Heating)",
@@ -99,8 +100,8 @@ export default function AboutPage() {
       text: language === "nl" 
         ? "De basis voor een toekomstbestendige woning. Wij adviseren, ontwerpen en installeren zowel hybride systemen als all-electric warmtepompen. Volledig afgestemd op de isolatiewaarde van uw woning en uw comfortwensen."
         : "The foundation of a future-proof home. We advise, design, and install both hybrid systems and all-electric heat pumps, fully customized to your home's insulation and comfort needs.",
-      color: "text-orange-400",
-      rgb: "251, 146, 60"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     },
     airco: {
       title: language === "nl" ? "Airconditioning (Klimaatbeheersing)" : "Air Conditioning (Climate Control)",
@@ -108,8 +109,8 @@ export default function AboutPage() {
       text: language === "nl" 
         ? "Moderne airconditioningsystemen bieden het hele jaar door comfort: ze koelen op warme zomerdagen en verwarmen uiterst efficiënt in de winter. Onze fluisterstille units worden vakkundig en met oog voor detail gemonteerd."
         : "Modern air conditioning systems offer year-round comfort: cooling on hot summer days and highly efficient heating in winter. Our whisper-quiet units are professionally installed with an eye for detail.",
-      color: "text-cyan-400",
-      rgb: "34, 211, 238"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     },
     electrics: {
       title: language === "nl" ? "Elektrotechniek & Meterkast (Distributie)" : "Electrical Systems & Fuse Boxes (Distribution)",
@@ -117,8 +118,8 @@ export default function AboutPage() {
       text: language === "nl" 
         ? "Een goed functionerende en veilige meterkast is essentieel voor uw warmtepomp, zonnepanelen, laadpaal of thuisbatterij. Wij vernieuwen, breiden uit en certificeren uw elektrische installatie volgens de strengste NEN 1010 normen."
         : "A well-functioning and safe electrical panel is essential for your heat pump, solar panels, EV charger, or home battery. We upgrade, expand, and certify your electrical installation according to strict NEN 1010 standards.",
-      color: "text-indigo-400",
-      rgb: "129, 140, 248"
+      color: "text-brand",
+      rgb: "66, 168, 242"
     }
   };
 
@@ -166,7 +167,7 @@ export default function AboutPage() {
     <>
       <div className="pt-[104px] lg:pt-[114px]">
         {/* ── Hero ── */}
-        <section className="relative min-h-[70vh] flex items-center bg-ink overflow-hidden">
+        <section className="relative min-h-[70dvh] flex items-center bg-ink overflow-hidden">
           <div ref={heroParallax.ref} className="absolute inset-0" style={{ transform: `translateY(${heroParallax.offset}px)` }}>
             <Image src="/images/solarbackground.webp" alt="" fill className="object-cover opacity-15 lg:opacity-20 scale-105" priority />
             <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/90 to-ink" />
@@ -177,16 +178,17 @@ export default function AboutPage() {
           <div className="relative w-full max-w-[1280px] mx-auto px-6 lg:px-10 py-16 lg:py-20 z-10">
             <div className="max-w-4xl lg:max-w-[1000px]">
               <Reveal threshold={0.3}>
-                <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.35em] text-brand mb-4 block">
+                <span className="text-[0.75rem] lg:text-[0.875rem] font-extrabold uppercase tracking-[0.35em] text-brand mb-4 block">
                   {m.label}
                 </span>
               </Reveal>
 
               <Reveal delay={100} threshold={0.3}>
-                <h1 
-                  className="font-display text-[clamp(2.5rem,7vw,6.5rem)] lg:text-[clamp(4rem,6vw,7.5rem)] font-black leading-[0.95] tracking-tight text-white mb-6 uppercase text-wrap-balance"
-                  dangerouslySetInnerHTML={{ __html: heroTitle.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                />
+                <h1
+                  className="font-display text-[clamp(2.5rem,7vw,6.5rem)] lg:text-[clamp(4rem,6vw,7.5rem)] font-extrabold leading-[0.95] tracking-tight text-white mb-6 uppercase text-wrap-balance"
+                >
+                  {renderRich(heroTitle, "text-brand")}
+                </h1>
               </Reveal>
 
               <Reveal delay={180} threshold={0.3}>
@@ -198,8 +200,8 @@ export default function AboutPage() {
               <Reveal delay={260} threshold={0.3}>
                 <div className="flex flex-wrap gap-x-12 gap-y-6">
                   {statsData.slice(0, 3).map(([val, label]) => (
-                    <div key={`stat-${label}`} className="border-l-2 border-brand/40 pl-4">
-                      <div className="font-display text-3xl font-black text-white tabular-nums leading-none">
+                    <div key={`stat-${label}`} className="border-l border-white/15 pl-4">
+                      <div className="font-display text-3xl font-extrabold text-white tabular-nums leading-none">
                         {val}
                       </div>
                       <p className="text-[0.6875rem] font-bold text-muted uppercase tracking-wider mt-1">
@@ -229,24 +231,23 @@ export default function AboutPage() {
             </svg>
           </div>
           
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand/5 rounded-full blur-[140px] pointer-events-none" />
-
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10 relative z-10">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
               
               {/* Left Column: Mission text & Active System Card */}
               <div className="lg:col-span-5">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-brand mb-4 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-extrabold uppercase tracking-[0.3em] text-brand mb-4 block">
                     {m.mission.label}
                   </span>
                 </Reveal>
 
                 <Reveal delay={100}>
-                  <h2 
-                    className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-[0.95] tracking-tight uppercase mb-6"
-                    dangerouslySetInnerHTML={{ __html: m.mission.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                  />
+                  <h2
+                    className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold leading-[0.95] tracking-tight uppercase mb-6"
+                  >
+                    {renderRich(m.mission.title, "text-brand")}
+                  </h2>
                 </Reveal>
 
                 <Reveal delay={160}>
@@ -257,7 +258,7 @@ export default function AboutPage() {
 
                 {/* System Detail Panel */}
                 <Reveal delay={220}>
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden backdrop-blur-md">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden">
                     {/* Active color strip */}
                     <div 
                       className="absolute top-0 left-0 bottom-0 w-1 transition-colors duration-500" 
@@ -266,12 +267,12 @@ export default function AboutPage() {
                     
                     <div className="pl-3">
                       <span 
-                        className="text-[0.625rem] font-black uppercase tracking-[0.25em] transition-colors duration-500"
+                        className="text-[0.625rem] font-extrabold uppercase tracking-[0.25em] transition-colors duration-500"
                         style={{ color: `rgba(${systemsData[hoveredSystem].rgb}, 1)` }}
                       >
                         {language === "nl" ? "Systeemonderdeel" : "System Component"}
                       </span>
-                      <h3 className="font-display text-xl lg:text-2xl font-black uppercase text-white mt-1 mb-2 tracking-tight">
+                      <h3 className="font-display text-xl lg:text-2xl font-extrabold uppercase text-white mt-1 mb-2 tracking-tight">
                         {systemsData[hoveredSystem].title}
                       </h3>
                       <p 
@@ -291,7 +292,7 @@ export default function AboutPage() {
               {/* Right Column: Architectural House Blueprint & Physics Wind Turbine */}
               <div className="lg:col-span-7 flex flex-col items-center">
                 {/* Discoverability Badge */}
-                <div className="mb-4 inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-black uppercase tracking-widest text-brand animate-[pulse_3s_infinite]">
+                <div className="mb-4 inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-extrabold uppercase tracking-widest text-brand animate-[pulse_3s_infinite]">
                   <span className="w-2 h-2 rounded-full bg-brand animate-ping" />
                   <span>{language === "nl" ? "Interactieve Blauwdruk · Beweeg over de onderdelen" : "Interactive Blueprint · Hover components"}</span>
                 </div>
@@ -464,21 +465,6 @@ export default function AboutPage() {
           
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/35 to-transparent" />
           
-          <style jsx global>{`
-            @keyframes dash {
-              to {
-                stroke-dashoffset: -20;
-              }
-            }
-            @keyframes spin-clockwise {
-              from { transform: rotate(0deg); }
-              to { transform: rotate(360deg); }
-            }
-            .windmill-blades {
-              transform-origin: 320px 110px;
-              transform-box: view-box;
-            }
-          `}</style>
         </section>
 
         {/* ── Vakmanschap & Story (Simplified split screen) ── */}
@@ -489,12 +475,12 @@ export default function AboutPage() {
               {/* Left Column: Short story narrative */}
               <div className="lg:col-span-5">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-4 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-extrabold uppercase tracking-[0.3em] text-muted/50 mb-4 block">
                     {m.story.label}
                   </span>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h2 className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-black leading-[0.9] tracking-tight text-ink mb-8 uppercase">
+                  <h2 className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-extrabold leading-[0.9] tracking-tight text-ink mb-8 uppercase">
                     {language === "nl" ? "Gegroeid door kwaliteit" : "Grown through quality"}
                   </h2>
                 </Reveal>
@@ -558,7 +544,7 @@ export default function AboutPage() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-hairline/50 to-transparent" />
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <Reveal>
-              <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-10 block">
+              <span className="text-[0.75rem] lg:text-[0.875rem] font-extrabold uppercase tracking-[0.3em] text-muted/50 mb-10 block">
                 {m.testimonials.label}
               </span>
             </Reveal>
@@ -574,12 +560,12 @@ export default function AboutPage() {
                       &ldquo;{t.text}&rdquo;
                     </p>
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand text-base font-black shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand text-base font-extrabold shrink-0">
                         {t.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-base font-black text-ink uppercase tracking-tight">{t.name}</p>
-                        <p className="text-[0.625rem] text-brand font-black uppercase tracking-wider mt-1">{t.role}</p>
+                        <p className="text-base font-extrabold text-ink uppercase tracking-tight">{t.name}</p>
+                        <p className="text-[0.625rem] text-brand-ink font-extrabold uppercase tracking-wider mt-1">{t.role}</p>
                       </div>
                     </div>
                   </div>
@@ -590,15 +576,16 @@ export default function AboutPage() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 border-t border-hairline/50 pt-16">
               <div className="max-w-xl">
                 <Reveal>
-                  <span className="text-[0.75rem] lg:text-[0.875rem] font-black uppercase tracking-[0.3em] text-muted/50 mb-3 block">
+                  <span className="text-[0.75rem] lg:text-[0.875rem] font-extrabold uppercase tracking-[0.3em] text-muted/50 mb-3 block">
                     {m.certifications.label}
                   </span>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h3 
-                    className="font-display text-2xl lg:text-3xl font-black uppercase leading-tight text-ink mb-4"
-                    dangerouslySetInnerHTML={{ __html: m.certifications.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-                  />
+                  <h3
+                    className="font-display text-2xl lg:text-3xl font-extrabold uppercase leading-tight text-ink mb-4"
+                  >
+                    {renderRich(m.certifications.title)}
+                  </h3>
                 </Reveal>
                 <p className="text-sm text-muted/95 leading-relaxed font-medium">
                   {language === "nl" 
@@ -614,7 +601,7 @@ export default function AboutPage() {
                     <div className="flex items-center gap-6 px-6 py-4 border border-hairline/40 bg-surface rounded-xl shadow-md shrink-0">
                       <Image src={cert.src} alt={cert.name} width={32} height={32} className="object-contain shrink-0" />
                       <div>
-                        <p className="text-sm font-black text-ink uppercase tracking-tight">{cert.name}</p>
+                        <p className="text-sm font-extrabold text-ink uppercase tracking-tight">{cert.name}</p>
                         <p className="text-[0.625rem] text-muted font-bold uppercase tracking-[0.1em] mt-1">{cert.description}</p>
                       </div>
                     </div>

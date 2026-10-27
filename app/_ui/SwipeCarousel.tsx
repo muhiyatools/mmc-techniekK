@@ -72,13 +72,14 @@ export default function SwipeCarousel({
 
       {/* Dots */}
       {showDots && count > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-4" aria-hidden="true">
+        <div className="flex items-center justify-center gap-2 mt-4" role="group" aria-label="Slidenavigatie">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => scrollTo(i)}
               className={`dot${i === activeIndex ? " active" : ""}`}
               aria-label={`Ga naar slide ${i + 1}`}
+              aria-current={i === activeIndex ? "true" : undefined}
             />
           ))}
         </div>

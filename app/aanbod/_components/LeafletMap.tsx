@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface CityNode {
   name: string;
@@ -86,6 +87,8 @@ const netherlandsBorder: [number, number][] = [
 ];
 
 export default function LeafletMap() {
+  const { language } = useLanguage();
+  const nl = language === "nl";
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -137,8 +140,8 @@ export default function LeafletMap() {
       const popupContent = `
         <div class="p-2.5 min-w-[170px] font-sans">
           <div class="font-bold text-ink text-sm mb-1">${city.name}</div>
-          <div class="text-xs text-brand font-black uppercase tracking-wider mb-1.5">${city.projects} Projecten</div>
-          <p class="text-[11px] text-muted leading-snug m-0">${city.desc}</p>
+          <div class="text-xs text-brand font-extrabold uppercase tracking-wider mb-1.5">${city.projects} ${nl ? "Projecten" : "Projects"}</div>
+          <p class="text-[11px] text-muted leading-snug m-0">${nl ? city.desc : "Solar & sustainable-energy installations in this region."}</p>
         </div>
       `;
 
@@ -147,14 +150,14 @@ export default function LeafletMap() {
         .bindPopup(popupContent);
     });
 
-    // Cleanup on unmount
+    // Cleanup on unmount / language change
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [nl]);
 
   return (
     <div className="relative w-full h-[520px] rounded-2xl overflow-hidden border border-hairline/80 shadow-inner bg-concrete">

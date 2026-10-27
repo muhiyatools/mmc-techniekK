@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { contactInfo } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { renderRich } from "../_ui/richText";
 
 export default function FAQPage() {
   const { t, language } = useLanguage();
@@ -34,8 +35,9 @@ export default function FAQPage() {
           </div>
           <h1 className="font-display text-[clamp(2rem,4.5vw,3.5rem)] font-extrabold leading-[0.92] tracking-tight mb-4"
             style={{ color: "#0f172a" }}
-            dangerouslySetInnerHTML={{ __html: t.pages.faqPage.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-          />
+          >
+            {renderRich(t.pages.faqPage.title)}
+          </h1>
           <p className="text-sm text-muted leading-relaxed max-w-lg mb-8">
             {t.pages.faqPage.description}
           </p>
@@ -64,7 +66,7 @@ export default function FAQPage() {
                 <p className="text-sm text-muted mb-4">
                   {language === "nl" ? "Geen vragen gevonden voor" : "No questions found for"} &quot;{search}&quot;
                 </p>
-                <button onClick={() => setSearch("")} className="text-[10px] font-bold text-brand uppercase tracking-wider hover:underline">
+                <button onClick={() => setSearch("")} className="text-[10px] font-bold text-brand-ink uppercase tracking-wider hover:underline">
                   {language === "nl" ? "Wis zoekopdracht" : "Clear search"}
                 </button>
               </div>
@@ -76,9 +78,10 @@ export default function FAQPage() {
                     <div key={i} className="border border-hairline rounded-lg overflow-hidden transition-colors duration-200" style={{ borderColor: isOpen ? "#42a8f240" : undefined, background: isOpen ? "#f8fafc" : undefined }}>
                       <button
                         onClick={() => setOpenIndex(isOpen ? null : i)}
+                        aria-expanded={isOpen}
                         className="w-full flex items-start justify-between gap-4 px-5 py-5 text-left group min-h-[52px]"
                       >
-                        <span className="text-sm font-bold leading-snug transition-colors duration-200" style={{ color: isOpen ? "#42a8f2" : "#0f172a" }}>
+                        <span className="text-sm font-bold leading-snug transition-colors duration-200" style={{ color: isOpen ? "#1567a8" : "#0f172a" }}>
                           {item.question}
                         </span>
                         <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center border rounded-full transition-all duration-200" style={{
@@ -116,19 +119,13 @@ export default function FAQPage() {
                 <div className="flex flex-col sm:flex-row gap-3 shrink-0">
                   <a
                     href={`tel:${contactInfo.phone}`}
-                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center"
-                    style={{ background: "#0f172a", color: "#fff" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#42a8f2" }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "#0f172a" }}
+                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center bg-ink text-white hover:bg-brand"
                   >
                     {t.pages.faqPage.contact.call}
                   </a>
                   <Link
                     href="/contact/"
-                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center"
-                    style={{ border: "1px solid #0f172a", color: "#0f172a" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#42a8f2"; e.currentTarget.style.color = "#42a8f2" }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#0f172a"; e.currentTarget.style.color = "#0f172a" }}
+                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wide rounded-full transition-colors text-center border border-ink text-ink hover:border-brand hover:text-brand-ink"
                   >
                     {t.pages.faqPage.contact.message}
                   </Link>

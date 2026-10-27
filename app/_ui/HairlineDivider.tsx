@@ -65,7 +65,7 @@ export default function HairlineDivider({
     : "bg-hairline";
   const motion =
     draw
-      ? "transition-transform duration-[900ms] cubic-bezier(0.16, 1, 0.3, 1) opacity-0"
+      ? "transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0"
       : "";
 
   return (

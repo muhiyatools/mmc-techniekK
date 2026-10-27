@@ -12,7 +12,7 @@ export const translations = {
       requestQuote: "Offerte aanvragen",
     },
     hero: {
-      badge: "Oudewater Â· Sinds 2008",
+      badge: "Oudewater · Sinds 2008",
       region: "Regio Utrecht & omgeving",
       title: "Precisie in Verduurzaming.",
       titleParts: ["Precisie", "in ", "Verduurzaming."],
@@ -333,7 +333,7 @@ export const translations = {
       requestQuote: "Request a quote",
     },
     hero: {
-      badge: "Oudewater Â· Since 2008",
+      badge: "Oudewater · Since 2008",
       region: "Utrecht Region & surroundings",
       title: "Precision in Sustainability.",
       titleParts: ["Precision", "in ", "Sustainability."],

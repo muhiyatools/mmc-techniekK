@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../_hooks/useFocusTrap";
 
 const IconX = () => (
   <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +17,17 @@ interface MobileSheetProps {
 }
 
 export default function MobileSheet({ open, onClose, title, children }: MobileSheetProps) {
-  const sheetRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useFocusTrap(open);
+  const lastFocused = useRef<HTMLElement | null>(null);
+
+  // Save the trigger element on open, restore focus to it on close
+  useEffect(() => {
+    if (open) {
+      lastFocused.current = document.activeElement as HTMLElement;
+    } else {
+      lastFocused.current?.focus?.();
+    }
+  }, [open]);
 
   // Close on backdrop click
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -49,6 +60,7 @@ export default function MobileSheet({ open, onClose, title, children }: MobileSh
       />
       <div
         ref={sheetRef}
+        tabIndex={-1}
         className={`mobile-sheet md:hidden${open ? " open" : ""}`}
         role="dialog"
         aria-modal="true"

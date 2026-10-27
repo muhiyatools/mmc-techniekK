@@ -14,7 +14,7 @@ export default function BrandLogo({ brand, imageSrc, height = 28, className }: B
 
   if (!imageSrc || failed) {
     return (
-      <span className={`text-xs font-bold uppercase tracking-wider text-brand ${className ?? ""}`}>
+      <span className={`text-xs font-bold uppercase tracking-wider text-brand-ink ${className ?? ""}`}>
         {brand}
       </span>
     );

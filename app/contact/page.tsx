@@ -132,10 +132,10 @@ function ContactForm() {
       <div className="md:hidden min-h-screen bg-bg flex flex-col pb-12">
         {/* Compact hero */}
         <div className="pt-[104px] px-5 pb-6">
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand mb-3 block">{t.nav.contact}</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-ink mb-3 block">{t.nav.contact}</span>
           <h1 className="font-display text-[clamp(1.75rem,8vw,2.5rem)] font-extrabold leading-[0.9] tracking-tighter text-ink mb-3">
             {t.contact.title.split(" ").map((word, i) => (
-              <span key={i} className={i === t.contact.title.split(" ").length - 1 ? "text-brand" : ""}>{word} </span>
+              <span key={i} className={i === t.contact.title.split(" ").length - 1 ? "text-brand-ink" : ""}>{word} </span>
             ))}
           </h1>
           <p className="text-sm text-muted leading-relaxed">{t.contact.description}</p>
@@ -178,12 +178,12 @@ function ContactForm() {
               <form onSubmit={handleEmailSubmit} className="p-5 space-y-6">
                 <div>
                   <label htmlFor="name-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.name}</label>
-                  <input id="name-m" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Volledige naam" className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
+                  <input id="name-m" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={language === "nl" ? "Volledige naam" : "Full name"} className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="email-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.email}</label>
-                    <input id="email-m" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="uw@email.nl" className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
+                    <input id="email-m" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={language === "nl" ? "uw@email.nl" : "you@email.com"} className="w-full px-4 py-3.5 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" />
                   </div>
                   <div>
                     <label htmlFor="phone-m" className="block text-[10px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.phone}</label>
@@ -223,7 +223,7 @@ function ContactForm() {
                       <Image src={resolveProductImage(selectedProduct.image)} alt={selectedProduct.name} fill className="object-cover" sizes="56px" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-brand mb-0.5">Geselecteerd</p>
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-brand-ink mb-0.5">{language === "nl" ? "Geselecteerd" : "Selected"}</p>
                       <p className="text-xs font-bold text-ink truncate">{selectedProduct.name}</p>
                       <p className="text-[11px] text-muted">{selectedProduct.brand} · {selectedProduct.price ?? "Prijs op aanvraag"}</p>
                     </div>
@@ -295,12 +295,11 @@ function ContactForm() {
       <div className="hidden md:block">
         {/* Immersive Header */}
         <section className="pt-[120px] lg:pt-[180px] pb-12 bg-bg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <Reveal>
               <div className="flex items-center gap-3 mb-6">
                 <span className="w-10 h-px bg-brand" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand">{t.nav.contact}</span>
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-ink">{t.nav.contact}</span>
               </div>
             </Reveal>
             <div className="grid lg:grid-cols-2 gap-12 items-end">
@@ -308,7 +307,7 @@ function ContactForm() {
                 <Reveal delay={100}>
                   <h1 className="font-display text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-[0.9] tracking-tighter text-ink mb-6">
                     {t.contact.title.split(" ").map((word, i) => (
-                      <span key={i} className={i === t.contact.title.split(" ").length - 1 ? "text-brand" : ""}>{word} </span>
+                      <span key={i} className={i === t.contact.title.split(" ").length - 1 ? "text-brand-ink" : ""}>{word} </span>
                     ))}
                   </h1>
                 </Reveal>
@@ -321,12 +320,12 @@ function ContactForm() {
               <div className="hidden lg:flex flex-col items-end gap-4">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-12 h-12 rounded-full border-4 border-base bg-concrete overflow-hidden relative">
+                    <div key={i} className="w-12 h-12 rounded-full border-4 border-bg bg-concrete overflow-hidden relative">
                       <Image src={`/images/partners/partner-${i}.png`} alt="Client" fill className="object-cover grayscale" />
                     </div>
                   ))}
                 </div>
-                <p className="text-xs font-bold text-ink/40 uppercase tracking-widest">Vertrouwd door 2500+ huishoudens</p>
+                <p className="text-xs font-bold text-ink/40 uppercase tracking-widest">{language === "nl" ? "Vertrouwd door 2500+ huishoudens" : "Trusted by 2500+ households"}</p>
               </div>
             </div>
           </div>
@@ -337,8 +336,8 @@ function ContactForm() {
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <div className="grid lg:grid-cols-12 gap-16 items-start">
               <Reveal delay={300} className="lg:col-span-8">
-                <div className="bg-surface border-2 border-brand/20 rounded-[2.5rem] shadow-2xl shadow-brand/10 overflow-hidden relative">
-                  <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-aurora-1 via-brand to-aurora-2 animate-[aurora-drift_18s_linear_infinite] bg-[length:200%_100%]" />
+                <div className="bg-surface border border-hairline rounded-[2.5rem] overflow-hidden relative">
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-aurora-1 via-brand to-aurora-2" />
                   {submitted ? (
                     <div className="p-12 lg:p-20 text-center py-24">
                       <div className="w-20 h-20 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center mx-auto mb-8">
@@ -356,16 +355,16 @@ function ContactForm() {
                       <div className="mb-12">
                         <div className="flex items-center gap-3 mb-6">
                           <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                          <h4 className="text-sm font-bold text-ink uppercase tracking-widest">1. Contactgegevens</h4>
+                          <h4 className="text-sm font-bold text-ink uppercase tracking-widest">{language === "nl" ? "1. Contactgegevens" : "1. Contact details"}</h4>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-6">
                           <div className="sm:col-span-2">
                             <label htmlFor="name-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.name}</label>
-                            <input id="name-d" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="Volledige naam" />
+                            <input id="name-d" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder={language === "nl" ? "Volledige naam" : "Full name"} />
                           </div>
                           <div>
                             <label htmlFor="email-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.email}</label>
-                            <input id="email-d" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder="uw@email.nl" />
+                            <input id="email-d" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-5 py-4 border border-ink/20 bg-concrete/20 text-ink text-sm rounded-2xl focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all placeholder:text-muted/30" placeholder={language === "nl" ? "uw@email.nl" : "you@email.com"} />
                           </div>
                           <div>
                             <label htmlFor="phone-d" className="block text-[11px] font-bold uppercase tracking-[0.15em] text-ink mb-2">{t.contact.form.phone}</label>
@@ -377,7 +376,7 @@ function ContactForm() {
                       <div className="mb-12">
                         <div className="flex items-center gap-3 mb-6">
                           <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                          <h4 className="text-sm font-bold text-ink uppercase tracking-widest">2. Projectdetails</h4>
+                          <h4 className="text-sm font-bold text-ink uppercase tracking-widest">{language === "nl" ? "2. Projectdetails" : "2. Project details"}</h4>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-6 mb-6">
                           <div>
@@ -413,9 +412,9 @@ function ContactForm() {
                                 <Image src={resolveProductImage(selectedProduct.image)} alt={selectedProduct.name} fill className="object-cover" sizes="96px" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Geselecteerd product</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-ink mb-1">{language === "nl" ? "Geselecteerd product" : "Selected product"}</p>
                                 <p className="text-lg font-bold text-ink mb-1 truncate">{selectedProduct.name}</p>
-                                <p className="text-sm text-muted font-medium">{selectedProduct.brand} · <span className="text-brand">{selectedProduct.price ?? "Prijs op aanvraag"}</span></p>
+                                <p className="text-sm text-muted font-medium">{selectedProduct.brand} · <span className="text-brand-ink">{selectedProduct.price ?? "Prijs op aanvraag"}</span></p>
                               </div>
                             </div>
                           </Reveal>
@@ -489,7 +488,7 @@ function ContactForm() {
                         </div>
                         <div>
                           <p className="text-[10px] font-bold uppercase tracking-widest text-muted mb-1">{item.label}</p>
-                          {item.href ? <a href={item.href} className="text-base font-bold text-ink hover:text-brand transition-colors">{item.value}</a> : <p className="text-base font-bold text-ink">{item.value}</p>}
+                          {item.href ? <a href={item.href} className="text-base font-bold text-ink hover:text-brand-ink transition-colors">{item.value}</a> : <p className="text-base font-bold text-ink">{item.value}</p>}
                         </div>
                       </div>
                     ))}

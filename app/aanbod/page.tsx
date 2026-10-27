@@ -11,51 +11,9 @@ import BrandLogo from "../_ui/BrandLogo";
 import { resolveProductImage } from "@/lib/images";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import dynamic from "next/dynamic";
+import { serviceIcons } from "../_ui/serviceIcons";
+import { renderRich } from "../_ui/richText";
 
-// ── Service icons ──
-const serviceIcons: Record<string, React.ReactNode> = {
-  airconditioning: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 3v3m0 12v3M3 12h3m12 0h3m-4.22-6.78-2.12 2.12M10.34 13.66l-2.12 2.12M18.78 18.78l-2.12-2.12M7.46 7.46 5.34 5.34M12 9a3 3 0 100 6 3 3 0 000-6z" />
-    </svg>
-  ),
-  zonnepanelen: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-    </svg>
-  ),
-  batterijopslag: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-1.5a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 14.25v1.5A2.25 2.25 0 003.75 18zM3.75 6h15A2.25 2.25 0 0121 8.25v1.5a2.25 2.25 0 01-2.25 2.25h-15A2.25 2.25 0 011.5 9.75v-1.5A2.25 2.25 0 013.75 6z" />
-    </svg>
-  ),
-  warmtepompen: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 18a3.75 3.75 0 00.495-7.468 5.99 5.99 0 00-1.925 3.547 5.975 5.975 0 01-2.133-1.001A3.75 3.75 0 0012 18z" />
-    </svg>
-  ),
-  vloerverwarming: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75" />
-    </svg>
-  ),
-  "meterkast-liften": (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-    </svg>
-  ),
-  onderhoud: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437" />
-    </svg>
-  ),
-  renovaties: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
-    </svg>
-  ),
-};
 
 import PriceRangeSlider, { SLIDER_MIN, SLIDER_MAX, SLIDER_STEP } from "./_components/PriceRangeSlider";
 import ProductCard from "./_components/ProductCard";
@@ -65,7 +23,7 @@ const SolarSection = dynamic(() => import("./_components/SolarSection"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-[600px] rounded-[2.5rem] bg-concrete animate-pulse flex items-center justify-center border-2 border-hairline/50">
-      <span className="text-sm text-muted font-bold uppercase tracking-wider">Laden...</span>
+      <span className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin motion-reduce:animate-none" aria-label="Laden" />
     </div>
   )
 });
@@ -74,7 +32,7 @@ const MaintenancePlanner = dynamic(() => import("./_components/MaintenancePlanne
   ssr: false,
   loading: () => (
     <div className="w-full h-[600px] rounded-[2.5rem] bg-concrete animate-pulse flex items-center justify-center border-2 border-hairline/50">
-      <span className="text-sm text-muted font-bold uppercase tracking-wider">Laden...</span>
+      <span className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin motion-reduce:animate-none" aria-label="Laden" />
     </div>
   )
 });
@@ -118,7 +76,7 @@ function Sidebar({
                 onClick={() => onCategorySelect(service.slug)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm rounded-xl border transition-all duration-200 ${
                   activeSlug === service.slug
-                    ? "bg-brand/8 text-brand font-semibold border-brand/20"
+                    ? "bg-brand/8 text-brand-ink font-semibold border-brand/20"
                     : "text-ink font-medium border-transparent hover:bg-concrete"
                 }`}
               >
@@ -286,14 +244,14 @@ function AanbodContent() {
           <Reveal>
             <div className="flex items-center gap-3 mb-4 md:mb-5">
               <span className="w-2.5 h-2.5 rounded-full bg-brand shadow-sm shadow-brand/20" />
-              <span className="text-label text-muted font-black tracking-[0.25em]">{t.pages.aanbod.label}</span>
+              <span className="text-label text-muted font-extrabold tracking-[0.25em]">{t.pages.aanbod.label}</span>
             </div>
           </Reveal>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 md:gap-10">
             <Reveal delay={60}>
-              <h1 className="font-display font-black text-[clamp(2.5rem,6vw,6rem)] leading-[0.85] tracking-[-0.04em] text-ink max-w-2xl"
-                dangerouslySetInnerHTML={{ __html: t.pages.aanbod.title.replace(/<brand>/g, '<span class="text-brand">').replace(/<\/brand>/g, '</span>') }}
-              />
+              <h1 className="font-display font-extrabold text-[clamp(2.5rem,6vw,6rem)] leading-[0.85] tracking-[-0.04em] text-ink max-w-2xl">
+                {renderRich(t.pages.aanbod.title)}
+              </h1>
             </Reveal>
             <Reveal delay={120}>
               <p className="text-base lg:text-xl text-muted/80 font-medium leading-relaxed max-w-sm sm:text-right">
@@ -314,7 +272,7 @@ function AanbodContent() {
                   role="tab"
                   aria-selected={activeSlug === service.slug}
                   onClick={() => handleCategorySelect(service.slug)}
-                  className={`relative flex items-center gap-3 px-5 py-3 text-[12px] font-black uppercase tracking-wider whitespace-nowrap touch-target transition-all shrink-0 rounded-xl border ${
+                  className={`relative flex items-center gap-3 px-5 py-3 text-[12px] font-extrabold uppercase tracking-wider whitespace-nowrap touch-target transition-all shrink-0 rounded-xl border ${
                     activeSlug === service.slug
                       ? "bg-brand text-white border-brand shadow-lg shadow-brand/20"
                       : "text-muted border-hairline hover:text-ink hover:bg-concrete"
@@ -335,13 +293,13 @@ function AanbodContent() {
         <aside className="hidden lg:block">
           <div className="sidebar-panel">
             <div className="mb-14">
-              <h3 className="text-2xl font-display font-black text-ink uppercase tracking-tight mb-8">{t.pages.aanbod.sidebar.catalog}</h3>
+              <h3 className="text-2xl font-display font-extrabold text-ink uppercase tracking-tight mb-8">{t.pages.aanbod.sidebar.catalog}</h3>
               <div className="minimal-list space-y-3">
                 {services.map(s => (
                   <div key={s.slug}>
                     <button 
                       onClick={() => handleCategorySelect(s.slug)}
-                      className={`minimal-btn text-lg py-2 ${activeSlug === s.slug ? 'active scale-105 origin-left' : 'hover:translate-x-1'} transition-all duration-300 font-black uppercase tracking-wide`}
+                      className={`minimal-btn text-lg py-2 ${activeSlug === s.slug ? 'active scale-105 origin-left' : 'hover:translate-x-1'} transition-all duration-300 font-extrabold uppercase tracking-wide`}
                     >
                       <span className="icon scale-125">{serviceIcons[s.slug]}</span>
                       <span>{serviceTitleMap[s.slug]}</span>
@@ -369,10 +327,10 @@ function AanbodContent() {
               <>
                 <div className="h-px bg-hairline mb-14" />
                 <div className="mb-14">
-                  <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.budgetRange}</p>
+                  <p className="text-micro text-muted font-extrabold mb-6">{t.pages.aanbod.sidebar.budgetRange}</p>
                   {showFilters && <PriceRangeSlider value={priceRange} onChange={setPriceRange} />}
                   {!showFilters && (
-                    <div className="flex items-center gap-5 text-sm font-black text-ink mb-2">
+                    <div className="flex items-center gap-5 text-sm font-extrabold text-ink mb-2">
                       <span>€0</span>
                       <div className="flex-1 h-1 bg-hairline relative rounded-full">
                         <div className="absolute top-1/2 left-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand" />
@@ -384,7 +342,7 @@ function AanbodContent() {
 
                 {availableBrands.length > 0 && (
                   <div>
-                    <p className="text-micro text-muted font-black mb-6">{t.pages.aanbod.sidebar.manufacturer}</p>
+                    <p className="text-micro text-muted font-extrabold mb-6">{t.pages.aanbod.sidebar.manufacturer}</p>
                     <div className="flex flex-wrap gap-3">
                       {availableBrands.map(brand => (
                         <button 
@@ -412,22 +370,22 @@ function AanbodContent() {
             <>
               <div className="flex items-center justify-between mb-8 md:mb-12 border-b-2 border-hairline/50 pb-6 md:pb-8">
                 <div className="flex items-center gap-5">
-                  <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-black text-ink uppercase tracking-widest ml-2">
+                  <p className="shrink-0 whitespace-nowrap text-[13px] md:text-sm font-extrabold text-ink uppercase tracking-widest ml-2">
                     {filteredProducts.length} {t.pages.aanbod.results}
                   </p>
                   <div className="h-5 md:h-6 w-px bg-hairline shrink-0" />
                   <button
                     onClick={() => setMobileFilterOpen(true)}
-                    className="lg:hidden flex items-center gap-2 px-4 py-2 border-2 border-hairline rounded-full text-[11px] font-black text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
+                    className="lg:hidden flex items-center gap-2 px-4 py-2 border-2 border-hairline rounded-full text-[11px] font-extrabold text-ink uppercase tracking-wider hover:border-brand hover:text-brand transition-colors shrink-0"
                     aria-label={t.pages.aanbod.filterTitle}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 a2 2 0 110-4m0 4v2m0-6V4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                     </svg>
                     {t.pages.aanbod.filterTitle}
                   </button>
-                  <p className="hidden lg:block text-[11px] text-muted/60 font-black uppercase tracking-widest">
-                    {t.pages.aanbod.certifiedInstallation} · <span className="text-brand">{t.pages.aanbod.todayQuote}</span>
+                  <p className="hidden lg:block text-[11px] text-muted/60 font-extrabold uppercase tracking-widest">
+                    {t.pages.aanbod.certifiedInstallation} · <span className="text-brand-ink">{t.pages.aanbod.todayQuote}</span>
                   </p>
                 </div>
               </div>
@@ -441,6 +399,7 @@ function AanbodContent() {
                     brandImages={brandImages}
                     requestQuoteLabel={t.pages.aanbod.requestQuote}
                     todayQuoteLabel={t.pages.aanbod.todayQuote}
+                    priceOnRequestLabel={t.pages.diensten.priceOnRequest}
                   />
                 ))}
               </div>
@@ -452,8 +411,8 @@ function AanbodContent() {
                   <Image src={service.image} alt={serviceTitleMap[service.slug]} fill className="object-cover opacity-50 group-hover:scale-110 group-hover:opacity-70 transition-all duration-[1.5s] ease-out" />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
-                    <p className="text-micro text-brand font-black mb-3">{t.pages.aanbod.dienst}</p>
-                    <h3 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500">{serviceTitleMap[service.slug]}</h3>
+                    <p className="text-micro text-brand font-extrabold mb-3">{t.pages.aanbod.dienst}</p>
+                    <h3 className="font-display font-extrabold text-2xl md:text-3xl text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-500">{serviceTitleMap[service.slug]}</h3>
                   </div>
                 </button>
               ))}
@@ -467,7 +426,7 @@ function AanbodContent() {
         onClose={() => setMobileFilterOpen(false)}
         title={t.pages.aanbod.filterTitle}
       >
-        <div className="overflow-y-auto max-h-[75vh] pb-10 px-6">
+        <div className="overflow-y-auto max-h-[75dvh] pb-10 px-6">
           <Sidebar
             activeSlug={activeSlug}
             priceRange={priceRange}
