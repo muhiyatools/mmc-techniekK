@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag, updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { slugify } from "@/lib/slugify";
 import { requireAction } from "./auth";
 import { CONTENT_TYPES, isContentKey, type FieldDef } from "./content-types";
@@ -94,6 +94,18 @@ function toRow(fields: FieldDef[], data: Payload) {
 
 const ids = (v: unknown) => (Array.isArray(v) ? v.map((x) => str(x, 64)).filter(Boolean) : []);
 
+/**
+ * Expire a content tag so the public site rebuilds with the edit on its next request.
+ *
+ * The readers are wrapped in `unstable_cache`, whose tags are cleared by
+ * `revalidateTag`, not by `updateTag` (that one only covers `fetch` / `use cache`
+ * tags). `expire: 0` is the immediate, blocking form: the owner saves, opens the
+ * site, and sees their change.
+ */
+function invalidate(tag: string) {
+  revalidateTag(tag, { expire: 0 });
+}
+
 export async function saveContent(key: string, id: string | null, data: Payload): Promise<SaveResult> {
   if (!isContentKey(key)) return { ok: false, error: "Onbekend type." };
   const type = CONTENT_TYPES[key];
@@ -127,7 +139,7 @@ export async function saveContent(key: string, id: string | null, data: Payload)
     }
   }
 
-  updateTag(type.tag);
+  invalidate(type.tag);
   return { ok: true, id: rowId };
 }
 
@@ -140,7 +152,7 @@ export async function deleteContent(key: string, id: string): Promise<SaveResult
     if (error.code === "23503") return { ok: false, error: "Kan niet verwijderen: er hangt nog iets aan (bijvoorbeeld producten bij deze dienst). Zet het op concept." };
     return { ok: false, error: error.message };
   }
-  updateTag(type.tag);
+  invalidate(type.tag);
   return { ok: true, id };
 }
 
@@ -149,7 +161,7 @@ export async function reorderContent(key: string, orderedIds: string[]) {
   const type = CONTENT_TYPES[key];
   const { db } = await requireAction("editor");
   await Promise.all(orderedIds.slice(0, 500).map((id, i) => db.from(type.table as "pages").update({ sort_order: (i + 1) * 10 }).eq("id", id)));
-  revalidateTag(type.tag, "max");
+  invalidate(type.tag);
   return { ok: true };
 }
 
@@ -158,6 +170,6 @@ export async function setContentStatus(key: string, id: string, status: "draft" 
   const type = CONTENT_TYPES[key];
   const { db } = await requireAction("editor");
   const { error } = await db.from(type.table as "pages").update({ status }).eq("id", id);
-  if (!error) updateTag(type.tag);
+  if (!error) invalidate(type.tag);
   return { ok: !error };
 }

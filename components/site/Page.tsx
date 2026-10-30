@@ -115,8 +115,12 @@ export function ProductCard({ lang, product, priority, image = product.media }: 
             <Photo media={image} lang={lang} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw" priority={priority} decorative fit="contain" />
           </div>
         ) : (
-          <div className="absolute inset-0 grid place-items-center bg-paper text-line-strong">
-            <Icon name={product.service.slug as never} size={56} strokeWidth={1.25} />
+          // No product shot yet: a spec plate rather than an empty box.
+          <div className="absolute inset-0 grid place-items-center bg-paper [background-image:repeating-linear-gradient(135deg,rgb(15_27_38/0.035)_0_1px,transparent_1px_9px)]">
+            <span className="flex flex-col items-center gap-2.5 px-6 text-center">
+              <Icon name={product.service.slug as never} size={26} strokeWidth={1.25} className="text-blue/70" />
+              <span className="text-[19px] font-[650] leading-tight text-ink/75 [font-stretch:112%]">{product.brands[0]?.name ?? product.name}</span>
+            </span>
           </div>
         )}
         <span className="t-mono spec-tag absolute left-3 top-3 border border-line">{t(product.service.title, lang)}</span>

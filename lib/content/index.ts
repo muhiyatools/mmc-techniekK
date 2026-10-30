@@ -27,9 +27,16 @@ type Db = typeof publicDb;
 /**
  * Run a read against the cached public client, or (in draft mode) live against the
  * signed-in editor's session so drafts show up in the preview.
+ *
+ * The one-minute window is a safety net, not the invalidation mechanism: admin
+ * saves expire the matching tag immediately (see lib/admin/content-actions.ts), so
+ * an edit is visible on the next request. The window only covers writes that never
+ * went through the app, such as a bulk import straight into Supabase.
  */
+export const REVALIDATE_SECONDS = 60;
+
 function cached<A extends unknown[], R>(key: string, tags: string[], fn: (db: Db, ...args: A) => Promise<R>) {
-  const live = unstable_cache((...args: A) => fn(publicDb, ...args), [key], { tags: [...tags, TAGS.media], revalidate: 3600 });
+  const live = unstable_cache((...args: A) => fn(publicDb, ...args), [key], { tags: [...tags, TAGS.media], revalidate: REVALIDATE_SECONDS });
   return cache(async (...args: A): Promise<R> => {
     const { isEnabled } = await draftMode();
     if (isEnabled) return fn((await createClient()) as unknown as Db, ...args);

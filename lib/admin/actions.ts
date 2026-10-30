@@ -2,7 +2,7 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import sharp from "sharp";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/slugify";
 import { SITE_URL } from "@/lib/site";
@@ -105,7 +105,7 @@ export async function uploadMedia(form: FormData): Promise<ActionResult<{ id: st
     await db.storage.from("media").remove([path]);
     return { ok: false, error: error.message };
   }
-  updateTag("media");
+  revalidateTag("media", { expire: 0 });
   return { ok: true, data: { id: data.id } };
 }
 
@@ -127,7 +127,7 @@ export async function updateMedia(id: string, alt: { nl: string; en?: string }, 
   const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
   const { error } = await db.from("media").update({ alt: en ? { nl, en } : { nl }, focal_x: clamp(focal.x), focal_y: clamp(focal.y) }).eq("id", id);
   if (error) return { ok: false, error: error.message };
-  updateTag("media");
+  revalidateTag("media", { expire: 0 });
   return { ok: true };
 }
 
@@ -142,7 +142,7 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
   const { error } = await db.from("media").delete().eq("id", id);
   if (error) return { ok: false, error: error.message };
   await db.storage.from("media").remove([row.path]);
-  updateTag("media");
+  revalidateTag("media", { expire: 0 });
   return { ok: true };
 }
 
@@ -153,7 +153,7 @@ export async function saveSetting(key: string, value: unknown): Promise<ActionRe
   if (!/^[a-z_]+$/.test(key)) return { ok: false, error: "Ongeldige sleutel" };
   const { error } = await db.from("site_settings").upsert({ key, value: value as never });
   if (error) return { ok: false, error: error.message };
-  updateTag("settings");
+  revalidateTag("settings", { expire: 0 });
   return { ok: true };
 }
 
@@ -162,7 +162,7 @@ export async function saveHomeSection(key: string, content: unknown): Promise<Ac
   if (!/^[a-z_]+$/.test(key)) return { ok: false, error: "Ongeldige sleutel" };
   const { error } = await db.from("home_sections").upsert({ key, content: content as never });
   if (error) return { ok: false, error: error.message };
-  updateTag("home");
+  revalidateTag("home", { expire: 0 });
   return { ok: true };
 }
 
