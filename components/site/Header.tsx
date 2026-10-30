@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { href, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { MobileMenu } from "./MobileMenu";
 import type { NavModel } from "./nav";
 
@@ -45,14 +46,12 @@ export function Header({ lang, nav }: { lang: Locale; nav: NavModel }) {
   }
 
   const isActive = (path: string) => bare === path || bare.startsWith(`${path}/`);
-  const other: Locale = lang === "nl" ? "en" : "nl";
 
   const links = [
-    { path: "/aanbod", label: d.nav.catalog },
-    { path: "/projecten", label: d.nav.projects },
     { path: "/zakelijk", label: d.nav.business },
     { path: "/over-ons", label: d.nav.about },
     { path: "/veelgestelde-vragen", label: d.nav.faq },
+    { path: "/contact", label: d.nav.contact },
   ];
 
   return (
@@ -68,7 +67,7 @@ export function Header({ lang, nav }: { lang: Locale; nav: NavModel }) {
           </Link>
 
           <nav aria-label={d.nav.main} className="hidden items-center gap-0.5 lg:flex">
-            <ServicesMenu lang={lang} nav={nav} active={isActive("/diensten")} />
+            <ServicesMenu lang={lang} nav={nav} active={isActive("/diensten") || bare === "/aanbod"} />
             {links.map((l) => (
               <Link
                 key={l.path}
@@ -81,19 +80,9 @@ export function Header({ lang, nav }: { lang: Locale; nav: NavModel }) {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link
-              href={href(other, bare)}
-              hrefLang={other}
-              lang={other}
-              className="t-mono hidden rounded-full px-2 py-2 text-graphite transition-colors hover:text-ink lg:inline-flex"
-              aria-label={d.nav.switchTo}
-            >
-              <span className={lang === "nl" ? "text-ink" : ""}>NL</span>
-              <span className="px-1">/</span>
-              <span className={lang === "en" ? "text-ink" : ""}>EN</span>
-            </Link>
-            <a href={`tel:${nav.phone}`} className="hidden items-center gap-2 rounded-full px-2 py-2 text-[15px] font-semibold text-ink transition-colors hover:text-blue xl:flex">
+          <div className="flex items-center gap-2 sm:gap-3.5">
+            <LanguageSwitch lang={lang} bare={bare} className="hidden sm:inline-flex" />
+            <a href={`tel:${nav.phone}`} className="hidden items-center gap-2 rounded-full px-1 py-2 text-[15px] font-semibold text-ink transition-colors hover:text-blue xl:flex">
               <Icon name="phone" />
               {nav.phoneDisplay}
             </a>
@@ -102,9 +91,6 @@ export function Header({ lang, nav }: { lang: Locale; nav: NavModel }) {
               <span className="knob">
                 <Icon name="arrow" size={16} />
               </span>
-            </Link>
-            <Link href={href(other, bare)} hrefLang={other} className="icon-btn t-mono lg:hidden" aria-label={d.nav.switchTo}>
-              {other.toUpperCase()}
             </Link>
             <button
               type="button"
@@ -147,33 +133,23 @@ function ServicesMenu({ lang, nav, active }: { lang: Locale; nav: NavModel; acti
         type="button"
         aria-expanded={open}
         aria-controls="services-menu"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen((o) => (window.matchMedia("(hover: hover)").matches ? true : !o))}
         onMouseEnter={() => setOpen(true)}
         className={`flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[15px] font-medium transition-colors hover:bg-paper ${active ? "text-blue-deep" : "text-ink"}`}
       >
         {d.nav.services}
         <Icon name="chevronDown" size={16} className={`transition-transform duration-[var(--dur)] ${open ? "rotate-180" : ""}`} />
       </button>
-      <div
-        id="services-menu"
-        hidden={!open}
-        className="absolute left-0 top-full w-[560px] pt-2"
-      >
-        <ul className="grid grid-cols-2 gap-1 rounded-[var(--radius-md)] border border-line bg-white p-2 shadow-[var(--shadow-float)]">
+      <div id="services-menu" hidden={!open} className="absolute left-0 top-full w-[420px] pt-2">
+        <ul className="rounded-[var(--radius-md)] border border-line bg-white p-2 shadow-[var(--shadow-float)]">
           {nav.services.map((s) => (
             <li key={s.slug}>
-              <Link
-                href={href(lang, `/diensten/${s.slug}`)}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-[10px] p-3 transition-colors hover:bg-paper"
-              >
-                <span className="grid size-10 flex-none place-items-center rounded-full bg-paper text-blue">
-                  <Icon name={s.slug as never} size={20} />
+              <Link href={s.href} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-[10px] px-3 py-2.5 transition-colors hover:bg-paper">
+                <span className="grid size-9 flex-none place-items-center rounded-full bg-paper text-blue">
+                  <Icon name={s.slug as never} size={18} />
                 </span>
-                <span className="flex flex-col">
-                  <span className="text-[15px] font-semibold text-ink">{s.title}</span>
-                  <span className="t-mono text-graphite">{s.kicker}</span>
-                </span>
+                <span className="text-[15px] font-semibold text-ink">{s.title}</span>
+                {s.hasProducts && <Icon name="arrowUpRight" size={15} className="ml-auto text-graphite" />}
               </Link>
             </li>
           ))}

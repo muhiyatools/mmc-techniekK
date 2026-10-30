@@ -9,7 +9,6 @@ export function Footer({ lang, nav, settings, legal }: { lang: Locale; nav: NavM
   const d = getDict(lang);
   const c = settings.contact;
   const company = [
-    { path: "/projecten", label: d.nav.projects },
     { path: "/zakelijk", label: d.nav.business },
     { path: "/over-ons", label: d.nav.about },
     { path: "/aanbod", label: d.nav.catalog },

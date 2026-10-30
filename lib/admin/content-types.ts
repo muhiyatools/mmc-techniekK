@@ -12,20 +12,13 @@ export type FieldDef =
   | { key: string; kind: "steps"; label: string }
   | { key: string; kind: "variants"; label: string; hint?: string }
   | { key: string; kind: "media"; label: string; hint?: string }
-  | { key: string; kind: "gallery"; label: string; table: "project_images" | "product_images"; fk: "project_id" | "product_id" }
+  // `gallery` syncs a product's join table; the homepage editor reuses it for an array of media ids.
+  | { key: string; kind: "gallery"; label: string; table: "product_images" | "project_images"; fk: "product_id" | "project_id" }
   | { key: string; kind: "relation"; label: string; source: "services"; nullable?: boolean }
-  | {
-      key: string;
-      kind: "relationMulti";
-      label: string;
-      source: "services" | "brands";
-      table: "product_brands" | "project_services";
-      fk: "product_id" | "project_id";
-      other: "brand_id" | "service_id";
-    };
+  | { key: string; kind: "relationMulti"; label: string; source: "brands"; table: "product_brands"; fk: "product_id"; other: "brand_id" };
 
 export type ContentType = {
-  table: "services" | "products" | "projects" | "brands" | "reviews" | "team_members" | "faqs" | "pages";
+  table: "services" | "products" | "brands" | "reviews" | "team_members" | "faqs" | "pages";
   label: string;
   singular: string;
   icon: IconName;
@@ -95,40 +88,6 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
       { key: "price_note", kind: "i18n", label: "Toelichting bij de prijs" },
       { key: "media_id", kind: "media", label: "Hoofdfoto" },
       { key: "gallery", kind: "gallery", label: "Meer foto's", table: "product_images", fk: "product_id" },
-      STATUS,
-    ],
-  },
-  projecten: {
-    table: "projects",
-    label: "Projecten",
-    singular: "project",
-    icon: "folder",
-    tag: "projects",
-    titleKey: "title",
-    publicPath: (r) => `/projecten/${r.slug}`,
-    sortable: true,
-    fields: [
-      { key: "title", kind: "i18n", label: "Titel", required: true },
-      { key: "slug", kind: "slug", label: "URL", from: "title" },
-      { key: "summary", kind: "i18n", label: "Korte omschrijving", multiline: true },
-      { key: "body", kind: "i18n", label: "Wat we deden", multiline: true, markdown: true },
-      { key: "place", kind: "text", label: "Plaats", placeholder: "Oudewater" },
-      { key: "year", kind: "number", label: "Jaar", min: 2008, max: 2100 },
-      {
-        key: "sector",
-        kind: "select",
-        label: "Type",
-        options: [
-          { value: "particulier", label: "Woning" },
-          { value: "utiliteit", label: "Utiliteit" },
-          { value: "retail", label: "Retail" },
-          { value: "nieuwbouw", label: "Nieuwbouw" },
-        ],
-      },
-      { key: "services", kind: "relationMulti", label: "Diensten", source: "services", table: "project_services", fk: "project_id", other: "service_id" },
-      { key: "featured", kind: "boolean", label: "Uitgelicht op de homepage" },
-      { key: "cover_media_id", kind: "media", label: "Hoofdfoto" },
-      { key: "gallery", kind: "gallery", label: "Meer foto's", table: "project_images", fk: "project_id" },
       STATUS,
     ],
   },

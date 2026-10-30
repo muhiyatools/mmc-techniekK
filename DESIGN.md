@@ -117,12 +117,22 @@ Animate transform and opacity only. Never animate width/height/top/left.
 - Hairline borders carry the depth, not shadows.
 - Imagery is documentary-honest (real installations) and slightly cool-balanced; no stock energy-company hero shots.
 
+## Information architecture
+
+There is no separate project showroom. Our work lives in one place: the Instagram profile, embedded as it is.
+
+- **Navigation** — Diensten (dropdown), Zakelijk, Over ons, Vragen, Contact. No "Products" item: the catalogue is reached through the services that have a range.
+- **Service links** — a service with products links to `/aanbod?categorie=<slug>`; a service without products links to its own page. One rule, one helper (`lib/service-links.ts`), used by the header, the mobile sheet and the homepage list. Those product-linked entries carry an arrow-up-right mark so the destination is visible before the click.
+- **Catalogue** — every category we sell models for is listed, including categories whose first model has not been entered yet (`lib/catalog.ts`). An empty category is never a dead end: it shows an advice panel with the quote CTA and a link to the service page.
+- **Section labels** — the numbered "Groep 01 — Diensten" fuses are gone. Sections are introduced by their heading alone; the homepage hero keeps one factual eyebrow line (installer, town, founding year).
+- **Instagram** — `components/site/InstagramProfile.tsx` embeds the profile on the homepage and on Zakelijk. Nothing is mirrored or cached, so it can never drift from the account.
+- **Coverage map** — the solar-panel page carries an OpenStreetMap view (Leaflet, loaded on demand) of the towns where we have worked, hand-maintained in `lib/coverage.ts`. Tiles are tinted to the paper/blue palette in `globals.css`; the pins keep exact geography.
+
 ## Image organization
 
 Images live under `/public/images/`:
 
 - `branding/` — logo variants, brand icons
 - `services/` — service photography (warmtepompen, zonnepanelen, etc.)
-- `projects/` — project gallery
 - `partners/` — client and partner logos
 - `certifications/` — certification badges (NEN-3140, VCA)

@@ -7,13 +7,13 @@ import { Icon } from "@/components/ui/Icon";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { href, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { whatsappHref, type NavModel } from "./nav";
 
 /** Full-screen menu for phones and tablets (design/boards/Mobile-Menu.html). */
 export function MobileMenu({ lang, nav, open, onClose, bare }: { lang: Locale; nav: NavModel; open: boolean; onClose: () => void; bare: string }) {
   const d = getDict(lang);
   const ref = useFocusTrap<HTMLDivElement>(open, onClose);
-  const other: Locale = lang === "nl" ? "en" : "nl";
 
   useEffect(() => {
     if (!open) return;
@@ -27,8 +27,6 @@ export function MobileMenu({ lang, nav, open, onClose, bare }: { lang: Locale; n
   if (!open) return null;
 
   const links = [
-    { path: "/aanbod", label: d.nav.catalog },
-    { path: "/projecten", label: d.nav.projects },
     { path: "/zakelijk", label: d.nav.business },
     { path: "/over-ons", label: d.nav.about },
     { path: "/veelgestelde-vragen", label: d.nav.faq },
@@ -55,9 +53,7 @@ export function MobileMenu({ lang, nav, open, onClose, bare }: { lang: Locale; n
           <Image src="/brand/logo-dark.svg" alt="MMC Techniek B.V." width={100} height={46} className="h-[38px] w-auto" />
         </Link>
         <div className="flex items-center gap-3">
-          <Link href={href(other, bare)} hrefLang={other} onClick={onClose} className="t-mono text-on-dark-muted">
-            <span className={lang === "nl" ? "text-white" : ""}>NL</span> / <span className={lang === "en" ? "text-white" : ""}>EN</span>
-          </Link>
+          <LanguageSwitch lang={lang} bare={bare} tone="dark" />
           <button type="button" onClick={onClose} aria-label={d.nav.closeMenu} data-autofocus className="icon-btn bg-white text-ink shadow-none hover:bg-sky">
             <Icon name="close" size={20} />
           </button>
@@ -73,12 +69,13 @@ export function MobileMenu({ lang, nav, open, onClose, bare }: { lang: Locale; n
             {nav.services.map((s, i) => (
               <li key={s.slug} className="menu-item" style={{ "--i": i + 1 } as React.CSSProperties}>
                 <Link
-                  href={href(lang, `/diensten/${s.slug}`)}
+                  href={s.href}
                   onClick={onClose}
                   className="flex min-h-12 items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2.5 text-[15px] font-medium shadow-[inset_0_0_0_1.5px_var(--color-on-dark-ring)] transition-colors hover:bg-white/5"
                 >
                   <Icon name={s.slug as never} size={18} className="text-signal" />
                   {s.title}
+                  {s.hasProducts && <Icon name="arrowUpRight" size={14} className="ml-auto text-on-dark-muted" />}
                 </Link>
               </li>
             ))}

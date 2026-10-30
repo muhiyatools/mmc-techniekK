@@ -1,23 +1,8 @@
 import type { ReactNode } from "react";
 
-/** Fuse "Groep" label. Homepage only. */
-export function GroupLabel({ n, label, groupWord }: { n: number; label: string; groupWord: string }) {
-  return (
-    <div className="grp" aria-hidden="true">
-      <span className="fuse" />
-      <span className="t-mono">
-        {groupWord} {String(n).padStart(2, "0")}
-      </span>
-      <span className="wire" />
-      <span className="t-mono">{label}</span>
-    </div>
-  );
-}
-
-/** Heading block used at the top of sections: optional label, H2, optional lead and aside. */
+/** Heading block used at the top of sections: H2 with an optional lead and aside. */
 export function SectionHeading({
   id,
-  label,
   title,
   lead,
   aside,
@@ -25,7 +10,6 @@ export function SectionHeading({
   className = "",
 }: {
   id?: string;
-  label?: ReactNode;
   title: ReactNode;
   lead?: ReactNode;
   aside?: ReactNode;
@@ -35,7 +19,6 @@ export function SectionHeading({
   return (
     <div className={`flex flex-wrap items-end justify-between gap-x-8 gap-y-6 ${className}`} data-reveal>
       <div className="flex max-w-[760px] flex-col gap-5">
-        {label}
         <Tag id={id} className={Tag === "h1" ? "t-h1" : "t-h2"}>
           {title}
         </Tag>

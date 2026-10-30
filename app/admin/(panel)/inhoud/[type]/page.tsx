@@ -29,8 +29,6 @@ export default async function ContentIndex({ params }: PageProps<"/admin/inhoud/
     switch (key) {
       case "aanbod":
         return [svc(r.service_id), r.slug].filter(Boolean).join(" · ");
-      case "projecten":
-        return [r.place, r.year, r.sector].filter(Boolean).join(" · ");
       case "reviews":
         return [r.place, `${r.rating}★`, r.consent ? "toestemming" : "toestemming nog bevestigen"].filter(Boolean).join(" · ");
       case "vragen":

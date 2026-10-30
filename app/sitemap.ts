@@ -6,17 +6,11 @@ import { SITE_URL } from "@/lib/site";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [services, products, projects, pages] = await Promise.all([
-    publishedSlugs("services"),
-    publishedSlugs("products"),
-    publishedSlugs("projects"),
-    publishedSlugs("pages"),
-  ]);
+  const [services, products, pages] = await Promise.all([publishedSlugs("services"), publishedSlugs("products"), publishedSlugs("pages")]);
   const legal = pages.filter((p) => ["privacy", "cookies", "algemene-voorwaarden"].includes(p));
   const paths = [
     "/",
     "/aanbod",
-    "/projecten",
     "/zakelijk",
     "/over-ons",
     "/veelgestelde-vragen",
@@ -24,7 +18,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     ...services.map((s) => `/diensten/${s}`),
     ...products.map((s) => `/aanbod/${s}`),
-    ...projects.map((s) => `/projecten/${s}`),
     ...legal.map((s) => `/${s}`),
   ];
   return paths.map((path) => ({

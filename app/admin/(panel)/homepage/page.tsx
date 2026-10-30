@@ -48,7 +48,7 @@ export default async function HomepageAdmin() {
   }
   return (
     <>
-      <AdminHeader crumbs={[{ label: "Website" }, { label: "Homepage" }]} title="Homepage" description="Teksten en foto's van de homepage. Diensten, projecten en reviews beheert u in hun eigen onderdeel." />
+      <AdminHeader crumbs={[{ label: "Website" }, { label: "Homepage" }]} title="Homepage" description="Teksten en foto's van de homepage. Diensten, aanbod en reviews beheert u in hun eigen onderdeel." />
       <SectionsEditor target="home" sections={SECTIONS} initial={initial} media={media} />
     </>
   );

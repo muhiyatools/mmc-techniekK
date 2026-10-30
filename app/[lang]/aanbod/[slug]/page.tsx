@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { JsonLd } from "@/components/site/JsonLd";
-import { buildNav } from "@/components/site/nav";
+import { siteNav } from "@/lib/nav";
 import { Breadcrumbs, formatPrice, ProductCard } from "@/components/site/Page";
 import { ProductGallery, VariantPicker } from "@/components/site/ProductView";
 import { Icon } from "@/components/ui/Icon";
@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/aanbod/
     notFound();
   }
   const [all, services, settings] = await Promise.all([getProducts(), getServices(), getSettings()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
   const price = formatPrice(product, lang);
   const images = [product.media, ...product.images].filter((m, i, arr) => m && arr.findIndex((x) => x?.id === m.id) === i) as NonNullable<typeof product.media>[];
   const specs = t<string[]>(product.specs, lang) ?? [];

@@ -29,7 +29,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         { href: "/admin/homepage", label: "Homepage", icon: "home" },
         content("diensten"),
         content("aanbod"),
-        content("projecten"),
         content("merken"),
         content("team"),
         content("vragen"),

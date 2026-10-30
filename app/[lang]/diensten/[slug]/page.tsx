@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { projectCard } from "@/components/site/Blocks";
-import { buildNav } from "@/components/site/nav";
+import { siteNav } from "@/lib/nav";
 import { CtaPanel, PageIntro, ProductCard } from "@/components/site/Page";
-import { ProjectsGrid, type GridProject } from "@/components/site/ProjectsGrid";
 import { ServiceDiagram } from "@/components/site/ServiceDiagram";
+import { SolarCoverage } from "@/components/site/SolarCoverage";
 import { Accordion } from "@/components/ui/Accordion";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Markdown } from "@/components/ui/Markdown";
 import { Photo } from "@/components/ui/Photo";
-import { getFaqs, getProducts, getProjects, getService, getServices, getSettings, publishedSlugs } from "@/lib/content";
+import { getFaqs, getProducts, getService, getServices, getSettings, publishedSlugs } from "@/lib/content";
 import type { Brand } from "@/lib/content/types";
 import { href, locales, t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
@@ -36,20 +35,15 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/diensten/[
 export default async function ServicePage({ params }: PageProps<"/[lang]/diensten/[slug]">) {
   const { lang, slug } = (await params) as { lang: Locale; slug: string };
   const d = getDict(lang);
-  const [service, services, products, projects, faqs, settings] = await Promise.all([getService(slug), getServices(), getProducts(), getProjects(), getFaqs(), getSettings()]);
+  const [service, services, products, faqs, settings] = await Promise.all([getService(slug), getServices(), getProducts(), getFaqs(), getSettings()]);
   if (!service) notFound();
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
   const title = t(service.title, lang);
   const claims = new MediaClaims();
   const hero = claims.claim(service.hero);
 
   const own = products.filter((p) => p.service.slug === slug);
   const brands = [...new Map(own.flatMap((p) => p.brands).map((b) => [b.id, b])).values()] as Brand[];
-  const related = projects
-    .filter((p) => p.services.some((s) => s.slug === slug))
-    .map((p) => projectCard(p, lang, claims))
-    .filter(Boolean)
-    .slice(0, 3) as GridProject[];
   const serviceFaqs = faqs.filter((f) => f.service_slug === slug);
   const tags = t<string[]>(service.tags, lang) ?? [];
   const quoteHref = `${href(lang, "/offerte")}?dienst=${slug}`;
@@ -188,23 +182,8 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/dienste
         </section>
       )}
 
-      {/* Related projects */}
-      {related.length > 0 && (
-        <section className={`section-y ${own.length ? "bg-paper" : ""}`} aria-labelledby="projects-title">
-          <div className="wrap flex flex-col gap-10">
-            <div className="flex flex-wrap items-end justify-between gap-6" data-reveal>
-              <h2 id="projects-title" className="t-h2">
-                {d.service.projects}
-              </h2>
-              <Link href={href(lang, "/projecten")} className="link-arrow">
-                {d.cta.allProjects}
-                <Icon name="arrow" />
-              </Link>
-            </div>
-            <ProjectsGrid lang={lang} projects={related} filters={[]} layout="grid" />
-          </div>
-        </section>
-      )}
+      {/* Where the work is, for the service that has a coverage map. */}
+      {slug === "zonnepanelen" && <SolarCoverage lang={lang} />}
 
       {/* FAQ */}
       {serviceFaqs.length > 0 && (

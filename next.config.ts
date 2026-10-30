@@ -14,8 +14,13 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      { source: "/our-work", destination: "/projecten", permanent: true },
-      { source: "/en/our-work", destination: "/en/projecten", permanent: true },
+      // The project showroom is gone: our work now lives in one Instagram profile.
+      { source: "/our-work", destination: "/#instagram", permanent: true },
+      { source: "/en/our-work", destination: "/en#instagram", permanent: true },
+      { source: "/projecten", destination: "/#instagram", permanent: true },
+      { source: "/en/projecten", destination: "/en#instagram", permanent: true },
+      { source: "/projecten/:slug", destination: "/#instagram", permanent: true },
+      { source: "/en/projecten/:slug", destination: "/en#instagram", permanent: true },
       { source: "/diensten/batterijopslag", destination: "/diensten/thuisbatterij", permanent: true },
       { source: "/en/diensten/batterijopslag", destination: "/en/diensten/thuisbatterij", permanent: true },
       { source: "/diensten/renovaties", destination: "/diensten/verduurzaming", permanent: true },

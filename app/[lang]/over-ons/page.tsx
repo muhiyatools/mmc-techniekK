@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { TrustStrip } from "@/components/site/Blocks";
-import { buildNav } from "@/components/site/nav";
+import { siteNav } from "@/lib/nav";
 import { CtaPanel, PageIntro } from "@/components/site/Page";
 import { Markdown, firstParagraph } from "@/components/ui/Markdown";
 import { Photo } from "@/components/ui/Photo";
@@ -25,7 +25,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/over-ons"
   const { lang } = (await params) as { lang: Locale };
   const d = getDict(lang);
   const [page, team, services, settings] = await Promise.all([getPage("over-ons"), getTeam(), getServices(), getSettings()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
   const body = page ? t(page.body, lang) : "";
   const [intro, ...rest] = body.split(/\n{2,}/);
 

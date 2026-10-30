@@ -12,7 +12,7 @@ export default function NotFound() {
   const d = getDict(lang);
   const links = [
     { path: "/aanbod", label: d.nav.catalog },
-    { path: "/projecten", label: d.nav.projects },
+    { path: "/zakelijk", label: d.nav.business },
     { path: "/veelgestelde-vragen", label: d.nav.faq },
     { path: "/contact", label: d.nav.contact },
   ];

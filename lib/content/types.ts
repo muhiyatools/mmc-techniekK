@@ -61,22 +61,6 @@ export type Product = {
   service: Pick<Service, "id" | "slug" | "title" | "kicker">;
 };
 
-export type Project = {
-  id: string;
-  slug: string;
-  sort_order: number;
-  title: Localized;
-  summary: Localized;
-  body: Localized;
-  place: string | null;
-  year: number | null;
-  sector: Enums<"project_sector">;
-  featured: boolean;
-  cover: Media | null;
-  images: Media[];
-  services: Pick<Service, "slug" | "title">[];
-};
-
 export type Review = {
   id: string;
   author: string;

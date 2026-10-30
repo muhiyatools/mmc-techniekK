@@ -18,7 +18,7 @@ export default async function Dashboard() {
   const greeting = user.name ? `Hallo ${user.name.split(" ")[0]}` : "Dashboard";
 
   // Content status (everyone)
-  const contentKeys = ["diensten", "aanbod", "projecten", "vragen", "reviews"] as const;
+  const contentKeys = ["diensten", "aanbod", "vragen", "reviews"] as const;
   const content = await Promise.all(
     contentKeys.map(async (k) => {
       const t = CONTENT_TYPES[k];

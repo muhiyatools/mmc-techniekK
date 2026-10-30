@@ -15,6 +15,8 @@ export type LoopService = {
   summary: string;
   tags: string[];
   hasProducts: boolean;
+  /** Where the service leads: its product category, or its own page. */
+  href: string;
   image: Media | null;
 };
 
@@ -234,17 +236,15 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
                         </ul>
                       )}
                       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
-                        <Link href={href(lang, `/diensten/${svc.slug}`)} className="btn btn-primary btn-sm">
-                          <span>
-                            {d.cta.more} {svc.title.toLowerCase()}
-                          </span>
+                        <Link href={svc.href} className="btn btn-primary btn-sm">
+                          <span>{svc.hasProducts ? d.cta.products : `${d.cta.more} ${svc.title.toLowerCase()}`}</span>
                           <span className="knob">
                             <Icon name="arrow" size={16} />
                           </span>
                         </Link>
                         {svc.hasProducts && (
-                          <Link href={href(lang, `/aanbod?categorie=${svc.slug}`)} className="link-arrow text-[15px]">
-                            {d.cta.products}
+                          <Link href={href(lang, `/diensten/${svc.slug}`)} className="link-arrow text-[15px]">
+                            {`${d.cta.more} ${svc.title.toLowerCase()}`}
                           </Link>
                         )}
                       </div>

@@ -7,7 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { JsonLd, localBusiness } from "@/components/site/JsonLd";
 import { MobileActionBar } from "@/components/site/MobileActionBar";
-import { buildNav } from "@/components/site/nav";
+import { siteNav } from "@/lib/nav";
 import { RevealObserver } from "@/components/ui/Reveal";
 import { getPublishedPageSlugs, getServices, getSettings } from "@/lib/content";
 import { htmlLang, isLocale, locales, type Locale } from "@/lib/i18n/config";
@@ -51,7 +51,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
   const lang: Locale = raw;
   const d = getDict(lang);
   const [services, settings, legal] = await Promise.all([getServices(), getSettings(), getPublishedPageSlugs()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
   const preview = (await draftMode()).isEnabled;
 
   return (

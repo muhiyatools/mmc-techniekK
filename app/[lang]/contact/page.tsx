@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ContactForm } from "@/components/site/ContactForm";
-import { buildNav, whatsappHref } from "@/components/site/nav";
+import { whatsappHref } from "@/components/site/nav";
 import { PageIntro } from "@/components/site/Page";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { getServices, getSettings } from "@/lib/content";
 import { href, t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
+import { siteNav } from "@/lib/nav";
 import { pageMeta } from "@/lib/site";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/contact">) {
@@ -18,7 +19,7 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
   const { lang } = (await params) as { lang: Locale };
   const d = getDict(lang);
   const [services, settings] = await Promise.all([getServices(), getSettings()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
   const c = settings.contact;
 
   const rows: { icon: IconName; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [

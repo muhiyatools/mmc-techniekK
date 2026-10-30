@@ -1,4 +1,4 @@
-import { buildNav } from "@/components/site/nav";
+import { siteNav } from "@/lib/nav";
 import { Breadcrumbs } from "@/components/site/Page";
 import { QuoteWizard, type WizardPrefill } from "@/components/site/QuoteWizard";
 import { getHome, getProduct, getServices, getSettings } from "@/lib/content";
@@ -20,7 +20,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/[l
   const sp = await searchParams;
   const d = getDict(lang);
   const [services, settings, home] = await Promise.all([getServices(), getSettings(), getHome()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
 
   // Prefill: ?onderwerpen=a,b  ?dienst=slug  ?product=slug&variant=…  ?postcode=&huisnummer=  ?pand=
   const topics = new Set<Topic>();

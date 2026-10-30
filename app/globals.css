@@ -250,6 +250,35 @@
   }
   .icon-btn:hover { box-shadow: inset 0 0 0 1.5px var(--color-ink); }
 
+  /* Language switcher: two flags in one segmented pill. */
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--color-paper);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+  .lang-switch-item {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 28px;
+    border-radius: 999px;
+    opacity: 0.4;
+    filter: grayscale(0.35);
+    transition: opacity var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), filter var(--dur-fast) var(--ease-out);
+  }
+  .lang-switch-item:hover { opacity: 0.8; filter: none; }
+  .lang-switch-item[aria-current="true"] { opacity: 1; filter: none; background: var(--color-white); box-shadow: 0 1px 3px rgb(15 27 38 / 0.14), inset 0 0 0 1px var(--color-line-strong); }
+  .lang-switch .flag { width: 20px; height: 14px; border-radius: 2.5px; display: block; box-shadow: 0 0 0 1px rgb(15 27 38 / 0.16); }
+  .lang-switch-dark { background: rgb(255 255 255 / 0.06); box-shadow: inset 0 0 0 1px var(--color-on-dark-ring); }
+  .lang-switch-dark .lang-switch-item { filter: grayscale(0.5) brightness(0.85); }
+  .lang-switch-dark .lang-switch-item:hover, .lang-switch-dark .lang-switch-item[aria-current="true"] { filter: none; }
+  .lang-switch-dark .lang-switch-item[aria-current="true"] { background: rgb(255 255 255 / 0.14); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12); }
+  .lang-switch-dark .flag { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.18); }
+
   /* Text link with an arrow that nudges. */
   .link-arrow {
     display: inline-flex;
@@ -363,15 +392,6 @@
     background-repeat: no-repeat;
     background-position: right 16px center;
   }
-
-  /* Fuse "Groep" label (homepage only). */
-  .grp { display: inline-flex; align-items: center; gap: 12px; color: var(--color-slate); }
-  .grp .fuse { width: 14px; height: 22px; border: 1.5px solid currentColor; border-radius: 3px; position: relative; flex: none; }
-  .grp .fuse::after { content: ""; position: absolute; left: 2.5px; right: 2.5px; top: 2.5px; height: 8px; border-radius: 1.5px; background: var(--color-signal); transition: transform var(--dur-slow) var(--ease-out); }
-  .grp .wire { width: 56px; height: 1.5px; background: currentColor; opacity: 0.35; position: relative; transform-origin: left; }
-  .grp .wire::after { content: ""; position: absolute; right: -3px; top: -2.5px; width: 6.5px; height: 6.5px; border-radius: 50%; background: currentColor; }
-  .on-dark .grp { color: var(--color-on-dark-muted); }
-  .on-blue .grp { color: var(--color-on-blue-muted); }
 
   /* Spec label on photos. */
   .spec-tag {
@@ -504,3 +524,62 @@
 /* The quote wizard has its own sticky action row; hide the global bar there. */
 body:has([data-wizard]) .mobile-bar { display: none; }
 body:has([data-wizard]) footer { padding-bottom: calc(32px + var(--safe-bottom)); }
+
+/* ------------------------------------------------------- coverage map -- */
+/* Unlayered on purpose: Leaflet's own stylesheet ships unlayered, so overrides
+   inside a cascade layer would lose. Keep these rules last. */
+.map-canvas { background: #e9f0f7; }
+.map-canvas.leaflet-container { font-family: var(--font-sans); }
+.map-canvas .leaflet-tile-pane { filter: grayscale(1) brightness(1.04) contrast(1.02); mix-blend-mode: multiply; }
+.map-canvas .leaflet-control-attribution {
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 2px 6px;
+  border-radius: 6px 0 0 0;
+  background: rgb(255 255 255 / 0.8);
+  color: var(--color-graphite);
+}
+.map-canvas .leaflet-control-attribution a { color: var(--color-blue); }
+.map-canvas .leaflet-bar { border: 0; box-shadow: 0 8px 24px -12px rgb(15 27 38 / 0.4); }
+.map-canvas .leaflet-bar a {
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  border: 0;
+  color: var(--color-ink);
+  background: var(--color-white);
+  font-size: 17px;
+}
+.map-canvas .leaflet-bar a:first-child { border-radius: 8px 8px 0 0; }
+.map-canvas .leaflet-bar a:last-child { border-radius: 0 0 8px 8px; border-top: 1px solid var(--color-line); }
+.map-canvas .leaflet-bar a:hover { background: var(--color-paper); color: var(--color-blue); }
+.map-canvas .leaflet-bar a:focus-visible { outline: 2px solid var(--color-blue); outline-offset: -2px; }
+
+.mmc-pin-wrap { background: none; border: 0; }
+.mmc-pin {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.96);
+  box-shadow: 0 2px 10px rgb(15 27 38 / 0.32), inset 0 0 0 1px rgb(15 27 38 / 0.06);
+  transition: transform 180ms var(--ease-out);
+}
+.mmc-pin-core {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  box-shadow: 0 0 0 3px rgb(65 167 242 / 0.24);
+  transition: background-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+.leaflet-marker-icon:hover .mmc-pin, .leaflet-marker-icon:focus-visible .mmc-pin { transform: scale(1.15); }
+.leaflet-marker-icon:focus-visible { outline: 2px solid var(--color-blue); outline-offset: 3px; border-radius: 50%; }
+
+.mmc-popup { display: flex; flex-direction: column; gap: 2px; font-family: var(--font-sans); }
+.mmc-popup strong { font-size: 14px; font-weight: 700; color: var(--color-ink); }
+.mmc-popup a { font-size: 12px; font-weight: 600; color: var(--color-blue); text-decoration: underline; text-underline-offset: 2px; }
+.leaflet-popup-content-wrapper { border-radius: 10px; box-shadow: 0 12px 28px -16px rgb(15 27 38 / 0.45); border: 1px solid var(--color-line); }
+.leaflet-popup-content { margin: 9px 12px; }
+.leaflet-popup-tip { box-shadow: none; border: 1px solid var(--color-line); }

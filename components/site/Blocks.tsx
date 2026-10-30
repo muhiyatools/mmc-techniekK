@@ -1,30 +1,8 @@
 import Image from "next/image";
-import type { Brand, Project, Review, Settings } from "@/lib/content/types";
+import type { Brand, Review, Settings } from "@/lib/content/types";
 import { CountUp } from "@/components/ui/CountUp";
 import { t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
-import type { MediaClaims } from "@/lib/media";
-import type { ProjectCardData } from "./ProjectCard";
-import type { GridProject } from "./ProjectsGrid";
-
-/** Project → card data, using the first photo of the project not yet shown on this page. */
-export function projectCard(p: Project, lang: Locale, claims: MediaClaims): GridProject | null {
-  const image = claims.pick(p.cover, ...p.images);
-  if (!image) return null;
-  const d = getDict(lang);
-  const meta = [p.place, p.year].filter(Boolean).join(" · ");
-  return { slug: p.slug, title: t(p.title, lang), meta, category: d.sectors[p.sector], image, sector: p.sector } satisfies ProjectCardData & { sector: string };
-}
-
-export function sectorFilters(lang: Locale) {
-  const d = getDict(lang);
-  return [
-    { id: "all", label: d.filters.all, sectors: [] },
-    { id: "particulier", label: d.sectors.particulier, sectors: ["particulier"] },
-    { id: "zakelijk", label: `${d.sectors.utiliteit} & ${d.sectors.retail.toLowerCase()}`, sectors: ["utiliteit", "retail"] },
-    { id: "nieuwbouw", label: d.sectors.nieuwbouw, sectors: ["nieuwbouw"] },
-  ];
-}
 
 /** Certifications and three facts in a hairline grid. */
 export function TrustStrip({ lang, settings, showCerts = true }: { lang: Locale; settings: Settings; showCerts?: boolean }) {
@@ -61,23 +39,17 @@ export function TrustStrip({ lang, settings, showCerts = true }: { lang: Locale;
   );
 }
 
-/** One static row of brand logos in a single ink colour. */
-export function LogoRow({ brands, label, tone = "light" }: { brands: Brand[]; label?: string; tone?: "light" | "dark" }) {
+/** One static row of brand logos, normalised to a single optical height. */
+export function LogoRow({ brands, label }: { brands: Brand[]; label?: string }) {
   const withLogo = brands.filter((b) => b.logo_path);
   if (!withLogo.length) return null;
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-12" data-reveal>
-      {label && <span className={`t-mono w-[150px] flex-none ${tone === "dark" ? "text-on-dark-muted" : "text-graphite"}`}>{label}</span>}
-      <ul className="-mx-[var(--gutter)] flex items-center gap-10 overflow-x-auto px-[var(--gutter)] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:gap-x-12 sm:gap-y-5 sm:overflow-visible sm:px-0">
+    <div className="flex flex-col gap-5" data-reveal>
+      {label && <span className="t-mono text-graphite">{label}</span>}
+      <ul className="grid grid-cols-3 items-center gap-x-4 gap-y-6 sm:grid-cols-4 lg:grid-cols-5">
         {withLogo.map((b) => (
-          <li key={b.id} className="flex-none">
-            <Image
-              src={b.logo_path!}
-              alt={b.name}
-              width={140}
-              height={40}
-              className={`h-[22px] w-auto opacity-55 transition-opacity duration-[var(--dur)] hover:opacity-90 sm:h-[26px] ${tone === "dark" ? "invert" : ""}`}
-            />
+          <li key={b.id} className="flex h-8 items-center justify-center">
+            <Image src={b.logo_path!} alt={b.name} width={140} height={40} className="h-[22px] w-auto max-w-full object-contain opacity-65 sm:h-6" />
           </li>
         ))}
       </ul>

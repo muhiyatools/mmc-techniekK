@@ -4,7 +4,7 @@ import { draftMode } from "next/headers";
 import { cache } from "react";
 import { publicDb } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
-import type { Brand, Faq, HomeContent, Media, Page, Product, Project, Review, Service, Settings, TeamMember } from "./types";
+import type { Brand, Faq, HomeContent, Media, Page, Product, Review, Service, Settings, TeamMember } from "./types";
 
 export type * from "./types";
 
@@ -12,7 +12,6 @@ export type * from "./types";
 export const TAGS = {
   services: "services",
   products: "products",
-  projects: "projects",
   brands: "brands",
   reviews: "reviews",
   faqs: "faqs",
@@ -51,11 +50,6 @@ const PRODUCT = `id, slug, name, sort_order, tier, summary, body, specs, variant
   product_images(sort_order, media(${MEDIA})),
   product_brands(brands(${BRAND})),
   service:services!products_service_id_fkey(id, slug, title, kicker)`;
-const PROJECT = `id, slug, sort_order, title, summary, body, place, year, sector, featured,
-  cover:media!projects_cover_media_id_fkey(${MEDIA}),
-  project_images(sort_order, media(${MEDIA})),
-  project_services(services(slug, title))`;
-
 type Raw = Record<string, unknown>;
 const bySort = (a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order;
 
@@ -68,17 +62,8 @@ function toProduct(r: Raw): Product {
   return { ...(rest as unknown as Product), images: imgs, brands };
 }
 
-function toProject(r: Raw): Project {
-  const imgs = ((r.project_images as { sort_order: number; media: Media }[]) ?? []).sort(bySort).map((i) => i.media);
-  const services = ((r.project_services as { services: Project["services"][number] | null }[]) ?? []).map((s) => s.services).filter(Boolean) as Project["services"];
-  const rest = { ...r };
-  delete rest.project_images;
-  delete rest.project_services;
-  return { ...(rest as unknown as Project), images: imgs, services };
-}
-
 /** Published slugs for generateStaticParams (runs at build time, so no draftMode). */
-export async function publishedSlugs(table: "services" | "products" | "projects" | "pages"): Promise<string[]> {
+export async function publishedSlugs(table: "services" | "products" | "pages"): Promise<string[]> {
   const rows = must(await publicDb.from(table).select("slug").eq("status", "published"), `${table} slugs`) as { slug: string }[];
   return rows.map((r) => r.slug);
 }
@@ -106,6 +91,14 @@ export const getProduct = cached("product", [TAGS.products, TAGS.brands, TAGS.se
   return row ? toProduct(row) : null;
 });
 
+/** Slugs of the services that have at least one published product. */
+export const getCatalogServiceSlugs = cached("catalog-service-slugs", [TAGS.products, TAGS.services], async (db) => {
+  const rows = must(await db.from("products").select("service:services!products_service_id_fkey(slug)").eq("status", "published"), "catalog services") as {
+    service: { slug: string } | null;
+  }[];
+  return [...new Set(rows.map((r) => r.service?.slug).filter(Boolean) as string[])];
+});
+
 /** Current slug for an old product URL (renamed or merged products keep their old slugs). */
 export const getProductSlugForLegacy = cached("product-legacy", [TAGS.products], async (db, slug: string) => {
   const row = must(
@@ -113,15 +106,6 @@ export const getProductSlugForLegacy = cached("product-legacy", [TAGS.products],
     "product legacy",
   ) as { slug: string } | null;
   return row?.slug ?? null;
-});
-
-export const getProjects = cached("projects", [TAGS.projects, TAGS.services], async (db) =>
-  (must(await db.from("projects").select(PROJECT).eq("status", "published").order("sort_order"), "projects") as Raw[]).map(toProject),
-);
-
-export const getProject = cached("project", [TAGS.projects, TAGS.services], async (db, slug: string) => {
-  const row = must(await db.from("projects").select(PROJECT).eq("slug", slug).maybeSingle(), "project") as Raw | null;
-  return row ? toProject(row) : null;
 });
 
 export const getReviews = cached("reviews", [TAGS.reviews], async (db) =>

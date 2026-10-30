@@ -1,11 +1,12 @@
 import { FaqSearch, type FaqGroup } from "@/components/site/FaqSearch";
 import { JsonLd } from "@/components/site/JsonLd";
-import { buildNav, whatsappHref } from "@/components/site/nav";
+import { whatsappHref } from "@/components/site/nav";
 import { PageIntro } from "@/components/site/Page";
 import { Icon } from "@/components/ui/Icon";
 import { getFaqs, getServices, getSettings } from "@/lib/content";
 import { t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
+import { siteNav } from "@/lib/nav";
 import { pageMeta } from "@/lib/site";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/veelgestelde-vragen">) {
@@ -18,7 +19,7 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/veelgesteld
   const { lang } = (await params) as { lang: Locale };
   const d = getDict(lang);
   const [faqs, services, settings] = await Promise.all([getFaqs(), getServices(), getSettings()]);
-  const nav = buildNav(lang, services, settings);
+  const nav = await siteNav(lang, services, settings);
 
   const groups: FaqGroup[] = [
     { id: "algemeen", title: d.faq.general, items: faqs.filter((f) => !f.service_slug).map((f) => ({ id: f.id, q: t(f.question, lang), a: t(f.answer, lang) })) },
