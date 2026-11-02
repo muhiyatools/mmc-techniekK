@@ -42,8 +42,8 @@ export function MediaLibrary({ initial }: { initial: MediaRow[] }) {
         </div>
         {showUpload && (
           <UploadForm
-            onUploaded={async () => {
-              await reload();
+            onFinished={() => {
+              void reload();
               setShowUpload(false);
             }}
           />

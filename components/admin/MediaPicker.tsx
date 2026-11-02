@@ -1,12 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { listMedia, uploadMedia, type MediaRow } from "@/lib/admin/actions";
+import { createUploadTarget, finalizeMediaUpload, listMedia, type MediaRow } from "@/lib/admin/actions";
 import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { mediaUrl } from "@/lib/media";
+import { prepareImageForUpload } from "@/lib/prepare-image";
+import { createClient } from "@/lib/supabase/browser";
 import { toast } from "./Toast";
+
+const ACCEPT = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const MAX_BYTES = 10 * 1024 * 1024;
 
 export function Thumb({ media, size = 96, className = "" }: { media: Pick<MediaRow, "bucket" | "path" | "alt" | "dominant_color">; size?: number; className?: string }) {
   return (
@@ -16,79 +21,236 @@ export function Thumb({ media, size = 96, className = "" }: { media: Pick<MediaR
   );
 }
 
-/** Upload form: file + required alt text. Shared by the picker and the media library. */
-export function UploadForm({ onUploaded }: { onUploaded: (id: string) => void }) {
-  const [pending, start] = useTransition();
+type Status = "ready" | "busy" | "done" | "error";
+type QueueItem = { key: string; file: File; preview: string; altNl: string; altEn: string; status: Status; error?: string };
+
+/**
+ * Upload form: drop as many photos as you like, describe each one, upload them one by
+ * one. The file itself goes straight to Storage with a signed URL so its size never
+ * matters to the Next.js request limit; the server then re-encodes it, strips EXIF and
+ * records the row.
+ */
+export function UploadForm({ onFinished }: { onFinished?: (ids: string[]) => void }) {
+  const [items, setItems] = useState<QueueItem[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const itemsRef = useRef<QueueItem[]>([]);
+
+  // Object URLs live as long as the component does; release the last batch on unmount.
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
+  useEffect(() => () => itemsRef.current.forEach((item) => URL.revokeObjectURL(item.preview)), []);
+
+  const patch = (key: string, next: Partial<QueueItem>) => setItems((cur) => cur.map((item) => (item.key === key ? { ...item, ...next } : item)));
+
+  const add = (files: FileList | File[]) => {
+    const picked: QueueItem[] = [];
+    const rejected: string[] = [];
+    for (const file of Array.from(files)) {
+      if (!ACCEPT.includes(file.type)) {
+        rejected.push(file.name);
+        continue;
+      }
+      picked.push({ key: crypto.randomUUID(), file, preview: URL.createObjectURL(file), altNl: describe(file.name), altEn: "", status: "ready" });
+    }
+    if (picked.length) {
+      setError(null);
+      setItems((cur) => [...cur, ...picked]);
+    }
+    if (rejected.length) setError(`${rejected.length === 1 ? `"${rejected[0]}" is` : `${rejected.length} bestanden zijn`} geen JPG, PNG, WebP of AVIF.`);
+  };
+
+  const remove = (key: string) => {
+    setItems((cur) => {
+      const gone = cur.find((item) => item.key === key);
+      if (gone) URL.revokeObjectURL(gone.preview);
+      return cur.filter((item) => item.key !== key);
+    });
+  };
+
+  const clear = () => {
+    itemsRef.current.forEach((item) => URL.revokeObjectURL(item.preview));
+    setItems([]);
+    setError(null);
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const upload = async () => {
+    if (busy || !items.length) return;
+    const missing = items.find((item) => item.status !== "done" && !item.altNl.trim());
+    if (missing) {
+      setError("Elke foto heeft een beschrijving (alt-tekst) nodig. Die staat ook op de website voor slechtzienden en Google.");
+      return;
+    }
+    setError(null);
+    setBusy(true);
+    setProgress({ done: 0, total: items.length });
+    const ids: string[] = [];
+    let duplicates = 0;
+    let failed = 0;
+
+    for (const item of items) {
+      patch(item.key, { status: "busy", error: undefined });
+      try {
+        const file = await prepareImageForUpload(item.file);
+        if (file.size > MAX_BYTES) throw new Error("Het bestand is groter dan 10 MB.");
+        const target = await createUploadTarget(file.name);
+        if (!target.ok) throw new Error(target.error);
+        const { path, token, proof } = target.data!;
+        const up = await createClient()
+          .storage.from("media")
+          .uploadToSignedUrl(path, token, file, { contentType: file.type || undefined, cacheControl: "31536000" });
+        if (up.error) throw new Error(friendly(up.error.message));
+        const done = await finalizeMediaUpload({ path, proof, altNl: item.altNl, altEn: item.altEn });
+        if (!done.ok) throw new Error(done.error);
+        if (done.data!.duplicate) duplicates += 1;
+        ids.push(done.data!.id);
+        patch(item.key, { status: "done" });
+        setItems((cur) => cur.filter((current) => current.key !== item.key));
+        URL.revokeObjectURL(item.preview);
+      } catch (e) {
+        failed += 1;
+        patch(item.key, { status: "error", error: e instanceof Error ? e.message : "Uploaden mislukt." });
+      } finally {
+        setProgress((p) => ({ ...p, done: p.done + 1 }));
+      }
+    }
+
+    setBusy(false);
+    if (ids.length) {
+      const message = `${ids.length} ${ids.length === 1 ? "foto" : "foto's"} geüpload${duplicates ? ` · ${duplicates} stond${duplicates === 1 ? "" : "en"} er al` : ""}`;
+      toast(failed ? `${message} · ${failed} mislukt` : message, failed ? "error" : "ok");
+      onFinished?.(ids);
+    } else if (failed) {
+      setError("Geen enkele foto is geüpload. Los de melding hierboven op en probeer het opnieuw.");
+    }
+  };
+
 
   return (
-    <form
-      ref={formRef}
-      className="flex flex-col gap-3 rounded-xl border border-line bg-paper p-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        const fd = new FormData(e.currentTarget);
-        setError(null);
-        start(async () => {
-          const res = await uploadMedia(fd);
-          if (!res.ok) return setError(res.error);
-          toast(res.data?.duplicate ? "Deze foto stond er al; die wordt gebruikt." : "Foto geüpload");
-          formRef.current?.reset();
-          setPreview(null);
-          onUploaded(res.data!.id);
-        });
-      }}
-    >
-      <div className="flex items-start gap-3">
-        <label className="grid size-20 flex-none cursor-pointer place-items-center overflow-hidden rounded-lg border border-dashed border-line-strong bg-white text-graphite hover:border-ink">
-          {preview ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={preview} alt="" className="size-full object-cover" />
-          ) : (
-            <Icon name="upload" size={20} />
-          )}
-          <input
-            name="file"
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
-            required
-            className="sr-only"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              setPreview(f ? URL.createObjectURL(f) : null);
-            }}
-          />
-          <span className="sr-only">Kies een foto</span>
-        </label>
-        <div className="flex flex-1 flex-col gap-2">
-          <label className="flex flex-col gap-1">
-            <span className="text-[13px] font-semibold">Wat staat er op de foto? (NL, verplicht)</span>
-            <input name="alt_nl" required className="input h-10 text-[14px]" placeholder="Bijv. zonnepanelen op een plat dak in Woerden" />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-[13px] font-semibold">Engels (optioneel)</span>
-            <input name="alt_en" className="input h-10 text-[14px]" />
-          </label>
-        </div>
-      </div>
+    <div className="flex flex-col gap-3 rounded-xl border border-line bg-paper p-4">
+      <label
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          if (e.dataTransfer.files.length) add(e.dataTransfer.files);
+        }}
+        className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed bg-white px-4 py-6 text-center transition-colors ${dragging ? "border-blue bg-sky" : "border-line-strong hover:border-ink"}`}
+      >
+        <Icon name="upload" size={20} className="text-graphite" />
+        <span className="text-[14px] font-semibold">Sleep foto&apos;s hierheen of klik om te kiezen</span>
+        <span className="text-[12px] text-graphite">JPG, PNG, WebP of AVIF · maximaal 10 MB per foto · meerdere tegelijk mag</span>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          className="sr-only"
+          onChange={(e) => {
+            if (e.currentTarget.files?.length) add(e.currentTarget.files);
+            e.currentTarget.value = "";
+          }}
+        />
+      </label>
+
+      {items.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {items.map((item) => (
+            <li key={item.key} className="flex items-start gap-3 rounded-lg border border-line bg-white p-2.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={item.preview} alt="" className="size-14 flex-none rounded-md bg-paper object-cover" />
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="min-w-0 flex-1 truncate text-[12px] text-graphite">
+                    {item.file.name} · {formatSize(item.file.size)}
+                  </span>
+                  {item.status === "busy" && <span className="t-mono text-[10px] uppercase text-blue-deep">bezig</span>}
+                  {item.status === "error" && <span className="t-mono text-[10px] uppercase text-error">mislukt</span>}
+                  <button type="button" onClick={() => remove(item.key)} disabled={busy} aria-label={`${item.file.name} weghalen`} className="grid size-7 flex-none place-items-center rounded-md text-graphite hover:bg-paper hover:text-ink disabled:opacity-40">
+                    <Icon name="close" size={14} />
+                  </button>
+                </div>
+                <input
+                  value={item.altNl}
+                  onChange={(e) => patch(item.key, { altNl: e.target.value })}
+                  disabled={busy}
+                  required
+                  placeholder="Wat staat er op de foto? (verplicht)"
+                  aria-label={`Beschrijving (NL) voor ${item.file.name}`}
+                  className="input h-9 text-[13px]"
+                />
+                <input
+                  value={item.altEn}
+                  onChange={(e) => patch(item.key, { altEn: e.target.value })}
+                  disabled={busy}
+                  placeholder="Engels (optioneel)"
+                  aria-label={`Beschrijving (EN) voor ${item.file.name}`}
+                  className="input h-9 text-[13px]"
+                />
+                {item.error && (
+                  <p role="alert" className="field-error">
+                    <Icon name="alert" size={15} className="mt-px" />
+                    {item.error}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
       {error && (
         <p role="alert" className="field-error">
           <Icon name="alert" size={16} className="mt-px" />
           {error}
         </p>
       )}
-      <p className="text-[12px] text-graphite">JPG, PNG, WebP of AVIF, maximaal 10 MB. Alleen eigen foto's, geen stockfoto's. Locatiegegevens worden verwijderd.</p>
-      <button type="submit" disabled={pending} className="btn btn-primary btn-sm btn-plain self-start">
-        {pending ? "Uploaden…" : "Uploaden"}
-      </button>
-    </form>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <button type="button" onClick={upload} disabled={busy || !items.length} className="btn btn-primary btn-sm btn-plain">
+          {busy ? `Uploaden… ${progress.done}/${progress.total}` : items.length > 1 ? `${items.length} foto's uploaden` : "Uploaden"}
+        </button>
+        {items.length > 0 && (
+          <button type="button" onClick={clear} disabled={busy} className="flex h-9 items-center rounded-lg px-3 font-semibold text-graphite hover:bg-white disabled:opacity-40">
+            Lijst leegmaken
+          </button>
+        )}
+        <span className="text-[12px] text-graphite">Foto&apos;s worden verkleind en locatiegegevens worden verwijderd.</span>
+      </div>
+    </div>
   );
 }
 
-/** Modal to choose one or more photos from the library, or upload a new one. */
+/** "msz-hr50vfk-cb2096.png" → "Msz hr50vfk", a starting point the editor can correct. */
+function describe(name: string) {
+  const text = name
+    .replace(/\.[^.]+$/, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
+}
+
+function formatSize(bytes: number) {
+  return bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} kB`;
+}
+
+function friendly(message: string) {
+  if (/too large|maximum allowed size|exceeded/i.test(message)) return "Het bestand is groter dan 10 MB.";
+  if (/mime|content.?type/i.test(message)) return "Alleen JPG, PNG, WebP of AVIF.";
+  return message;
+}
+
+/** Modal to choose one or more photos from the library, or upload new ones. */
 export function MediaPicker({ open, multiple, selected, onClose, onPick }: { open: boolean; multiple?: boolean; selected: string[]; onClose: () => void; onPick: (ids: string[], rows: MediaRow[]) => void }) {
   const [items, setItems] = useState<MediaRow[] | null>(null);
   const [picked, setPicked] = useState<string[]>(selected);
@@ -127,10 +289,10 @@ export function MediaPicker({ open, multiple, selected, onClose, onPick }: { ope
         <div className="flex flex-col gap-3 overflow-y-auto p-4">
           {showUpload && (
             <UploadForm
-              onUploaded={async (id) => {
+              onFinished={async (ids) => {
                 await load();
                 setShowUpload(false);
-                toggle(id);
+                setPicked((cur) => (multiple ? Array.from(new Set([...cur, ...ids])) : ids.slice(-1)));
               }}
             />
           )}

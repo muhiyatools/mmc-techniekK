@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     viewTransition: true,
+    // Photos no longer pass through a Server Action (they go straight to Storage with a
+    // signed URL), but content saves can be a few hundred kB of JSON. The 1 MB default
+    // used to answer with a 413, which the router shows as "This page couldn't load".
+    serverActions: { bodySizeLimit: "4mb" },
   },
   async redirects() {
     return [

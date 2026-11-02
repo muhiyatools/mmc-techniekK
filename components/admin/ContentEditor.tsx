@@ -418,6 +418,7 @@ export function FieldInput({
           </div>
           <Hint f={f} />
           <MediaPicker
+            key={(value as string) ?? "geen-foto"}
             open={picker}
             selected={value ? [value as string] : []}
             onClose={() => setPicker(false)}
@@ -458,6 +459,7 @@ export function FieldInput({
             </li>
           </ul>
           <MediaPicker
+            key={v.join("|") || "geen-foto"}
             open={picker}
             multiple
             selected={v}
