@@ -9,6 +9,8 @@ export type FieldDef =
   | { key: string; kind: "boolean"; label: string; hint?: string }
   | { key: string; kind: "select"; label: string; options: { value: string; label: string }[]; nullable?: boolean }
   | { key: string; kind: "i18nList"; label: string; hint?: string }
+  // Plain list of strings, one per line (settings only).
+  | { key: string; kind: "list"; label: string; hint?: string }
   | { key: string; kind: "steps"; label: string }
   | { key: string; kind: "variants"; label: string; hint?: string }
   | { key: string; kind: "media"; label: string; hint?: string }

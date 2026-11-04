@@ -6,13 +6,14 @@ import type { FieldDef } from "@/lib/admin/content-types";
 import { FieldInput, type MediaLite } from "./ContentEditor";
 import { toast } from "./Toast";
 
-export type SectionDef = { key: string; title: string; description?: string; fields: FieldDef[] };
+/** `self`: the stored value is the single field itself (hours, certifications), not an object of fields. */
+export type SectionDef = { key: string; title: string; description?: string; fields: FieldDef[]; self?: boolean };
 
 /**
  * Edits keyed JSON documents (home_sections or site_settings), one card per key,
  * each saved on its own.
  */
-export function SectionsEditor({ target, sections, initial, media }: { target: "home" | "settings"; sections: SectionDef[]; initial: Record<string, Record<string, unknown>>; media: Record<string, MediaLite> }) {
+export function SectionsEditor({ target, sections, initial, media }: { target: "home" | "settings"; sections: SectionDef[]; initial: Record<string, unknown>; media: Record<string, MediaLite> }) {
   const [values, setValues] = useState(initial);
   const [dirty, setDirty] = useState<Record<string, boolean>>({});
   const [mediaCache, setMediaCache] = useState(media);
@@ -45,9 +46,9 @@ export function SectionsEditor({ target, sections, initial, media }: { target: "
             <div key={f.key} className="flex flex-col gap-1.5">
               <FieldInput
                 f={f}
-                value={values[s.key]?.[f.key]}
+                value={s.self ? values[s.key] : (values[s.key] as Record<string, unknown> | undefined)?.[f.key]}
                 onChange={(v) => {
-                  setValues((cur) => ({ ...cur, [s.key]: { ...cur[s.key], [f.key]: v } }));
+                  setValues((cur) => ({ ...cur, [s.key]: s.self ? v : { ...(cur[s.key] as Record<string, unknown>), [f.key]: v } }));
                   setDirty((d) => ({ ...d, [s.key]: true }));
                 }}
                 options={{}}

@@ -208,10 +208,75 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
 
 // ---------------------------------------------------------------- settings + home
 
+const str = (v: unknown, max = 300) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+const url = (v: unknown) => {
+  const s = str(v, 500);
+  if (!s) return { value: null as string | null };
+  try {
+    const u = new URL(s);
+    return u.protocol === "https:" || u.protocol === "http:" ? { value: u.toString() } : { error: "Gebruik een link die met https:// begint." };
+  } catch {
+    return { error: "Dit is geen geldige link." };
+  }
+};
+
+/** Checks and cleans one site_settings document before it is stored. */
+function cleanSetting(key: string, value: unknown): { ok: true; value: unknown } | { ok: false; error: string } {
+  const o = (value && typeof value === "object" ? value : {}) as Record<string, unknown>;
+  const localized = (label: string) => {
+    const nl = str(o.nl, 400);
+    if (!nl) return { ok: false as const, error: `${label}: de Nederlandse tekst is verplicht.` };
+    // Keep other keys (such as an owner note) as they are.
+    return { ok: true as const, value: { ...o, nl, en: str(o.en, 400) } };
+  };
+  switch (key) {
+    case "company": {
+      const founded = Number(o.founded);
+      if (!str(o.name)) return { ok: false, error: "Vul de bedrijfsnaam in." };
+      if (!Number.isInteger(founded) || founded < 1900 || founded > new Date().getFullYear()) return { ok: false, error: "Vul een geldig oprichtingsjaar in." };
+      return { ok: true, value: { name: str(o.name), founded, kvk: str(o.kvk, 20), btw: str(o.btw, 30) } };
+    }
+    case "contact": {
+      const email = str(o.email);
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { ok: false, error: "Vul een geldig e-mailadres in." };
+      const phone = str(o.phone, 20).replace(/[\s-]/g, "");
+      if (!/^\+?\d{9,15}$/.test(phone)) return { ok: false, error: "Het telefoonnummer is ongeldig. Gebruik bijvoorbeeld +31634311225." };
+      const maps = url(o.maps_url);
+      if (maps.error) return { ok: false, error: `Link naar de kaart: ${maps.error}` };
+      return {
+        ok: true,
+        value: { street: str(o.street), postcode: str(o.postcode, 12), city: str(o.city), phone, phone_display: str(o.phone_display, 30), whatsapp: str(o.whatsapp, 20).replace(/\D/g, ""), email, maps_url: maps.value ?? "" },
+      };
+    }
+    case "hours":
+      return localized("Openingstijden");
+    case "area":
+      return localized("Werkgebied");
+    case "whatsapp_messages":
+      return localized("WhatsApp-bericht");
+    case "certifications": {
+      const list = (Array.isArray(value) ? value : []).map((x) => str(x, 60)).filter(Boolean);
+      if (list.length > 12) return { ok: false, error: "Maximaal 12 certificeringen." };
+      return { ok: true, value: [...new Set(list)] };
+    }
+    case "social": {
+      const g = url(o.google_reviews_url);
+      const i = url(o.instagram_url);
+      if (g.error) return { ok: false, error: `Google-reviews: ${g.error}` };
+      if (i.error) return { ok: false, error: `Instagram: ${i.error}` };
+      return { ok: true, value: { google_reviews_url: g.value, instagram_url: i.value } };
+    }
+    default:
+      return { ok: false, error: "Onbekende instelling." };
+  }
+}
+
 export async function saveSetting(key: string, value: unknown): Promise<ActionResult> {
   const { db } = await requireAction("admin");
   if (!/^[a-z_]+$/.test(key)) return { ok: false, error: "Ongeldige sleutel" };
-  const { error } = await db.from("site_settings").upsert({ key, value: value as never });
+  const clean = cleanSetting(key, value);
+  if (!clean.ok) return clean;
+  const { error } = await db.from("site_settings").upsert({ key, value: clean.value as never });
   if (error) return { ok: false, error: error.message };
   revalidateTag("settings", { expire: 0 });
   return { ok: true };

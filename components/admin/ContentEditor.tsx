@@ -336,6 +336,16 @@ export function FieldInput({
         </>
       );
     }
+    case "list": {
+      const v = (value as string[]) ?? [];
+      return (
+        <>
+          <Label f={f} htmlFor={id} />
+          <textarea id={id} rows={4} value={v.join("\n")} onChange={(e) => onChange(e.target.value.split("\n"))} className={`${cls.area} max-w-[420px]`} />
+          <Hint f={f} />
+        </>
+      );
+    }
     case "variants": {
       const v = (value as L[]) ?? [];
       return (
