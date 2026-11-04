@@ -188,6 +188,26 @@ const nl = {
   business: {
     title: "Voor bedrijven",
     clients: "We werkten onder meer voor",
+    heroLabel: "Hoofdverdeler, bedrijfspand",
+    offerTitle: "Wat we voor bedrijven doen",
+    offerCta: "Meer over",
+    offers: [
+      { icon: "meterkast", title: "Elektra en verlichting", text: "Groepenkasten, bekabeling en verlichting voor winkels en kantoren.", service: "meterkast" },
+      { icon: "home", title: "Nieuwbouw en renovatie", text: "Elektrotechniek voor nieuwbouwprojecten en verbouwingen, van ontwerp tot oplevering.", service: "" },
+      { icon: "zonnepanelen", title: "Zonnepanelen op bedrijfsdaken", text: "Panelen, omvormer en monitoring voor een plat of schuin bedrijfsdak.", service: "zonnepanelen" },
+      { icon: "onderhoud", title: "NEN 3140-inspecties en onderhoud", text: "We inspecteren uw installatie, leggen de bevindingen vast en verhelpen gebreken als u dat wilt.", service: "onderhoud" },
+    ],
+    certsTitle: "Certificeringen",
+    certsLead: "Onze monteurs werken volgens deze normen en certificeringen.",
+    certsMeans: "Wat het is",
+    certsFor: "Voor uw bedrijf",
+    processTitle: "Zo verloopt een zakelijke opdracht",
+    steps: [
+      { title: "Opname", text: "We bekijken de situatie op locatie en nemen uw wensen door." },
+      { title: "Offerte", text: "U ontvangt een offerte met wat we doen en wat het kost." },
+      { title: "Uitvoering", text: "Onze eigen monteurs voeren het werk uit, zonder onderaannemers." },
+      { title: "Oplevering en rapport", text: "We leveren op en leggen de bevindingen vast, bij een NEN 3140-inspectie in een rapport." },
+    ],
   },
   instagram: {
     label: "Instagram",
@@ -400,6 +420,26 @@ const en: Dict = {
   business: {
     title: "For businesses",
     clients: "Clients include",
+    heroLabel: "Main distribution board, commercial building",
+    offerTitle: "What we do for businesses",
+    offerCta: "More about",
+    offers: [
+      { icon: "meterkast", title: "Electrics and lighting", text: "Consumer units, wiring and lighting for shops and offices.", service: "meterkast" },
+      { icon: "home", title: "New build and renovation", text: "Electrical work for new-build projects and refurbishments, from design to handover.", service: "" },
+      { icon: "zonnepanelen", title: "Solar on commercial roofs", text: "Panels, inverter and monitoring for a flat or pitched commercial roof.", service: "zonnepanelen" },
+      { icon: "onderhoud", title: "NEN 3140 inspections and maintenance", text: "We inspect your installation, record the findings and fix any defects if you'd like us to.", service: "onderhoud" },
+    ],
+    certsTitle: "Certifications",
+    certsLead: "Our fitters work to these standards and certifications.",
+    certsMeans: "What it is",
+    certsFor: "For your business",
+    processTitle: "How a business job runs",
+    steps: [
+      { title: "Survey", text: "We look at the situation on site and go through your requirements." },
+      { title: "Quote", text: "You receive a quote with what we will do and what it costs." },
+      { title: "Execution", text: "Our own fitters carry out the work, with no subcontractors." },
+      { title: "Handover and report", text: "We hand over and record our findings, in a report for a NEN 3140 inspection." },
+    ],
   },
   instagram: {
     label: "Instagram",

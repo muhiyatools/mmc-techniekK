@@ -152,6 +152,13 @@ export const getSettings = cached("settings", [TAGS.settings], async (db) => {
   return Object.fromEntries(rows.map((r) => [r.key, r.value])) as Settings;
 });
 
+/** Media rows by storage path (for pages that pick a specific photo), in the order asked. */
+export const getMediaByPaths = cached("media-by-paths", [TAGS.media], async (db, paths: string[]) => {
+  if (!paths.length) return [] as Media[];
+  const rows = must(await db.from("media").select(MEDIA).in("path", paths), "media by path") as unknown as Media[];
+  return paths.map((p) => rows.find((m) => m.path === p)).filter(Boolean) as Media[];
+});
+
 export const getMediaByIds = cached("media-by-ids", [TAGS.media], async (db, ids: string[]) => {
   if (!ids.length) return [] as Media[];
   const rows = must(await db.from("media").select(MEDIA).in("id", ids), "media") as unknown as Media[];

@@ -2,18 +2,13 @@ import Image from "next/image";
 import { TrustStrip } from "@/components/site/Blocks";
 import { siteNav } from "@/lib/nav";
 import { CtaPanel, PageIntro } from "@/components/site/Page";
+import { certificationsFor } from "@/lib/certifications";
 import { Markdown, firstParagraph } from "@/components/ui/Markdown";
 import { Photo } from "@/components/ui/Photo";
 import { getPage, getServices, getSettings, getTeam } from "@/lib/content";
 import { t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
 import { pageMeta } from "@/lib/site";
-
-const CERTS = [
-  { src: "/brand/certs/nen-1010.png", name: "NEN 1010", w: 120, h: 36, nl: "Veiligheidseisen voor elektrische installaties in gebouwen.", en: "Safety requirements for electrical installations in buildings." },
-  { src: "/brand/certs/nen-3140.png", name: "NEN 3140", w: 56, h: 56, nl: "Veilig werken aan en inspecteren van elektrische installaties.", en: "Safe operation and inspection of electrical installations." },
-  { src: "/brand/certs/vca.png", name: "VCA", w: 56, h: 56, nl: "Veiligheid, gezondheid en milieu op de werkplek.", en: "Health, safety and environment at work." },
-];
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/over-ons">) {
   const { lang } = (await params) as { lang: Locale };
@@ -28,6 +23,7 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/over-ons"
   const nav = await siteNav(lang, services, settings);
   const body = page ? t(page.body, lang) : "";
   const [intro, ...rest] = body.split(/\n{2,}/);
+  const certs = certificationsFor(settings.certifications);
 
   return (
     <>
@@ -81,15 +77,20 @@ export default async function AboutPage({ params }: PageProps<"/[lang]/over-ons"
             </h2>
           </div>
           <ul className="border-b border-line" data-reveal>
-            {CERTS.map((c) => (
+            {certs.known.map((c) => (
               <li key={c.name} className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-6 border-t border-line py-6">
                 <span className="grid h-16 place-items-center rounded-xl border border-line bg-white px-2">
-                  <Image src={c.src} alt="" width={c.w} height={c.h} style={{ width: "auto", height: c.h > 40 ? 48 : 24 }} />
+                  <Image src={c.logo} alt="" width={c.width} height={c.height} style={{ width: "auto", height: c.width / c.height > 2 ? 24 : 48 }} />
                 </span>
                 <span className="flex flex-col gap-1">
                   <span className="t-h3 text-[19px]">{c.name}</span>
-                  <span className="text-slate">{lang === "nl" ? c.nl : c.en}</span>
+                  <span className="text-slate">{c.means[lang]}</span>
                 </span>
+              </li>
+            ))}
+            {certs.unknown.map((n) => (
+              <li key={n} className="border-t border-line py-6">
+                <span className="t-h3 text-[19px]">{n}</span>
               </li>
             ))}
           </ul>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CertLogos } from "@/components/site/CertLogos";
 import type { Settings } from "@/lib/content/types";
 import { href, t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
@@ -64,17 +65,7 @@ export function Footer({ lang, nav, settings, legal }: { lang: Locale; nav: NavM
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="t-mono text-on-dark-muted">{d.footer.certified}</h2>
-            <div className="flex flex-wrap gap-2.5">
-              <span className="grid h-16 place-items-center rounded-xl bg-white px-3.5">
-                <Image src="/brand/certs/nen-1010.png" alt="NEN 1010" width={80} height={24} className="h-6 w-auto" />
-              </span>
-              <span className="grid size-16 place-items-center rounded-xl bg-white">
-                <Image src="/brand/certs/nen-3140.png" alt="NEN 3140" width={48} height={48} className="h-12 w-auto" />
-              </span>
-              <span className="grid size-16 place-items-center rounded-xl bg-white">
-                <Image src="/brand/certs/vca.png" alt="VCA" width={48} height={48} className="h-12 w-auto" />
-              </span>
-            </div>
+            <CertLogos names={settings.certifications} height={40} tile />
           </div>
         </div>
 

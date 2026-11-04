@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { CertLogos } from "@/components/site/CertLogos";
 import type { Review, Settings } from "@/lib/content/types";
 import { CountUp } from "@/components/ui/CountUp";
 import { t, type Locale } from "@/lib/i18n/config";
@@ -14,11 +14,7 @@ export function TrustStrip({ lang, settings, showCerts = true }: { lang: Locale;
       {showCerts && (
       <div className={`${cell} col-span-2 border-b lg:col-span-1 lg:border-b-0 lg:pr-7`}>
         <span className="t-mono text-graphite">{d.trust.certified}</span>
-        <div className="flex items-center gap-4 pt-1">
-          <Image src="/brand/certs/nen-1010.png" alt="NEN 1010" width={100} height={30} className="h-[26px] sm:h-[30px]" style={{ width: "auto" }} />
-          <Image src="/brand/certs/nen-3140.png" alt="NEN 3140" width={44} height={44} className="h-10 w-auto sm:h-11" />
-          <Image src="/brand/certs/vca.png" alt="VCA" width={44} height={44} className="h-10 w-auto sm:h-11" />
-        </div>
+        <CertLogos names={settings.certifications} height={40} className="pt-1" />
       </div>
       )}
       <div className={`${cell} pr-4 ${showCerts ? "lg:border-l lg:px-7" : "lg:pr-7"}`}>
