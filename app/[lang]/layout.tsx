@@ -61,7 +61,7 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
           {d.skip}
         </a>
         <Header lang={lang} nav={nav} />
-        <ViewTransition>
+        <ViewTransition update="page" default="none">
           <main id="main" tabIndex={-1} className="outline-none">
             {children}
           </main>

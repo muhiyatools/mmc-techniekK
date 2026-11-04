@@ -1,10 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, ViewTransition } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { Photo } from "@/components/ui/Photo";
-import type { Media } from "@/lib/content/types";
 import { href, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
 
@@ -13,11 +11,6 @@ export type LoopService = {
   title: string;
   kicker: string;
   summary: string;
-  tags: string[];
-  hasProducts: boolean;
-  /** Where the service leads: its product category, or its own page. */
-  href: string;
-  image: Media | null;
 };
 
 // Geometry in a 560 × 560 box (design/boards/Home.html).
@@ -54,7 +47,7 @@ const HEAD = `M${C + R - HEAD_W / 2} ${C} L${C + R + HEAD_W / 2} ${C} L${C + R} 
 
 export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; services: LoopService[]; coreIndex: number }) {
   const d = getDict(lang);
-  const [selected, setSelected] = useState(0);
+  const selected = 0; // resting state of the diagram before any hover
   const [hover, setHover] = useState<number | null>(null);
   const [drawn, setDrawn] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -137,10 +130,9 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
           const reached = drawn && ringIndex(active) >= j;
           return (
             <div key={svc.slug} aria-hidden="true">
-              <button
-                type="button"
+              <Link
+                href={href(lang, `/diensten/${svc.slug}`)}
                 tabIndex={-1}
-                onClick={() => setSelected(i)}
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
                 className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full transition-[background-color,box-shadow,color,transform] duration-[var(--dur)] ease-[var(--ease-out)] hover:scale-[1.06] ${
@@ -153,7 +145,7 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
                 style={{ left: `${(p.x / 560) * 100}%`, top: `${(p.y / 560) * 100}%`, width: `${(NODE / 560) * 100}%`, height: `${(NODE / 560) * 100}%` }}
               >
                 <Icon name={svc.slug as IconName} size={24} />
-              </button>
+              </Link>
               <span
                 className={`t-mono pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap transition-colors duration-[var(--dur)] ${on ? "text-blue-deep" : "text-slate"}`}
                 style={{ left: `${(lp.x / 560) * 100}%`, top: `${(lp.y / 560) * 100}%` }}
@@ -165,11 +157,10 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
         })}
 
         {core && (
-          <button
-            type="button"
+          <Link
+            href={href(lang, `/diensten/${core.slug}`)}
             tabIndex={-1}
             aria-hidden="true"
-            onClick={() => setSelected(coreIndex)}
             onMouseEnter={() => setHover(coreIndex)}
             onMouseLeave={() => setHover(null)}
             className={`absolute left-1/2 top-1/2 flex aspect-square w-[35.7%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full text-center transition-colors duration-[var(--dur)] ${
@@ -180,78 +171,39 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
             <span className="t-mono opacity-80">{String(coreIndex + 1).padStart(2, "0")}</span>
             <span className="t-h3 text-[18px]">{core.title}</span>
             <span className="text-[13px] opacity-80">{d.home.loopCore}</span>
-          </button>
+          </Link>
         )}
       </div>
 
-      {/* The list: the real, keyboard-accessible control. */}
+      {/* The list: every row goes straight to its service page. */}
       <ul className="border-b border-line" onMouseLeave={() => setHover(null)}>
         {services.map((svc, i) => {
-          const open = selected === i;
-          const panel = `${uid}-svc-${i}`;
+          const on = active === i;
           return (
-            <li key={svc.slug} className="border-t border-line" data-open={open}>
-              <h3>
-                <button
-                  type="button"
-                  aria-expanded={open}
-                  aria-controls={panel}
-                  onClick={() => setSelected(open ? -1 : i)}
-                  onMouseEnter={() => setHover(i)}
-                  onFocus={() => setHover(i)}
-                  onBlur={() => setHover(null)}
-                  className="group grid w-full grid-cols-[40px_minmax(0,1fr)_44px] items-center gap-4 py-5 text-left sm:grid-cols-[48px_minmax(0,1fr)_48px] sm:py-6"
-                >
-                  <span className={`t-mono transition-colors ${open || active === i ? "text-blue" : "text-graphite"}`}>{String(i + 1).padStart(2, "0")}</span>
+            <li key={svc.slug} className="border-t border-line">
+              <Link
+                href={href(lang, `/diensten/${svc.slug}`)}
+                onMouseEnter={() => setHover(i)}
+                onFocus={() => setHover(i)}
+                onBlur={() => setHover(null)}
+                className="group grid grid-cols-[32px_minmax(0,1fr)_44px] items-center gap-x-4 px-1 py-5 transition-colors duration-[var(--dur)] ease-[var(--ease-out)] hover:bg-paper focus-visible:bg-paper sm:grid-cols-[48px_minmax(0,1fr)_48px] sm:px-3 sm:py-6 3xl:py-8"
+              >
+                <span className={`t-mono transition-colors ${on ? "text-blue" : "text-graphite"}`}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="flex min-w-0 flex-col gap-1.5 transition-transform duration-[var(--dur)] ease-[var(--ease-out)] group-hover:translate-x-1 group-focus-visible:translate-x-1">
                   <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                    <span className="t-h3 text-[21px] sm:text-[28px]">{svc.title}</span>
+                    <ViewTransition name={`service-${svc.slug}`} share="morph" default="none">
+                      <span className="t-h3 text-[21px] sm:text-[28px] 3xl:text-[34px]">{svc.title}</span>
+                    </ViewTransition>
                     <span className="t-mono text-graphite">{svc.kicker}</span>
                   </span>
-                  <span
-                    className={`grid size-11 place-items-center rounded-full transition-[transform,background-color,box-shadow,color] duration-[var(--dur)] ease-[var(--ease-out)] sm:size-12 ${
-                      open ? "rotate-90 bg-blue text-white" : "shadow-[inset_0_0_0_1.5px_var(--color-line-strong)] group-hover:shadow-[inset_0_0_0_1.5px_var(--color-ink)]"
-                    }`}
-                  >
-                    <Icon name="arrow" />
-                  </span>
-                </button>
-              </h3>
-              <div id={panel} className="acc-panel" inert={!open}>
-                <div>
-                  <div className={`grid gap-5 pb-8 sm:gap-7 ${svc.image ? "sm:grid-cols-[220px_minmax(0,1fr)]" : ""} sm:pl-16`}>
-                    {svc.image && (
-                      <div className="tile relative aspect-[4/3] rounded-[var(--radius-md)] sm:aspect-auto sm:h-[170px]">
-                        <Photo media={svc.image} lang={lang} sizes="(min-width: 640px) 220px, 100vw" />
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-4">
-                      <p className="text-[16px] leading-relaxed text-slate sm:text-[17px]">{svc.summary}</p>
-                      {svc.tags.length > 0 && (
-                        <ul className="flex flex-wrap gap-2">
-                          {svc.tags.map((tag) => (
-                            <li key={tag} className="t-mono rounded-md bg-paper px-2.5 py-1.5 text-slate">
-                              {tag}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
-                        <Link href={svc.href} className="btn btn-primary btn-sm">
-                          <span>{svc.hasProducts ? d.cta.products : `${d.cta.more} ${svc.title.toLowerCase()}`}</span>
-                          <span className="knob">
-                            <Icon name="arrow" size={16} />
-                          </span>
-                        </Link>
-                        {svc.hasProducts && (
-                          <Link href={href(lang, `/diensten/${svc.slug}`)} className="link-arrow text-[15px]">
-                            {`${d.cta.more} ${svc.title.toLowerCase()}`}
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  <span className="truncate text-[15px] text-slate sm:text-[16px]">{svc.summary}</span>
+                </span>
+                <span
+                  className="grid size-11 place-items-center rounded-full shadow-[inset_0_0_0_1.5px_var(--color-line-strong)] transition-[transform,background-color,box-shadow,color] duration-[var(--dur)] ease-[var(--ease-out)] group-hover:-rotate-45 group-hover:bg-blue group-hover:text-white group-hover:shadow-none group-focus-visible:-rotate-45 group-focus-visible:bg-blue group-focus-visible:text-white group-focus-visible:shadow-none group-active:scale-95 sm:size-12"
+                >
+                  <Icon name="arrow" />
+                </span>
+              </Link>
             </li>
           );
         })}

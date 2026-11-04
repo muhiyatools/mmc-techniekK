@@ -58,6 +58,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/dienste
           { name: title, path: `/diensten/${slug}` },
         ]}
         title={title}
+        transitionName={`service-${slug}`}
         lead={t(service.summary, lang)}
         aside={
           <>

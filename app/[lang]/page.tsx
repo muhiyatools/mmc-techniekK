@@ -14,7 +14,6 @@ import { href, t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
 import { siteNav } from "@/lib/nav";
 import { MediaClaims } from "@/lib/media";
-import { serviceHref } from "@/lib/service-links";
 import { alternates } from "@/lib/site";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]">) {
@@ -43,17 +42,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
   const coreIndex = services.findIndex((s) => s.slug === "verduurzaming");
   const loop: LoopService[] = services.map((s) => {
-    const hasProducts = products.some((p) => p.service.slug === s.slug);
-    return {
-      slug: s.slug,
-      title: t(s.title, lang),
-      kicker: t(s.kicker, lang),
-      summary: t(s.summary, lang),
-      tags: t<string[]>(s.tags, lang) ?? [],
-      hasProducts,
-      href: serviceHref(lang, s.slug, hasProducts),
-      image: claims.claim(s.hero),
-    };
+    return { slug: s.slug, title: t(s.title, lang), kicker: t(s.kicker, lang), summary: t(s.summary, lang) };
   });
 
   const [audienceHome, audienceBusiness] = await getMediaByIds([home.audience.home_media, home.audience.business_media].filter(Boolean) as string[]);

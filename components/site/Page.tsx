@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { ViewTransition, type ReactNode } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
@@ -38,15 +38,27 @@ export function Breadcrumbs({ lang, items }: { lang: Locale; items: Crumb[] }) {
 }
 
 /** Top of an inner page: breadcrumbs, H1, lead, optional aside. */
-export function PageIntro({ lang, crumbs, title, lead, aside, children }: { lang: Locale; crumbs: Crumb[]; title: ReactNode; lead?: ReactNode; aside?: ReactNode; children?: ReactNode }) {
+export function PageIntro({ lang, crumbs, title, lead, aside, children, transitionName }: { lang: Locale; crumbs: Crumb[]; title: ReactNode; lead?: ReactNode; aside?: ReactNode; children?: ReactNode; transitionName?: string }) {
+  const h1 = <h1 className="t-h1">{title}</h1>;
   return (
     <section className="pb-12 pt-8 sm:pb-16 sm:pt-12">
       <div className="wrap flex flex-col gap-7">
         <Breadcrumbs lang={lang} items={crumbs} />
         <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
-          <div className="fade-up flex max-w-[820px] flex-col gap-5 3xl:max-w-[1180px]">
-            <h1 className="t-h1">{title}</h1>
-            {lead && <p className="t-lead max-w-[620px] 3xl:max-w-[780px]">{lead}</p>}
+          <div className={`${transitionName ? "" : "fade-up "}flex max-w-[820px] flex-col gap-5 3xl:max-w-[1180px]`}>
+            {/* A named heading morphs from the link that led here (see ServicesLoop). */}
+            {transitionName ? (
+              <ViewTransition name={transitionName} share="morph" default="none">
+                {h1}
+              </ViewTransition>
+            ) : (
+              h1
+            )}
+            {lead && (
+              <p className={`t-lead max-w-[620px] 3xl:max-w-[780px] ${transitionName ? "fade-up" : ""}`} style={transitionName ? ({ "--d": "140ms" } as React.CSSProperties) : undefined}>
+                {lead}
+              </p>
+            )}
           </div>
           {aside && (
             <div className="fade-up flex flex-col gap-3" style={{ "--d": "120ms" } as React.CSSProperties}>
