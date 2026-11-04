@@ -16,6 +16,9 @@ const eslintConfig = defineConfig([
     "old_site/**",
     // Skill scripts are tooling, linted by their own toolchain.
     ".agents/**",
+    // One-off maintenance scripts, not part of the app.
+    "scratch/**",
+    "scripts/**",
   ]),
 ]);
 

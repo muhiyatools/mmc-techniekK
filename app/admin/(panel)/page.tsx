@@ -41,6 +41,8 @@ export default async function Dashboard() {
     );
   }
 
+  // A server component runs once per request, so reading the clock here is fine.
+  /* eslint-disable react-hooks/purity */
   const since = new Date(Date.now() - WEEKS * 7 * 86400000).toISOString();
   const { data: recent } = await db.from("quote_requests").select("id, ref, name, status, services, service_slug, created_at").gte("created_at", since).order("created_at", { ascending: false });
   const { data: openRows } = await db.from("quote_requests").select("id, ref, name, status, services, service_slug, created_at").in("status", ["new", "in_progress", "quote_sent"]).order("created_at", { ascending: true });
@@ -63,6 +65,7 @@ export default async function Dashboard() {
     const start = end - 7 * 86400000;
     return { label: new Date(start).toLocaleDateString("nl-NL", { day: "numeric", month: "short" }), n: leads.filter((l) => { const t = new Date(l.created_at).getTime(); return t >= start && t < end; }).length };
   });
+  /* eslint-enable react-hooks/purity */
   const max = Math.max(1, ...buckets.map((b) => b.n));
 
   // By service (last 8 weeks)

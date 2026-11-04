@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { addLeadEvent, assignLead, setLeadStatus } from "@/lib/admin/actions";
-import { initials, LEAD_STATUSES, PROPERTY_LABEL, relativeTime, STATUS_CLASS, STATUS_LABEL, TIMING_LABEL, TOPIC_LABEL, type LeadRow, type LeadStatus } from "@/lib/admin/leads";
+import { initials, PROPERTY_LABEL, relativeTime, STATUS_CLASS, STATUS_LABEL, TIMING_LABEL, TOPIC_LABEL, type LeadRow, type LeadStatus } from "@/lib/admin/leads";
 import { createClient } from "@/lib/supabase/browser";
 import { toast } from "./Toast";
 

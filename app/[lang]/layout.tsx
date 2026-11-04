@@ -1,3 +1,5 @@
+/* The draft-mode exit is a route handler that redirects, so it has to be a plain link. */
+/* eslint-disable @next/next/no-html-link-for-pages */
 import type { Metadata, Viewport } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
