@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { LogoRow, ReviewQuote, Stars, TrustStrip } from "@/components/site/Blocks";
+import { BrandGrid } from "@/components/site/BrandGrid";
+import { ReviewQuote, Stars, TrustStrip } from "@/components/site/Blocks";
 import { InstagramProfile } from "@/components/site/InstagramProfile";
 import { whatsappHref } from "@/components/site/nav";
 import { QuoteStart } from "@/components/site/QuoteStart";
@@ -53,6 +54,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const homeFaqs = faqs.filter((f) => f.featured).slice(0, 5);
   const suppliers = brands.filter((b) => b.kind === "supplier" && b.show_in_strip);
   const clients = brands.filter((b) => b.kind === "client");
+  const supplierWithProducts = new Set(products.flatMap((p) => p.brands.map((b) => b.slug)));
   const [line1, line2] = t(home.hero.title, lang).split("\n");
 
   return (
@@ -128,7 +130,18 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section className="pt-10 sm:pt-14" aria-label={d.trust.certified}>
         <div className="wrap flex flex-col gap-9">
           <TrustStrip lang={lang} settings={settings} />
-          <LogoRow brands={suppliers} label={d.home.brands} />
+          <BrandGrid
+            lang={lang}
+            brands={suppliers}
+            linkable={supplierWithProducts}
+            label={d.home.brands}
+            action={
+              <Link href={href(lang, "/aanbod")} className="link-arrow">
+                {d.cta.catalog}
+                <Icon name="arrow" />
+              </Link>
+            }
+          />
         </div>
       </section>
 

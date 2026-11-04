@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Brand, Review, Settings } from "@/lib/content/types";
+import type { Review, Settings } from "@/lib/content/types";
 import { CountUp } from "@/components/ui/CountUp";
 import { t, type Locale } from "@/lib/i18n/config";
 import { getDict } from "@/lib/i18n/ui";
@@ -35,24 +35,6 @@ export function TrustStrip({ lang, settings, showCerts = true }: { lang: Locale;
         <span className="t-mono text-graphite">{d.trust.area}</span>
         <span className="text-[15px] font-medium leading-snug text-ink">{t(settings.area, lang)}</span>
       </div>
-    </div>
-  );
-}
-
-/** One static row of brand logos, normalised to a single optical height. */
-export function LogoRow({ brands, label }: { brands: Brand[]; label?: string }) {
-  const withLogo = brands.filter((b) => b.logo_path);
-  if (!withLogo.length) return null;
-  return (
-    <div className="flex flex-col gap-5" data-reveal>
-      {label && <span className="t-mono text-graphite">{label}</span>}
-      <ul className="grid grid-cols-3 items-center gap-x-4 gap-y-6 sm:grid-cols-4 lg:grid-cols-5">
-        {withLogo.map((b) => (
-          <li key={b.id} className="flex h-8 items-center justify-center">
-            <Image src={b.logo_path!} alt={b.name} width={140} height={40} className="h-[22px] w-auto max-w-full object-contain opacity-65 sm:h-6" />
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { LogoRow } from "@/components/site/Blocks";
+import { BrandGrid } from "@/components/site/BrandGrid";
 import { InstagramProfile } from "@/components/site/InstagramProfile";
 import { siteNav } from "@/lib/nav";
 import { CtaPanel, PageIntro } from "@/components/site/Page";
@@ -42,7 +42,7 @@ export default async function BusinessPage({ params }: PageProps<"/[lang]/zakeli
       {clients.length > 0 && (
         <section className="pb-16">
           <div className="wrap border-y border-line py-7">
-            <LogoRow brands={clients} label={d.business.clients} />
+            <BrandGrid lang={lang} brands={clients} label={d.business.clients} />
           </div>
         </section>
       )}
