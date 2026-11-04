@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ViewTransition, type ReactNode } from "react";
 import { ButtonLink } from "@/components/ui/Button";
@@ -5,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import type { Product } from "@/lib/content/types";
 import { href, t, type Locale } from "@/lib/i18n/config";
+import { logoSize, opticalSize } from "@/lib/logo-size";
 import { getDict } from "@/lib/i18n/ui";
 import { breadcrumbs, JsonLd } from "./JsonLd";
 
@@ -138,12 +140,20 @@ export function ProductCard({ lang, product, priority, image = product.media }: 
         <span className="t-mono spec-tag absolute left-3 top-3 border border-line">{t(product.service.title, lang)}</span>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-5 sm:p-6">
-        {product.brands[0] && <span className="t-mono text-graphite">{product.brands.map((b) => b.name).join(" · ")}</span>}
+        {product.brands[0] && (
+          <span className="flex min-h-6 flex-wrap items-center gap-x-4 gap-y-1">
+            {product.brands.map((b) => {
+              if (!b.logo_path) return <span key={b.id} className="t-mono text-graphite">{b.name}</span>;
+              const size = opticalSize(logoSize(b.logo_path), 1700, 84, 22);
+              return <Image key={b.id} src={b.logo_path} alt={b.name} width={size.w * 2} height={size.h * 2} className="opacity-70" style={{ width: size.w, height: "auto" }} />;
+            })}
+          </span>
+        )}
         <h3 className="t-h3 text-[19px]">{product.name}</h3>
-        <p className="text-[15px] leading-relaxed text-slate">{t(product.summary, lang)}</p>
+        <p className="line-clamp-3 text-[15px] leading-relaxed text-slate">{t(product.summary, lang)}</p>
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <span className="flex flex-col gap-0.5">
-            {price && <span className="text-[15px] font-semibold text-ink">{price}</span>}
+            {price ? <span className="text-[15px] font-semibold text-ink">{price}</span> : <span className="text-[14px] font-medium text-slate">{d.catalog.priceOnRequest}</span>}
             {variants > 1 && (
               <span className="t-mono text-graphite">
                 {variants} {d.catalog.variants.toLowerCase()}
