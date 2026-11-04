@@ -75,7 +75,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <p className="t-mono text-graphite" data-reveal>
               {d.home.eyebrow(settings.contact.city, settings.company.founded)}
             </p>
-            <h1 id="hero-title" className="t-display text-[clamp(46px,9.3vw,136px)]">
+            <h1 id="hero-title" className="t-display text-[clamp(46px,9.3vw,200px)]">
               <span className="mask-line" style={{ "--i": 0 } as React.CSSProperties}>
                 <span>{line1}</span>
               </span>
@@ -88,7 +88,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
 
           <div className="fade-up flex flex-wrap items-end gap-x-14 gap-y-7" style={{ "--d": "260ms" } as React.CSSProperties}>
-            <p className="t-lead max-w-[500px] flex-[1_1_340px]">{t(home.hero.lead, lang)}</p>
+            <p className="t-lead max-w-[500px] flex-[1_1_340px] 3xl:max-w-[640px]">{t(home.hero.lead, lang)}</p>
             <div className="flex flex-col gap-3.5">
               <ButtonLink href={href(lang, "/offerte")}>{d.cta.quote}</ButtonLink>
               <span className="text-sm text-graphite">
@@ -105,7 +105,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </div>
 
           {heroTiles.length > 0 && (
-            <div className="-mx-[var(--gutter)] flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-[var(--gutter)] px-[var(--gutter)] pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 lg:h-[520px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.55fr)_minmax(0,0.8fr)]">
+            <div className="-mx-[var(--gutter)] flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-[var(--gutter)] px-[var(--gutter)] pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 lg:h-[clamp(520px,30vw,780px)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.55fr)_minmax(0,0.8fr)]">
               {heroTiles.map((m, i) => {
                 const middle = i === 1;
                 return (
@@ -147,7 +147,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <section id="diensten" className="section-y mt-8 bg-paper" aria-labelledby="services-title">
         <div className="wrap flex flex-col gap-10 sm:gap-12">
           <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6" data-reveal>
-            <h2 id="services-title" className="t-h2 max-w-[720px]">
+            <h2 id="services-title" className="t-h2 max-w-[720px] 3xl:max-w-[960px]">
               {t(home.services.title, lang)}
             </h2>
             <div className="flex max-w-[380px] flex-col gap-3">
@@ -205,7 +205,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       {/* PROCESS */}
       <section className="on-dark section-y bg-ink text-white" aria-labelledby="process-title">
         <div className="wrap flex flex-col gap-12 sm:gap-16">
-          <h2 id="process-title" className="t-h2 max-w-[820px]" data-reveal>
+          <h2 id="process-title" className="t-h2 max-w-[820px] 3xl:max-w-[1100px]" data-reveal>
             {t(home.process.title, lang)}
           </h2>
           <ol className="process relative grid gap-8 pl-16 sm:grid-cols-2 sm:pl-0 lg:grid-cols-4" data-reveal>
@@ -261,13 +261,13 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       {/* QUOTE */}
       <section id="offerte" className="pb-[var(--section)]" aria-labelledby="quote-title">
         <div className="wrap">
-          <div className="on-blue relative grid gap-10 overflow-hidden rounded-[24px] bg-blue px-5 py-8 sm:rounded-[var(--radius-panel)] sm:p-12 xl:grid-cols-[minmax(0,1fr)_560px] xl:gap-14 xl:p-[72px]">
+          <div className="on-blue relative grid gap-10 overflow-hidden rounded-[24px] bg-blue px-5 py-8 sm:rounded-[var(--radius-panel)] sm:p-12 xl:grid-cols-[minmax(0,1fr)_560px] xl:gap-14 xl:p-[72px] 3xl:grid-cols-[minmax(0,1fr)_680px]">
             <svg viewBox="0 0 600 600" aria-hidden="true" className="pointer-events-none absolute -bottom-64 -left-52 w-[600px] text-white opacity-[0.18]">
               <circle cx="300" cy="300" r="290" fill="none" stroke="currentColor" strokeWidth="1.5" />
               <circle cx="300" cy="300" r="210" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 8" />
             </svg>
             <div className="relative flex flex-col gap-6 text-white sm:gap-7" data-reveal>
-              <h2 id="quote-title" className="t-h2 text-[clamp(36px,5vw,68px)]">
+              <h2 id="quote-title" className="t-h2 text-[clamp(36px,5vw,104px)]">
                 {t(home.quote.title, lang)}
               </h2>
               <p className="max-w-[460px] text-[17px] leading-relaxed text-on-blue sm:text-[18px]">{t(home.quote.lead, lang)}</p>
@@ -352,7 +352,7 @@ function AudienceCard({
   return (
     <article className={`group flex flex-col overflow-hidden rounded-[22px] sm:rounded-[var(--radius-card)] ${dark ? "on-dark bg-ink text-white" : "bg-paper"}`} data-reveal>
       {image && (
-        <div className="tile relative h-[220px] sm:h-[300px]">
+        <div className="tile relative h-[220px] sm:h-[clamp(300px,22vw,460px)]">
           <Photo media={image} lang={lang} sizes="(min-width: 768px) 50vw, 100vw" />
           {tag && <span className="t-mono spec-tag absolute left-4 top-4">{tag}</span>}
         </div>

@@ -74,7 +74,7 @@ export default async function ServicePage({ params }: PageProps<"/[lang]/dienste
         <div className="wrap">
           {hero ? (
             <div className="tile fade-up relative aspect-[4/3] rounded-[var(--radius-tile)] sm:aspect-[21/9] sm:rounded-[var(--radius-card)]" style={{ "--d": "160ms" } as React.CSSProperties}>
-              <Photo media={hero} lang={lang} priority sizes="(min-width: 1440px) 1360px, 100vw" quality={80} />
+              <Photo media={hero} lang={lang} priority sizes="(min-width: 1440px) 88vw, 100vw" quality={80} />
               <span className="t-mono spec-tag absolute bottom-4 left-4">{t(service.kicker, lang)}</span>
             </div>
           ) : (

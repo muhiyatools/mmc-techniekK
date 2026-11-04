@@ -83,7 +83,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/aanbod/
                     {t(product.service.title, lang)}
                   </Link>
                 </div>
-                <h1 className="t-h1 text-[clamp(34px,4.4vw,60px)]">{product.name}</h1>
+                <h1 className="t-h1 text-[clamp(34px,4.4vw,88px)]">{product.name}</h1>
                 <p className="t-lead">{t(product.summary, lang)}</p>
               </div>
 

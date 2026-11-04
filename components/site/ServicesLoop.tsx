@@ -81,9 +81,9 @@ export function ServicesLoop({ lang, services, coreIndex }: { lang: Locale; serv
   const core = services[coreIndex];
 
   return (
-    <div className="grid items-start gap-12 xl:grid-cols-[560px_minmax(0,1fr)] xl:gap-16">
+    <div className="grid items-start gap-12 xl:grid-cols-[minmax(520px,0.82fr)_minmax(0,1.18fr)] xl:gap-16 3xl:gap-24">
       {/* Diagram: decorative mirror of the list; the list is the accessible control. */}
-      <div ref={boxRef} className="relative mx-auto hidden aspect-square w-full max-w-[560px] sm:block xl:sticky xl:top-[calc(var(--header-h)+40px)]">
+      <div ref={boxRef} className="relative mx-auto hidden aspect-square w-full max-w-[560px] sm:block 3xl:max-w-[720px] xl:sticky xl:top-[calc(var(--header-h)+40px)]">
         <svg viewBox="0 0 560 560" className="absolute inset-0 size-full overflow-visible" aria-hidden="true">
           <circle cx={C} cy={C} r={250} fill="none" stroke="var(--color-line)" strokeWidth="1" strokeDasharray="2 8" />
           <circle cx={C} cy={C} r={R} fill="none" stroke="var(--color-line)" strokeWidth="1.5" />

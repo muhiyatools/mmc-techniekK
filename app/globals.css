@@ -63,8 +63,10 @@
   --dur-slow: 400ms;
   --dur-draw: 900ms;
 
-  --container-site: 1360px;
+  /* Fluid container: 1360px on laptops, growing with the screen up to 1920px. */
+  --container-site: clamp(1360px, 88vw, 1920px);
   --breakpoint-xs: 400px;
+  --breakpoint-3xl: 1600px;
 }
 
 :root {
@@ -73,6 +75,9 @@
   --header-h: 80px;
   --bar-h: 76px; /* mobile action bar, without safe area */
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (min-width: 1600px) {
+  :root { --gutter: 56px; --section: 144px; }
 }
 @media (max-width: 1023px) {
   :root { --gutter: 24px; --section: 88px; --header-h: 72px; }
@@ -123,14 +128,14 @@
   font-weight: 780;
   letter-spacing: -0.035em;
   line-height: 0.98;
-  font-size: clamp(40px, 6.4vw, 92px);
+  font-size: clamp(40px, 6.4vw, 132px);
 }
 @utility t-h2 {
   font-stretch: 118%;
   font-weight: 750;
   letter-spacing: -0.028em;
   line-height: 1.02;
-  font-size: clamp(32px, 4.2vw, 56px);
+  font-size: clamp(32px, 4.2vw, 84px);
 }
 @utility t-h3 {
   font-stretch: 108%;
@@ -139,7 +144,7 @@
   line-height: 1.2;
 }
 @utility t-lead {
-  font-size: clamp(17px, 1.4vw, 19px);
+  font-size: clamp(17px, 1.4vw, 24px);
   line-height: 1.6;
   color: var(--color-slate);
 }

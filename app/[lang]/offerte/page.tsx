@@ -55,7 +55,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/[l
             ]}
           />
           <div className="flex flex-col gap-4">
-            <p className="t-h2 text-[clamp(36px,4vw,56px)]">{t(home.quote.title, lang)}</p>
+            <p className="t-h2 text-[clamp(36px,4vw,80px)]">{t(home.quote.title, lang)}</p>
             <p className="t-lead">{t(home.quote.lead, lang)}</p>
           </div>
           <ol className="relative flex flex-col gap-6 border-l border-line pl-8">

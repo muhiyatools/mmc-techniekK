@@ -44,9 +44,9 @@ export function PageIntro({ lang, crumbs, title, lead, aside, children }: { lang
       <div className="wrap flex flex-col gap-7">
         <Breadcrumbs lang={lang} items={crumbs} />
         <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
-          <div className="fade-up flex max-w-[820px] flex-col gap-5">
+          <div className="fade-up flex max-w-[820px] flex-col gap-5 3xl:max-w-[1180px]">
             <h1 className="t-h1">{title}</h1>
-            {lead && <p className="t-lead max-w-[620px]">{lead}</p>}
+            {lead && <p className="t-lead max-w-[620px] 3xl:max-w-[780px]">{lead}</p>}
           </div>
           {aside && (
             <div className="fade-up flex flex-col gap-3" style={{ "--d": "120ms" } as React.CSSProperties}>
@@ -73,7 +73,7 @@ export function CtaPanel({ lang, title, text, quoteHref, phone, phoneDisplay }: 
           </svg>
           <div className="relative flex flex-wrap items-end justify-between gap-8">
             <div className="flex max-w-[620px] flex-col gap-4">
-              <h2 className="t-h2 text-[clamp(30px,3.6vw,48px)]">{title}</h2>
+              <h2 className="t-h2 text-[clamp(30px,3.6vw,72px)]">{title}</h2>
               <p className="text-[17px] leading-relaxed text-on-blue">{text}</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
